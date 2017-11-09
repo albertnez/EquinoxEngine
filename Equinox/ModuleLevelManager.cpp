@@ -4,6 +4,8 @@
 #include "ModuleTextures.h"
 #include "TransformComponent.h"
 #include "ModuleLevelManager.h"
+#include "ModuleEditor.h"
+#include "DataImporter.h"
 
 ModuleLevelManager::ModuleLevelManager()
 {
@@ -16,14 +18,15 @@ ModuleLevelManager::~ModuleLevelManager()
 
 bool ModuleLevelManager::Init()
 {
-	_currentLevel = new Level;
+	//_currentLevel = new Level;
 
 	return true;
 }
 
 bool ModuleLevelManager::Start()
 {
-	_currentLevel->Load("Models/street/", "Street.obj");
+	_currentLevel = App->editor->GetDataImporter()->ImportLevel("Models/street/", "Street.obj");
+	
 	App->animator->Load("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 
 	////////////

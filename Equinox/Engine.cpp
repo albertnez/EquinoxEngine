@@ -14,6 +14,8 @@
 #include "ModuleAnimation.h"
 #include "ModuleStats.h"
 #include "ModuleLevelManager.h"
+#include "ModuleMaterialManager.h"
+#include "ModuleMeshManager.h"
 
 using namespace std;
 
@@ -37,6 +39,9 @@ Engine::Engine()
 	modules.push_back(settings = new ModuleSettings());
 	modules.push_back(animator = new ModuleAnimation());
 	modules.push_back(stats = new ModuleStats);
+
+	modules.push_back(materialManager = new ModuleMaterialManager);
+	modules.push_back(meshManager = new ModuleMeshManager);
 
 	// Game Modules
 	modules.push_back(level_manager = new ModuleLevelManager);

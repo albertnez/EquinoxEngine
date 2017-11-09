@@ -1,12 +1,14 @@
-#include "ModuleEditor.h"
 #include "IMGUI/imgui.h"
 #include "IMGUI/imgui_impl_sdl_gl3.h"
-#include "Engine.h"
-#include "ModuleWindow.h"
 #include <GL/glew.h>
 #include <iterator>
+
+#include "ModuleEditor.h"
+#include "Engine.h"
+#include "ModuleWindow.h"
 #include "BaseComponent.h"
 #include "ModuleLighting.h"
+#include "DataImporter.h"
 
 ModuleEditor::ModuleEditor() : Module()
 {
@@ -15,6 +17,13 @@ ModuleEditor::ModuleEditor() : Module()
 
 ModuleEditor::~ModuleEditor()
 {
+}
+
+bool ModuleEditor::Init()
+{
+	_dataImporter = new DataImporter;
+
+	return true;
 }
 
 bool ModuleEditor::Start()
@@ -183,7 +192,13 @@ update_status ModuleEditor::PostUpdate(float DeltaTime)
 bool ModuleEditor::CleanUp()
 {
 	ImGui_ImplSdlGL3_Shutdown();
+	RELEASE(_dataImporter);
 	return true;
+}
+
+DataImporter* ModuleEditor::GetDataImporter() const
+{
+	return _dataImporter;
 }
 
 float ModuleEditor::ListGetter(void* data, int id)

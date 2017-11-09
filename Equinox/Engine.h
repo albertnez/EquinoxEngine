@@ -12,6 +12,8 @@
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
 
+class ModuleMaterialManager;
+class ModuleMeshManager;
 class ModuleStats;
 class ModuleRender;
 class ModuleWindow;
@@ -52,6 +54,8 @@ public:
 	bool CleanUp();
 
 public:
+	ModuleMeshManager* meshManager;
+	ModuleMaterialManager* materialManager;
 	ModuleRender* renderer;
 	ModuleWindow* window;
 	ModuleTextures* textures;
