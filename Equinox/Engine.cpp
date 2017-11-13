@@ -4,7 +4,6 @@
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
-#include "ModuleSceneManager.h"
 #include "ModuleCollision.h"
 #include "ModuleTimer.h"
 #include "ComplexTimer.h"
@@ -14,6 +13,9 @@
 #include "ModuleSettings.h"
 #include "ModuleAnimation.h"
 #include "ModuleStats.h"
+#include "ModuleLevelManager.h"
+#include "ModuleMaterialManager.h"
+#include "ModuleMeshManager.h"
 
 using namespace std;
 
@@ -38,8 +40,11 @@ Engine::Engine()
 	modules.push_back(animator = new ModuleAnimation());
 	modules.push_back(stats = new ModuleStats);
 
+	modules.push_back(materialManager = new ModuleMaterialManager);
+	modules.push_back(meshManager = new ModuleMeshManager);
+
 	// Game Modules
-	modules.push_back(scene_manager = new ModuleSceneManager());
+	modules.push_back(level_manager = new ModuleLevelManager);
 
 	// Modules to draw on top of game logic
 	modules.push_back(collision = new ModuleCollision());

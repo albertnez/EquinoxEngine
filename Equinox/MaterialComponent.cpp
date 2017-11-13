@@ -1,5 +1,6 @@
-﻿#include "MaterialComponent.h"
-#include "IMGUI/imgui.h"
+﻿#include "IMGUI/imgui.h"
+
+#include "MaterialComponent.h"
 
 MaterialComponent::MaterialComponent()
 {
@@ -26,7 +27,7 @@ unsigned MaterialComponent::AddMaterial(Material* material)
 
 void MaterialComponent::DrawUI()
 {
-	for (int i = 0; i < Materials.size(); ++i)
+	for (size_t i = 0; i < Materials.size(); ++i)
 	{
 		char name[20];
 		sprintf_s(name, "Material %i", i);

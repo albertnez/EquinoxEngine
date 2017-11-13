@@ -7,6 +7,7 @@
 
 struct Material
 {
+	int id = -1;
 	aiColor4D ambient = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
 	aiColor4D diffuse = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
 	aiColor4D specular = aiColor4D(0.0f, 0.0f, 0.0f, 0.0f);

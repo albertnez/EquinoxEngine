@@ -8,7 +8,8 @@
 
 struct Mesh
 {
-	unsigned material = 0;
+	int id = -1;
+	int material = 0;
 	GLuint vertexID = 0;
 	GLuint normalID = 0;
 	GLuint textureCoordsID = 0;

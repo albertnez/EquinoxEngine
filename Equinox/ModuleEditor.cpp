@@ -1,12 +1,16 @@
-#include "ModuleEditor.h"
 #include "IMGUI/imgui.h"
 #include "IMGUI/imgui_impl_sdl_gl3.h"
-#include "Engine.h"
-#include "ModuleWindow.h"
 #include <GL/glew.h>
 #include <iterator>
+
+#include "ModuleEditor.h"
+#include "Engine.h"
+#include "ModuleWindow.h"
 #include "BaseComponent.h"
 #include "ModuleLighting.h"
+#include "DataImporter.h"
+#include "ModuleLevelManager.h"
+#include "Level.h"
 
 ModuleEditor::ModuleEditor() : Module()
 {
@@ -15,6 +19,13 @@ ModuleEditor::ModuleEditor() : Module()
 
 ModuleEditor::~ModuleEditor()
 {
+}
+
+bool ModuleEditor::Init()
+{
+	_dataImporter = new DataImporter;
+
+	return true;
 }
 
 bool ModuleEditor::Start()
@@ -170,6 +181,8 @@ update_status ModuleEditor::Update(float DeltaTime)
 	}
 	ImGui::End();
 
+	drawLevelHierachy();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -183,7 +196,53 @@ update_status ModuleEditor::PostUpdate(float DeltaTime)
 bool ModuleEditor::CleanUp()
 {
 	ImGui_ImplSdlGL3_Shutdown();
+	RELEASE(_dataImporter);
 	return true;
+}
+
+DataImporter* ModuleEditor::GetDataImporter() const
+{
+	return _dataImporter;
+}
+
+void ModuleEditor::drawLevelHierachy()
+{
+	int w, h;
+	SDL_GetWindowSize(App->window->window, &w, &h);
+
+	ImGui::SetNextWindowSize(ImVec2(300, h), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_Always);
+
+	if (ImGui::Begin("Hierachy", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
+	{
+		for (GameObject* node : App->level_manager->GetCurrentLevel()->GetRootNode()->GetChilds())
+			drawLevelHierachy(node);
+	}
+	ImGui::End();
+}
+
+void ModuleEditor::drawLevelHierachy(GameObject* node)
+{
+	int flags = ImGuiTreeNodeFlags_DefaultOpen;
+	if (node->GetChilds().size() == 0)
+		flags |= ImGuiTreeNodeFlags_Leaf;
+
+	if (SelectedGameObject == node)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	if (ImGui::TreeNodeEx(node->Name.c_str(), flags))
+	{
+		if (ImGui::IsItemClicked(0))
+		{
+			SelectedGameObject = node;
+		}
+
+		for (GameObject* child : node->GetChilds())
+		{
+			drawLevelHierachy(child);
+		}
+		ImGui::TreePop();
+	}
 }
 
 float ModuleEditor::ListGetter(void* data, int id)

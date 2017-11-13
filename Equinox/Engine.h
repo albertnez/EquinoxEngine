@@ -12,6 +12,8 @@
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
 
+class ModuleMaterialManager;
+class ModuleMeshManager;
 class ModuleStats;
 class ModuleRender;
 class ModuleWindow;
@@ -19,7 +21,7 @@ class ModuleTextures;
 class ModuleInput;
 class ModuleAudio;
 class ModuleCollision;
-class ModuleSceneManager;
+class ModuleLevelManager;
 class ModuleTimer;
 class ModuleEditorCamera;
 class ModuleEditor;
@@ -52,6 +54,8 @@ public:
 	bool CleanUp();
 
 public:
+	ModuleMeshManager* meshManager;
+	ModuleMaterialManager* materialManager;
 	ModuleRender* renderer;
 	ModuleWindow* window;
 	ModuleTextures* textures;
@@ -67,7 +71,7 @@ public:
 	ModuleStats* stats;
 
 	// Game modules ---
-	ModuleSceneManager* scene_manager;
+	ModuleLevelManager* level_manager;
 
 	float DeltaTime;
 

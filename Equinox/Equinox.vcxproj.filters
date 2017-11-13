@@ -26,6 +26,9 @@
     <Filter Include="GameObject\Components">
       <UniqueIdentifier>{68192a36-02bc-4de9-9e93-6dc57eeecade}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor Modules">
+      <UniqueIdentifier>{5e0c401c-c562-4ace-886c-a6d97130c061}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleRender.h">
@@ -63,9 +66,6 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleSceneManager.h">
-      <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Game Modules</Filter>
@@ -139,9 +139,6 @@
     <ClInclude Include="IMGUI\imgui.h">
       <Filter>Utils\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleEditor.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="IMGUI\imgui_impl_sdl_gl3.h">
       <Filter>Utils\IMGUI</Filter>
     </ClInclude>
@@ -187,6 +184,21 @@
     <ClInclude Include="ParticleEmitter.h">
       <Filter>GameObject\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleLevelManager.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleEditor.h">
+      <Filter>Editor Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="DataImporter.h">
+      <Filter>Editor Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleMaterialManager.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleMeshManager.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleRender.cpp">
@@ -212,9 +224,6 @@
     </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleSceneManager.cpp">
-      <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleTimer.cpp">
       <Filter>Core Modules</Filter>
@@ -245,9 +254,6 @@
     </ClCompile>
     <ClCompile Include="IMGUI\imgui.cpp">
       <Filter>Utils\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleEditor.cpp">
-      <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="IMGUI\imgui_impl_sdl_gl3.cpp">
       <Filter>Utils\IMGUI</Filter>
@@ -284,6 +290,21 @@
     </ClCompile>
     <ClCompile Include="ParticleEmitter.cpp">
       <Filter>GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleLevelManager.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleEditor.cpp">
+      <Filter>Editor Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="DataImporter.cpp">
+      <Filter>Editor Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleMeshManager.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleMaterialManager.cpp">
+      <Filter>Core Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
