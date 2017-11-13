@@ -1,7 +1,8 @@
 #pragma once
 #include "Module.h"
-#include <list>
 #include "GameObject.h"
+
+#include <list>
 
 class DataImporter;
 class ModuleEditor :
@@ -29,12 +30,15 @@ public:
 	bool DrawQuadtree = false;
 
 private:
+	void drawLevelHierachy();
+	void drawLevelHierachy(GameObject* node);
+
+	static float ListGetter(void* data, int id);
+
 	bool _wireframe = false;
 	bool _isPlaying = false;
 	bool _isPaused = false;
 	std::list<float> _fpsValues;
 	DataImporter* _dataImporter = nullptr;
-
-	static float ListGetter(void* data, int id);
 };
 

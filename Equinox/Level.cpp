@@ -2,7 +2,6 @@
 #include "ModuleTextures.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
-#include "ModuleWindow.h"
 #include "ModuleEditor.h"
 #include "Quadtree.h"
 #include "ModuleEditorCamera.h"
@@ -60,22 +59,6 @@ void Level::Update(float dt)
 		quadtree->DrawQuadtree();
 }
 
-void Level::DrawUI()
-{
-	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
-
-	ImGui::SetNextWindowSize(ImVec2(300, h), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_Always);
-
-	if (ImGui::Begin("Hierachy", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
-	{
-		for (GameObject* node : root->GetChilds())
-			drawHierachy(node);
-	}
-	ImGui::End();
-}
-
 void Level::RegenerateQuadtree() const
 {
 	std::stack<GameObject*> gameObjects;
@@ -109,30 +92,6 @@ void Level::AddToScene(GameObject* go)
 	if (go != nullptr)
 	{
 		LinkGameObject(go, root);
-	}
-}
-
-void Level::drawHierachy(GameObject* node)
-{
-	int flags = ImGuiTreeNodeFlags_DefaultOpen;
-	if (node->GetChilds().size() == 0)
-		flags |= ImGuiTreeNodeFlags_Leaf;
-
-	if (App->editor->SelectedGameObject == node)
-		flags |= ImGuiTreeNodeFlags_Selected;
-
-	if (ImGui::TreeNodeEx(node->Name.c_str(), flags))
-	{
-		if (ImGui::IsItemClicked(0))
-		{
-			App->editor->SelectedGameObject = node;
-		}
-
-		for (GameObject* child : node->GetChilds())
-		{
-			drawHierachy(child);
-		}
-		ImGui::TreePop();
 	}
 }
 

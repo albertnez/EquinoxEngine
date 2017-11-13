@@ -17,8 +17,6 @@ public:
 	bool CleanUp();
 	void Update(float dt);
 
-	void DrawUI();
-
 	void RegenerateQuadtree() const;
 
 	GameObject* GetRootNode() { return root; }
@@ -30,9 +28,6 @@ public:
 	void AddToScene(GameObject* go);
 
 private:
-
-	void drawHierachy(GameObject* node);
-
 	void cleanUpNodes(GameObject* node);
 };
 

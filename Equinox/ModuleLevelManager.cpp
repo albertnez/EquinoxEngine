@@ -53,7 +53,6 @@ update_status ModuleLevelManager::PreUpdate(float DeltaTime)
 update_status ModuleLevelManager::Update(float DeltaTime)
 {
 	_currentLevel->Update(DeltaTime);
-	_currentLevel->DrawUI();
 	return UPDATE_CONTINUE;
 }
 

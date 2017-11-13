@@ -178,7 +178,7 @@ Level* DataImporter::ImportLevel(const char* path, const char* file)
 	Level* level = new Level;
 
 	LoadNodes(node, level->GetRootNode(), meshes);
-	level->RegenerateQuadtree();
+	level->RegenerateQuadtree(); // TODO: Improve quadtree generation
 
 	aiReleaseImport(scene);
 
