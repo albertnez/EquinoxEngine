@@ -25,6 +25,7 @@ void LightingEditor::Update()
 	{
 		ModuleLighting* lighting = App->lighting;
 
+		ImGui::PushID("Global Ambient Light");
 		if (ImGui::CollapsingHeader("Global Ambient Light", ImGuiTreeNodeFlags_AllowOverlapMode))
 		{
 			ImGui::Checkbox("Enabled", &lighting->EnableAmbientLight);
@@ -34,11 +35,13 @@ void LightingEditor::Update()
 				ImGui::InputFloat4("Ambient", &lighting->AmbientLight[0], -1, ImGuiInputTextFlags_CharsDecimal);
 			}
 		}
+		ImGui::PopID();
 
 		int i = 0;
 		for (Light* light : lighting->Lights)
 		{
 			std::string name = "Light-" + std::to_string(i);
+			ImGui::PushID(name.c_str());
 			if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowOverlapMode))
 			{
 				ImGui::Checkbox("Enabled", &light->IsEnabled);
@@ -68,6 +71,7 @@ void LightingEditor::Update()
 				}
 			}
 			i++;
+			ImGui::PopID();
 		}
 
 	}
