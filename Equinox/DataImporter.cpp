@@ -161,7 +161,7 @@ namespace
 	}
 }
 
-Level* DataImporter::ImportLevel(const char* path, const char* file)
+Level* DataImporter::ImportLevel(const char* path, const char* file) const
 {
 	LOG("Importing level %s", file);
 	char filePath[256];

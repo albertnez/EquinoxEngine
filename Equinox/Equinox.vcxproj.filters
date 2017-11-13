@@ -199,6 +199,10 @@
     <ClInclude Include="ModuleMeshManager.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="EditorSubmodule.h">
+      <Filter>Editor Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleRender.cpp">
@@ -294,9 +298,6 @@
     <ClCompile Include="ModuleLevelManager.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleEditor.cpp">
-      <Filter>Editor Modules</Filter>
-    </ClCompile>
     <ClCompile Include="DataImporter.cpp">
       <Filter>Editor Modules</Filter>
     </ClCompile>
@@ -305,6 +306,15 @@
     </ClCompile>
     <ClCompile Include="ModuleMaterialManager.cpp">
       <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorSubmodule.cpp">
+      <Filter>Editor Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorUtils.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleEditor.cpp">
+      <Filter>Editor Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

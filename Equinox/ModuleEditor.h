@@ -2,9 +2,12 @@
 #include "Module.h"
 #include "GameObject.h"
 
+class EditorSubmodule;
 #include <list>
 
 class DataImporter;
+class EditorSubmoduleFactoryBase;
+
 class ModuleEditor :
 	public Module
 {
@@ -33,12 +36,11 @@ private:
 	void drawLevelHierachy();
 	void drawLevelHierachy(GameObject* node);
 
-	static float ListGetter(void* data, int id);
-
 	bool _wireframe = false;
 	bool _isPlaying = false;
 	bool _isPaused = false;
 	std::list<float> _fpsValues;
+	std::vector<EditorSubmodule*> _submodules;
 	DataImporter* _dataImporter = nullptr;
 };
 

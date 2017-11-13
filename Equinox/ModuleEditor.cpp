@@ -9,8 +9,11 @@
 #include "BaseComponent.h"
 #include "ModuleLighting.h"
 #include "DataImporter.h"
+#include "EditorSubmodule.h"
+#include "EditorUtils.h"
 #include "ModuleLevelManager.h"
 #include "Level.h"
+
 
 ModuleEditor::ModuleEditor() : Module()
 {
@@ -25,12 +28,27 @@ bool ModuleEditor::Init()
 {
 	_dataImporter = new DataImporter;
 
+	IEditorSubmoduleFactoryDictionary* submoduleFactoryDictionary = GetEditorSubmoduleFactoryDictionary();
+	_submodules.reserve(submoduleFactoryDictionary->Size());
+	for (EditorSubmoduleFactoryBase* submoduleFactory : submoduleFactoryDictionary->GetAllFactories())
+	{
+		EditorSubmodule* submodule = submoduleFactory->Instantiate();
+		submodule->Init();
+		_submodules.push_back(submodule);
+	}
+
 	return true;
 }
 
 bool ModuleEditor::Start()
 {
 	ImGui_ImplSdlGL3_Init(App->window->window);
+
+	for (EditorSubmodule* submodule : _submodules)
+	{
+		submodule->Start();
+	}
+
 	return true;
 }
 
@@ -45,6 +63,11 @@ update_status ModuleEditor::Update(float DeltaTime)
 {
 	int w, h;
 	SDL_GetWindowSize(App->window->window, &w, &h);
+
+	for (EditorSubmodule* submodule : _submodules)
+	{
+		submodule->Update();
+	}
 
 	ImGui::SetNextWindowSize(ImVec2(120, 10), ImGuiSetCond_Always);
 	ImVec2 playPosition(w / 2 - 60, 10);
@@ -66,7 +89,8 @@ update_status ModuleEditor::Update(float DeltaTime)
 	}
 	ImGui::End();
 
-	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_Always);
+	ImVec2 windowPosition(0, h - 100);
+	/*ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_Always);
 	ImVec2 windowPosition(0, h - 100);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
 	if (ImGui::Begin("Engine Stats", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
@@ -85,7 +109,7 @@ update_status ModuleEditor::Update(float DeltaTime)
 
 		ImGui::EndChild();
 	}
-	ImGui::End();
+	ImGui::End();*/
 
 	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_Always);
 	windowPosition.x = 301;
@@ -196,6 +220,16 @@ update_status ModuleEditor::PostUpdate(float DeltaTime)
 bool ModuleEditor::CleanUp()
 {
 	ImGui_ImplSdlGL3_Shutdown();
+
+	for (EditorSubmodule* submodule : _submodules)
+	{
+		submodule->CleanUp();
+
+		RELEASE(submodule);
+	}
+
+	_submodules.clear();
+
 	RELEASE(_dataImporter);
 	return true;
 }
@@ -243,11 +277,4 @@ void ModuleEditor::drawLevelHierachy(GameObject* node)
 		}
 		ImGui::TreePop();
 	}
-}
-
-float ModuleEditor::ListGetter(void* data, int id)
-{
-	auto it = reinterpret_cast<std::list<float>*>(data)->begin();
-	advance(it, id);
-	return *it;
 }

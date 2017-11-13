@@ -14,8 +14,10 @@ public:
 	GameObject* root = nullptr;
 	Quadtree* quadtree = nullptr;
 
-	bool CleanUp();
+	void PreUpdate(float dt);
 	void Update(float dt);
+	void PostUpdate(float dt);
+	bool CleanUp();
 
 	void RegenerateQuadtree() const;
 

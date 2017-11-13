@@ -39,6 +39,11 @@ bool Level::CleanUp()
 	return true;
 }
 
+void Level::PreUpdate(float dt)
+{
+	
+}
+
 void Level::Update(float dt)
 {
 	std::vector<GameObject*> visibleObjects;
@@ -57,6 +62,10 @@ void Level::Update(float dt)
 
 	if(App->editor->DrawQuadtree)
 		quadtree->DrawQuadtree();
+}
+
+void Level::PostUpdate(float dt)
+{
 }
 
 void Level::RegenerateQuadtree() const

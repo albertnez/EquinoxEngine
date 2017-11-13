@@ -7,6 +7,5 @@ public:
 	DataImporter() = default;
 	~DataImporter() = default;
 
-	Level* ImportLevel(const char* path, const char* file);
+	Level* ImportLevel(const char* path, const char* file) const;
 };
-
