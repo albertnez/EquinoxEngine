@@ -89,124 +89,6 @@ update_status ModuleEditor::Update(float DeltaTime)
 	}
 	ImGui::End();
 
-	ImVec2 windowPosition(0, h - 100);
-	/*ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_Always);
-	ImVec2 windowPosition(0, h - 100);
-	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
-	if (ImGui::Begin("Engine Stats", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
-	{
-		float framerate = ImGui::GetIO().Framerate;
-		
-		_fpsValues.push_back(framerate);
-		if (_fpsValues.size() > 30)
-			_fpsValues.pop_front();
-
-		if (ImGui::BeginChild("Histogram", ImVec2(0, 0), true))
-		{
-			ImGui::Text("FPS: %f", framerate);
-			ImGui::PlotHistogram("Framerate", &ModuleEditor::ListGetter, &_fpsValues, _fpsValues.size(), 0, nullptr, 0, 120);
-		}
-
-		ImGui::EndChild();
-	}
-	ImGui::End();*/
-
-	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_Always);
-	windowPosition.x = 301;
-	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
-	if (ImGui::Begin("Engine Debug", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
-	{
-
-		bool wireframe = _wireframe;
-		ImGui::Checkbox("Wireframe mode", &wireframe);
-
-		if (wireframe != _wireframe)
-		{
-			_wireframe = wireframe;
-			wireframe ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-
-		ImGui::Checkbox("Draw hierachy", &DrawHierachy);
-		ImGui::Checkbox("Draw quadtree", &DrawQuadtree);
-	}
-	ImGui::End();
-
-	ImGui::SetNextWindowSize(ImVec2(400, h-400), ImGuiSetCond_Always);
-	windowPosition.y = 0;
-	windowPosition.x = w - 400;
-	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
-	if (ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
-	{
-		if (SelectedGameObject)
-		{
-			for (BaseComponent* component : SelectedGameObject->GetComponents())
-			{
-				if (ImGui::CollapsingHeader(component->Name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
-					component->DrawUI();
-			}
-		}
-	}
-	ImGui::End();
-
-	ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiSetCond_Always);
-	windowPosition.y = h - 400;
-	windowPosition.x = w - 400;
-	
-	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
-	if (ImGui::Begin("Lighting", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
-	{
-		ModuleLighting* lighting = App->lighting;
-
-		if (ImGui::CollapsingHeader("Global Ambient Light", ImGuiTreeNodeFlags_AllowOverlapMode))
-		{
-			ImGui::Checkbox("Enabled", &lighting->EnableAmbientLight);
-
-			if (lighting->EnableAmbientLight)
-			{
-				ImGui::InputFloat4("Ambient", &lighting->AmbientLight[0], -1, ImGuiInputTextFlags_CharsDecimal);
-			}
-		}
-
-		int i = 0;
-		for (Light* light : lighting->Lights)
-		{
-			std::string name = "Light-" + std::to_string(i);
-			if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_AllowOverlapMode))
-			{
-				ImGui::Checkbox("Enabled", &light->IsEnabled);
-
-				if(light->IsEnabled)
-				{
-					ImGui::InputFloat4("Ambient", &light->Ambient[0], -1, ImGuiInputTextFlags_CharsDecimal);
-					ImGui::InputFloat4("Diffuse", &light->Diffuse[0], -1, ImGuiInputTextFlags_CharsDecimal);
-					ImGui::InputFloat4("Specular", &light->Specular[0], -1, ImGuiInputTextFlags_CharsDecimal);
-
-					ImGui::NewLine();
-					
-					if (light->Type == L_POINT || light->Type == L_DIRECTIONAL || light->Type == L_SPOTLIGHT)
-					{
-						ImGui::InputFloat3("Position", &light->Position[0], -1, ImGuiInputTextFlags_CharsDecimal);
-					}
-					if (light->Type == L_SPOTLIGHT)
-					{
-						ImGui::InputFloat("CutOff", &light->CutOff, -1, ImGuiInputTextFlags_CharsDecimal);
-						ImGui::InputFloat3("Direction", &light->Direction[0], -1, ImGuiInputTextFlags_CharsDecimal);
-					}
-
-					int current_type = lighting->GetLabelByType(light->Type);
-					ImGui::Combo("Type", &current_type, "Point\0Directional\0Spotlight\0Default\0");
-					if (lighting->GetTypeByLabel(current_type) != light->Type)
-						lighting->SetLightType(light, lighting->GetTypeByLabel(current_type));
-				}
-			}
-			i++;
-		}
-		
-	}
-	ImGui::End();
-
-	drawLevelHierachy();
-
 	return UPDATE_CONTINUE;
 }
 
@@ -234,47 +116,27 @@ bool ModuleEditor::CleanUp()
 	return true;
 }
 
+bool ModuleEditor::GetDrawHierachy() const
+{
+	return _drawHierachy;
+}
+
+void ModuleEditor::SetDrawHierachy(bool drawHierachy)
+{
+	_drawHierachy = drawHierachy;
+}
+
+bool ModuleEditor::GetDrawQuadtree() const
+{
+	return _drawQuadtree;
+}
+
+void ModuleEditor::SetDrawQuadtree(bool drawQuadtree)
+{
+	_drawQuadtree = drawQuadtree;
+}
+
 DataImporter* ModuleEditor::GetDataImporter() const
 {
 	return _dataImporter;
-}
-
-void ModuleEditor::drawLevelHierachy()
-{
-	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
-
-	ImGui::SetNextWindowSize(ImVec2(300, h), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_Always);
-
-	if (ImGui::Begin("Hierachy", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
-	{
-		for (GameObject* node : App->level_manager->GetCurrentLevel()->GetRootNode()->GetChilds())
-			drawLevelHierachy(node);
-	}
-	ImGui::End();
-}
-
-void ModuleEditor::drawLevelHierachy(GameObject* node)
-{
-	int flags = ImGuiTreeNodeFlags_DefaultOpen;
-	if (node->GetChilds().size() == 0)
-		flags |= ImGuiTreeNodeFlags_Leaf;
-
-	if (SelectedGameObject == node)
-		flags |= ImGuiTreeNodeFlags_Selected;
-
-	if (ImGui::TreeNodeEx(node->Name.c_str(), flags))
-	{
-		if (ImGui::IsItemClicked(0))
-		{
-			SelectedGameObject = node;
-		}
-
-		for (GameObject* child : node->GetChilds())
-		{
-			drawLevelHierachy(child);
-		}
-		ImGui::TreePop();
-	}
 }

@@ -149,7 +149,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EngineDebugEditor.cpp" />
     <ClCompile Include="EngineStatsEditor.cpp" />
+    <ClCompile Include="LevelEditor.cpp" />
+    <ClCompile Include="LightingEditor.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

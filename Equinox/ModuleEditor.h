@@ -25,20 +25,24 @@ public:
 	bool IsPlaying() const { return _isPlaying; }
 	bool IsPaused() const { return _isPaused; }
 
+	bool GetDrawHierachy() const;
+	void SetDrawHierachy(bool drawHierachy);
+
+	bool GetDrawQuadtree() const;
+	void SetDrawQuadtree(bool drawQuadtree);
+
 	DataImporter* GetDataImporter() const;
 
 	GameObject* SelectedGameObject = nullptr;
-
-	bool DrawHierachy = false;
-	bool DrawQuadtree = false;
 
 private:
 	void drawLevelHierachy();
 	void drawLevelHierachy(GameObject* node);
 
-	bool _wireframe = false;
 	bool _isPlaying = false;
 	bool _isPaused = false;
+	bool _drawHierachy = false;
+	bool _drawQuadtree = false;
 	std::list<float> _fpsValues;
 	std::vector<EditorSubmodule*> _submodules;
 	DataImporter* _dataImporter = nullptr;

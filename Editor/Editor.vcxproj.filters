@@ -13,13 +13,25 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\EditorSubmodules">
+      <UniqueIdentifier>{ef5d7bb1-9e56-4751-89ca-956b123ac24c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EngineStatsEditor.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\EditorSubmodules</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor.cpp">
+      <Filter>Source Files\EditorSubmodules</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineDebugEditor.cpp">
+      <Filter>Source Files\EditorSubmodules</Filter>
+    </ClCompile>
+    <ClCompile Include="LightingEditor.cpp">
+      <Filter>Source Files\EditorSubmodules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -18,7 +18,7 @@ namespace
 class EngineStatsEditor : public EditorSubmodule
 {
 public:
-	void Update();
+	void Update() override;
 
 private:
 	std::list<float> _fpsValues;
@@ -29,10 +29,10 @@ REGISTER_EDITOR_SUBMODULE(EngineStatsEditor)
 void EngineStatsEditor::Update()
 {
 	int w, h;
-	App->window->GetWndowSize(w, h);
+	App->window->GetWindowSize(w, h);
 
-	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_Always);
 	ImVec2 windowPosition(0, h - 100);
+	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_Always);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
 	if (ImGui::Begin("Engine Stats", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
 	{

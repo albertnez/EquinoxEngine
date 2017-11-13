@@ -54,13 +54,13 @@ void Level::Update(float dt)
 
 	root->Update(dt);
 
-	if (App->editor->DrawHierachy)
+	if (App->editor->GetDrawHierachy())
 		root->DrawHierachy();
 
 	for (GameObject* go : visibleObjects)
 		go->VisibleOnCamera = false;
 
-	if(App->editor->DrawQuadtree)
+	if(App->editor->GetDrawQuadtree())
 		quadtree->DrawQuadtree();
 }
 

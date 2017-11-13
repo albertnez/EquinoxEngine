@@ -21,7 +21,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	void GetWndowSize(int& w, int& h) const;
+	void GetWindowSize(int& w, int& h) const;
 
 public:
 	//The window we'll be rendering to
