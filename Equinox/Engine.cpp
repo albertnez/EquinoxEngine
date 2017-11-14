@@ -59,6 +59,26 @@ Engine::~Engine()
 		RELEASE(*it);
 }
 
+Engine::UpdateState Engine::GetUpdateState() const
+{
+	return _updateState;
+}
+
+void Engine::SetUpdateState(const UpdateState state)
+{
+	_updateState = state;
+}
+
+bool Engine::IsPaused() const
+{
+	return _isPaused;
+}
+
+void Engine::SetPaused(bool paused)
+{
+	_isPaused = paused;
+}
+
 int Engine::Loop()
 {
 	int ret = EXIT_FAILURE;
@@ -66,53 +86,62 @@ int Engine::Loop()
 	{
 		switch (state)
 		{
-		case CREATION:
-			state = START;
-			break;
-		case START:
-
-			LOG("Engine Init --------------");
-			if (App->Init() == false)
+			case CREATION:
 			{
-				LOG("Engine Init exits with error -----");
+				state = START;
+				break;
+			}
+			case START:
+			{
+				LOG("Engine Init --------------");
+				if (App->Init() == false)
+				{
+					LOG("Engine Init exits with error -----");
+					state = EXIT;
+				}
+				else
+				{
+					state = UPDATE;
+					LOG("Engine Update --------------");
+				}
+
+				break;
+			}
+
+			case UPDATE:
+			{
+				int update_return = App->Update();
+
+				if (update_return == UPDATE_ERROR)
+				{
+					LOG("Engine Update exits with error -----");
+					state = EXIT;
+				}
+
+				if (update_return == UPDATE_STOP)
+					state = FINISH;
+
+				break;
+			}
+
+			case FINISH:
+			{
+				LOG("Engine CleanUp --------------");
+
+				_updateState = UpdateState::Stopped;
+				App->Update(); // Run a last update cycle before shutting down
+
+				if (App->CleanUp() == false)
+				{
+					LOG("Engine CleanUp exits with error -----");
+				}
+				else
+					ret = EXIT_SUCCESS;
+
 				state = EXIT;
+
+				break;
 			}
-			else
-			{
-				state = UPDATE;
-				LOG("Engine Update --------------");
-			}
-
-			break;
-
-		case UPDATE:
-		{
-			int update_return = App->Update();
-
-			if (update_return == UPDATE_ERROR)
-			{
-				LOG("Engine Update exits with error -----");
-				state = EXIT;
-			}
-
-			if (update_return == UPDATE_STOP)
-				state = FINISH;
-		}
-			break;
-
-		case FINISH:
-
-			LOG("Engine CleanUp --------------");
-			if (App->CleanUp() == false)
-			{
-				LOG("Engine CleanUp exits with error -----");
-			}
-			else
-				ret = EXIT_SUCCESS;
-
-			state = EXIT;
-
-			break;
 		}
 	}
 
@@ -143,17 +172,19 @@ update_status Engine::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		if((*it)->IsEnabled() == true) 
-			ret = (*it)->PreUpdate(DeltaTime);
+	float dt = _isPaused ? 0 : DeltaTime;
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if((*it)->IsEnabled() == true) 
-			ret = (*it)->Update(DeltaTime);
+			ret = (*it)->PreUpdate(dt);
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if((*it)->IsEnabled() == true) 
-			ret = (*it)->PostUpdate(DeltaTime);
+			ret = (*it)->Update(dt);
+
+	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+		if((*it)->IsEnabled() == true) 
+			ret = (*it)->PostUpdate(dt);
 
 	++stats->_total_frames;
 

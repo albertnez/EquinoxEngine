@@ -44,8 +44,19 @@ public:
 		EXIT
 	};
 
+	enum class UpdateState
+	{
+		Playing,
+		Stopped
+	};
+
 	Engine();
 	~Engine();
+
+	UpdateState GetUpdateState() const;
+	void SetUpdateState(const UpdateState state);
+	bool IsPaused() const;
+	void SetPaused(bool paused);
 
 	int Loop();
 
@@ -77,6 +88,8 @@ public:
 
 private:
 	State state;
+	UpdateState _updateState = UpdateState::Playing;
+	bool _isPaused = false;
 
 	std::list<Module*> modules;
 

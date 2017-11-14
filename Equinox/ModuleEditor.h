@@ -22,9 +22,6 @@ public:
 	update_status PostUpdate(float DeltaTime) override;
 	bool CleanUp() override;
 
-	bool IsPlaying() const { return _isPlaying; }
-	bool IsPaused() const { return _isPaused; }
-
 	bool GetDrawHierachy() const;
 	void SetDrawHierachy(bool drawHierachy);
 
@@ -39,8 +36,6 @@ private:
 	void drawLevelHierachy();
 	void drawLevelHierachy(GameObject* node);
 
-	bool _isPlaying = false;
-	bool _isPaused = false;
 	bool _drawHierachy = false;
 	bool _drawQuadtree = false;
 	std::list<float> _fpsValues;

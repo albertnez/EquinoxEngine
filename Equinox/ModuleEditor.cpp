@@ -26,6 +26,7 @@ ModuleEditor::~ModuleEditor()
 
 bool ModuleEditor::Init()
 {
+	LOG("Initializing Editor module");
 	_dataImporter = new DataImporter;
 
 	IEditorSubmoduleFactoryDictionary* submoduleFactoryDictionary = GetEditorSubmoduleFactoryDictionary();
@@ -36,6 +37,8 @@ bool ModuleEditor::Init()
 		submodule->Init();
 		_submodules.push_back(submodule);
 	}
+
+	LOG("Registered %d editor submodules", _submodules.size());
 
 	return true;
 }
@@ -48,6 +51,8 @@ bool ModuleEditor::Start()
 	{
 		submodule->Start();
 	}
+
+	App->SetUpdateState(Engine::UpdateState::Stopped);
 
 	return true;
 }
@@ -74,17 +79,30 @@ update_status ModuleEditor::Update(float DeltaTime)
 	ImGui::SetNextWindowPos(playPosition, ImGuiSetCond_Always);
 	if (ImGui::Begin("Editor Status", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoResize | ImGuiAlign_Center))
 	{
-		
-		if (ImGui::Button(_isPlaying ? "Stop" : "Play"))
+		std::string playStop = App->GetUpdateState() == Engine::UpdateState::Playing ? "Stop" : "Play";
+		if (ImGui::Button(playStop.c_str()))
 		{
-			_isPlaying = !_isPlaying; // TODO: Convert this to a state machine
+			switch (App->GetUpdateState()) 
+			{ 
+				case Engine::UpdateState::Playing:
+					App->SetUpdateState(Engine::UpdateState::Stopped);
+					break;
+				case Engine::UpdateState::Stopped: 
+					App->SetUpdateState(Engine::UpdateState::Playing);
+					break;
+			}
+
+			LOG("Engine state changed to %s", playStop.c_str());
 		}
 
 		ImGui::SameLine();
 
-		if (ImGui::Button(_isPaused ? "Unpause" : "Pause"))
+		bool isPaused = App->IsPaused();
+		if (ImGui::Button(isPaused ? "Unpause" : "Pause"))
 		{
-			_isPaused = !_isPaused;
+			App->SetPaused(!isPaused);
+
+			LOG("Engine play state changed to %s", isPaused ? "Playing" : "Paused");
 		}
 	}
 	ImGui::End();
@@ -101,6 +119,8 @@ update_status ModuleEditor::PostUpdate(float DeltaTime)
 
 bool ModuleEditor::CleanUp()
 {
+	LOG("Shutting down Engine module");
+
 	ImGui_ImplSdlGL3_Shutdown();
 
 	for (EditorSubmodule* submodule : _submodules)

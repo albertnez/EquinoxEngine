@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <MathGeoLib/include/Geometry/AABB.h>
+#include "Engine.h"
 
 class BaseComponent;
 class TransformComponent;
@@ -22,7 +23,7 @@ private:
 	TransformComponent* _transform = nullptr;
 	std::vector<GameObject*> _childs;
 	std::list<BaseComponent*> _components;
-	bool _isPlaying = false;
+	Engine::UpdateState _playState = Engine::UpdateState::Stopped;
 
 public:
 	GameObject();
