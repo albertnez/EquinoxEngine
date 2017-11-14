@@ -195,12 +195,6 @@ update_status Engine::Update()
 
 	stats->_current_avg = stats->_current_avg ? (stats->_current_avg + stats->_current_fps) / 2 : stats->_current_fps;
 
-	if (stats->_current_fps >= settings->MaxFps) {
-		double aSecond = 1E3;
-		Uint32 timeToDelay = (aSecond / settings->MaxFps) - DeltaTime;
-		SDL_Delay(timeToDelay);
-	}
-
 	_timeFromLastFrame = currentFrameTime;
 
 	return ret;

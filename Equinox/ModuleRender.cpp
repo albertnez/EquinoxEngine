@@ -89,6 +89,8 @@ bool ModuleRender::Start()
 		objects.push_back(new ::Plane(float3(0, 0.f, -5.f), rotation_plane, 60));
 
 		objects.push_back(new CoordinateArrows());
+
+		SetVSync(-1);
 	}
 	return ret;
 }
@@ -155,5 +157,27 @@ bool ModuleRender::CleanUp()
 	}
 
 	return true;
+}
+
+using PFNWGLSWAPINTERVALFARPROC = BOOL(APIENTRY *)(int);
+void ModuleRender::SetVSync(int interval) const
+{
+	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = reinterpret_cast<PFNWGLSWAPINTERVALFARPROC>(wglGetProcAddress("wglSwapIntervalEXT"));
+
+	if (wglSwapIntervalEXT)
+	{
+		if (wglSwapIntervalEXT(interval))
+		{
+			LOG("VSync changed");
+		}
+		else
+		{
+			LOG("VSync change failed");
+		}
+	}
+	else
+	{
+		LOG("VSync change unsupported");
+	}
 }
 

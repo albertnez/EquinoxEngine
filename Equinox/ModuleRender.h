@@ -24,6 +24,7 @@ public:
 	update_status Update(float DeltaTime);
 	update_status PostUpdate(float DeltaTime);
 	bool CleanUp();
+	void SetVSync(int interval) const;
 
 public:
 	SDL_GLContext context = nullptr;
