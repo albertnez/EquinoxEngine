@@ -1,11 +1,31 @@
 #include "EditorSubmodule.h"
 #include "EditorUtils.h"
-#include "IMGUI/imgui.h"
 #include "Engine.h"
 #include "ModuleWindow.h"
 #include "BaseComponent.h"
 #include "ModuleLevelManager.h"
 #include "Level.h"
+
+#include <cctype>
+#include "IMGUI/imgui.h"
+
+namespace
+{
+	std::string GenerateNiceNameForComponent(const std::string& componentName)
+	{
+		std::string ret = componentName;
+		
+		for (size_t i = 1; i < ret.length(); ++i)
+		{
+			if (islower(ret[i - 1]) && isupper(ret[i]))
+			{
+				ret.insert(i, 1, ' ');  
+			}
+		}
+
+		return ret;
+	}
+}
 
 class LevelEditor : public EditorSubmodule
 {
@@ -39,7 +59,8 @@ void LevelEditor::drawProperties()
 		{
 			for (BaseComponent* component : App->editor->SelectedGameObject->GetComponents())
 			{
-				if (ImGui::CollapsingHeader(component->GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
+				std::string componentName = GenerateNiceNameForComponent(component->GetName());
+				if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
 					component->DrawUI();
 			}
 		}
