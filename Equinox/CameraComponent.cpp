@@ -2,8 +2,6 @@
 
 CameraComponent::CameraComponent()
 {
-	Name = "Camera";
-
 	_frustum.SetPos(float3::zero);
 	_frustum.SetFront(float3::unitZ);
 	_frustum.SetUp(float3::unitY);

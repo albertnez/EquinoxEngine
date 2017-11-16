@@ -9,8 +9,6 @@
 
 ParticleEmitter::ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHeight, float FallSpeed, float LifeTime)
 {
-	Name = "Particle System";
-
 	this->MaxParticles = MaxParticles;
 	this->EmitArea = EmitArea;
 	this->FallHeight = FallHeight;

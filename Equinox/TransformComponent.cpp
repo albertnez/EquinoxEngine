@@ -5,7 +5,6 @@
 
 TransformComponent::TransformComponent()
 {
-	Name = "Transform";
 }
 
 TransformComponent::~TransformComponent()

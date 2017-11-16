@@ -7,12 +7,7 @@
 class TransformComponent :
 	public BaseComponent
 {
-	DEFAULT_COMPONENT_IMPLEMENTATION;
-
-public:
-	float3 Position = float3(0, 0, 0);
-	Quat Rotation = Quat(0, 0, 0, 1);
-	float3 Scale = float3(1.f, 1.f, 1.f);
+	DEFINE_COMPONENT(TransformComponent);
 
 public:
 	TransformComponent();
@@ -23,6 +18,10 @@ public:
 	void Update(float dt) override;
 	void EditorUpdate(float dt) override;
 	void DrawUI() override;
+
+	float3 Position = float3(0, 0, 0);
+	Quat Rotation = Quat(0, 0, 0, 1);
+	float3 Scale = float3(1.f, 1.f, 1.f);
 };
 
 #endif

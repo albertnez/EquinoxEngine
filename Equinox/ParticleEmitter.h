@@ -16,7 +16,7 @@ struct Particle
 
 class ParticleEmitter : public BaseComponent
 {
-	DEFAULT_COMPONENT_IMPLEMENTATION;
+	DEFINE_COMPONENT(ParticleEmitter);
 public:
 	ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHeight, float FallSpeed, float LifeTime);
 	~ParticleEmitter();

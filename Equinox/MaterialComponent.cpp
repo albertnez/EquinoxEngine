@@ -4,7 +4,6 @@
 
 MaterialComponent::MaterialComponent()
 {
-	Name = "Material";
 }
 
 MaterialComponent::~MaterialComponent()

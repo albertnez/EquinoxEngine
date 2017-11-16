@@ -14,12 +14,6 @@
 #include "ModuleLevelManager.h"
 #include "Level.h"
 
-
-ModuleEditor::ModuleEditor() : Module()
-{
-}
-
-
 ModuleEditor::~ModuleEditor()
 {
 }
@@ -67,7 +61,7 @@ update_status ModuleEditor::PreUpdate(float DeltaTime)
 update_status ModuleEditor::Update(float DeltaTime)
 {
 	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
+	App->window->GetWindowSize(w, h);
 
 	for (EditorSubmodule* submodule : _submodules)
 	{

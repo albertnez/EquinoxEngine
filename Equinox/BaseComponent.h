@@ -2,8 +2,9 @@
 #define __BASECOMPONENT_H__
 #include "Globals.h"
 
-#define DEFAULT_COMPONENT_IMPLEMENTATION \
+#define DEFINE_COMPONENT(ClassName) \
 	public: \
+		virtual std::string GetName() const override { return #ClassName; } \
 		inline size_t Size() const override { return sizeof(*this); } \
 	private: \
 
@@ -38,6 +39,7 @@ public:
 			RELEASE(backup);
 	};
 
+	virtual std::string GetName() const = 0;
 	virtual inline size_t Size() const = 0;
 
 private:

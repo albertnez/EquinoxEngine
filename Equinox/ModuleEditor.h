@@ -12,7 +12,7 @@ class ModuleEditor :
 	public Module
 {
 public:
-	ModuleEditor();
+	ModuleEditor() = default;
 	~ModuleEditor();
 
 	bool Init() override;

@@ -18,7 +18,7 @@ struct Material
 class MaterialComponent :
 	public BaseComponent
 {
-	DEFAULT_COMPONENT_IMPLEMENTATION;
+	DEFINE_COMPONENT(MaterialComponent);
 public:
 	std::vector<Material*> Materials;
 	

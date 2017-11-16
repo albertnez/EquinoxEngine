@@ -7,7 +7,6 @@
 
 MeshComponent::MeshComponent()
 {
-	Name = "Mesh";
 }
 
 MeshComponent::~MeshComponent()
