@@ -25,11 +25,11 @@ namespace
 			float shininess;
 
 			if (aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ai_property) == AI_SUCCESS)
-				material->ambient = ai_property;
+				material->ambient = float4(&ai_property[0]);
 			if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, ai_property) == AI_SUCCESS)
-				material->diffuse = ai_property;
+				material->diffuse = float4(&ai_property[0]);
 			if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, ai_property) == AI_SUCCESS)
-				material->specular = ai_property;
+				material->specular = float4(&ai_property[0]);
 			if (aiMat->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
 				material->shininess = shininess;
 
@@ -58,7 +58,7 @@ namespace
 
 			mesh->material = materials[aMesh->mMaterialIndex]->id;
 
-			GLuint* indexes = new Uint32[aMesh->mNumFaces * 3];
+			GLuint* indexes = new uint32_t[aMesh->mNumFaces * 3];
 
 			for (unsigned iFace = 0; iFace < aMesh->mNumFaces; ++iFace)
 			{

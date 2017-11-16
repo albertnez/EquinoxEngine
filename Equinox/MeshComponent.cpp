@@ -29,7 +29,7 @@ void MeshComponent::Update(float dt)
 			glColor3f(1.f, 1.f, 1.f);
 			Material* mat = MaterialComponent->Materials[mesh->materialInComponent];
 
-			glMaterialfv(GL_FRONT, GL_AMBIENT, reinterpret_cast<GLfloat*>(&mat->ambient));
+			glMaterialfv(GL_FRONT, GL_AMBIENT, &mat->ambient.x);
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, reinterpret_cast<GLfloat*>(&mat->diffuse));
 			glMaterialfv(GL_FRONT, GL_SPECULAR, reinterpret_cast<GLfloat*>(&mat->specular));
 			glMaterialf(GL_FRONT, GL_SHININESS, mat->shininess);

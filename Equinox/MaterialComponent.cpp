@@ -45,9 +45,9 @@ void MaterialComponent::DrawUI()
 			ImGui::LabelText("", "Texture: %s", path);
 			ImGui::PopStyleColor();
 
-			ImGui::SliderFloat4("Ambient", &mat->ambient.r, 0.f, 1.f);
-			ImGui::SliderFloat4("Diffuse", &mat->diffuse.r, 0.f, 1.f);
-			ImGui::SliderFloat4("Specular", &mat->specular.r, 0.f, 1.f);
+			ImGui::SliderFloat4("Ambient", &mat->ambient.x, 0.f, 1.f);
+			ImGui::SliderFloat4("Diffuse", &mat->diffuse.x, 0.f, 1.f);
+			ImGui::SliderFloat4("Specular", &mat->specular.x, 0.f, 1.f);
 			ImGui::SliderFloat("Shininess", &mat->shininess, 0.f, 128.f);
 
 			ImGui::TreePop();

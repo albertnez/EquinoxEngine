@@ -38,7 +38,7 @@ void Model::Load(const char* path, const char* file)
 	{
 		aiMesh* mesh = scene->mMeshes[i];
 
-		GLuint* indexes = new Uint32[mesh->mNumFaces * 3];
+		GLuint* indexes = new uint32_t[mesh->mNumFaces * 3];
 
 		for (unsigned iFace = 0; iFace < mesh->mNumFaces; ++iFace)
 		{
