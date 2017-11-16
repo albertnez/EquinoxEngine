@@ -7,7 +7,6 @@
 #include "SDL_image/include/SDL_image.h"
 #include <IL/ilut.h>
 #include <cassert>
-#pragma comment( lib, "SDL_image/libx86/SDL2_image.lib" )
 
 using namespace std;
 

@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(OutDir)Equinox.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)Equinox.lib;$(SolutionDir)External\MathGeoLib\$(PlatformTarget)\$(ConfigurationName)\MathGeoLib.lib;opengl32.lib;$(SolutionDir)External\glew-2.0.0\$(PlatformTarget)\glew32.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\DevIL.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILU.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILUT.lib;$(SolutionDir)External\Assimp\$(PlatformTarget)\assimp-vc140-mt.lib;$(SolutionDir)External\SDL\libx86\SDL2.lib;$(SolutionDir)External\SDL\libx86\SDL2main.lib;$(SolutionDir)External\SDL_image\libx86\SDL2_image.lib;$(SolutionDir)External\SDL_mixer\libx86\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <ForceSymbolReferences>
@@ -129,6 +129,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(OutDir)Equinox.lib;$(SolutionDir)External\MathGeoLib\$(PlatformTarget)\$(ConfigurationName)\MathGeoLib.lib;opengl32.lib;$(SolutionDir)External\glew-2.0.0\$(PlatformTarget)\glew32.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\DevIL.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILU.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILUT.lib;$(SolutionDir)External\Assimp\$(PlatformTarget)\assimp-vc140-mt.lib;$(SolutionDir)External\SDL\libx86\SDL2.lib;$(SolutionDir)External\SDL\libx86\SDL2main.lib;$(SolutionDir)External\SDL_image\libx86\SDL2_image.lib;$(SolutionDir)External\SDL_mixer\libx86\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

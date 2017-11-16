@@ -3,7 +3,6 @@
 
 #include "Module.h"
 #include "Rectangle3.h"
-#include <GL/glew.h>
 
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
@@ -27,7 +26,7 @@ public:
 	void SetVSync(int interval) const;
 
 public:
-	SDL_GLContext context = nullptr;
+	void* context = nullptr;
 		
 private:
 	std::list<Primitive*> objects;

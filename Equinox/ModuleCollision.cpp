@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 #include "Entity.h"
+#include <SDL.h>
 
 using namespace std;
 

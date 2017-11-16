@@ -39,7 +39,7 @@ void LevelEditor::drawProperties()
 		{
 			for (BaseComponent* component : App->editor->SelectedGameObject->GetComponents())
 			{
-				if (ImGui::CollapsingHeader(component->Name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
+				if (ImGui::CollapsingHeader(component->GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
 					component->DrawUI();
 			}
 		}
@@ -50,7 +50,7 @@ void LevelEditor::drawProperties()
 void LevelEditor::drawLevelHierachy()
 {
 	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
+	App->window->GetWindowSize(w, h);
 
 	ImGui::SetNextWindowSize(ImVec2(300, h), ImGuiSetCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_Always);

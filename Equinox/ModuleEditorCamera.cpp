@@ -1,7 +1,9 @@
 #include "ModuleEditorCamera.h"
 #include "Engine.h"
 #include "ModuleInput.h"
+
 #include <MathGeoLib/include/Math/Quat.h>
+#include <SDL.h>
 
 using namespace math;
 

@@ -1,6 +1,10 @@
 #include "Engine.h"
+#include <Windows.h>
 
-int main(int argc, char** argv)
+int CALLBACK WinMain(HINSTANCE hInstance,
+	_In_ HINSTANCE hPrevInstance,
+	_In_ LPSTR     lpCmdLine,
+	_In_ int       nCmdShow)
 {
 	ReportMemoryLeaks();
 
