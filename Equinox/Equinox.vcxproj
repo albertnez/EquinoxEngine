@@ -97,6 +97,7 @@
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="EditorSubmodule.h" />
     <ClInclude Include="EditorUtils.h" />
+    <ClInclude Include="FactoryUtils.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameObject.h" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="EditorSubmodule.cpp" />
     <ClCompile Include="EditorUtils.cpp" />
+    <ClCompile Include="FactoryUtils.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="IMGUI\imgui.cpp" />
@@ -184,6 +186,9 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FactoryDictionary.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

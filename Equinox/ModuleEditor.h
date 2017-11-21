@@ -6,7 +6,6 @@ class EditorSubmodule;
 #include <list>
 
 class DataImporter;
-class EditorSubmoduleFactoryBase;
 
 class ModuleEditor :
 	public Module
@@ -42,4 +41,3 @@ private:
 	std::vector<EditorSubmodule*> _submodules;
 	DataImporter* _dataImporter = nullptr;
 };
-

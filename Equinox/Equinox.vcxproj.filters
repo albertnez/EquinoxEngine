@@ -29,6 +29,9 @@
     <Filter Include="Editor Modules">
       <UniqueIdentifier>{5e0c401c-c562-4ace-886c-a6d97130c061}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Static Factory">
+      <UniqueIdentifier>{59a50008-2d8f-417e-a57e-a6d8b86cf91b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleRender.h">
@@ -203,6 +206,9 @@
       <Filter>Editor Modules</Filter>
     </ClInclude>
     <ClInclude Include="EditorUtils.h" />
+    <ClInclude Include="FactoryUtils.h">
+      <Filter>Utils\Static Factory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleRender.cpp">
@@ -310,11 +316,19 @@
     <ClCompile Include="EditorSubmodule.cpp">
       <Filter>Editor Modules</Filter>
     </ClCompile>
-    <ClCompile Include="EditorUtils.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleEditor.cpp">
       <Filter>Editor Modules</Filter>
     </ClCompile>
+    <ClCompile Include="EditorUtils.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="FactoryUtils.cpp">
+      <Filter>Utils\Static Factory</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FactoryDictionary.h">
+      <Filter>Utils\Static Factory</Filter>
+    </None>
   </ItemGroup>
 </Project>
