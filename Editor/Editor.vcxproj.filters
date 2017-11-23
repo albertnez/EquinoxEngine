@@ -5,16 +5,15 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\EditorSubmodules">
+    <Filter Include="EditorSubmodules">
       <UniqueIdentifier>{ef5d7bb1-9e56-4751-89ca-956b123ac24c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ComponentEditors">
+      <UniqueIdentifier>{38e3e09d-a180-4905-ab58-77cade868007}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,16 +21,22 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EngineStatsEditor.cpp">
-      <Filter>Source Files\EditorSubmodules</Filter>
+      <Filter>EditorSubmodules</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor.cpp">
-      <Filter>Source Files\EditorSubmodules</Filter>
+      <Filter>EditorSubmodules</Filter>
     </ClCompile>
     <ClCompile Include="EngineDebugEditor.cpp">
-      <Filter>Source Files\EditorSubmodules</Filter>
+      <Filter>EditorSubmodules</Filter>
     </ClCompile>
     <ClCompile Include="LightingEditor.cpp">
-      <Filter>Source Files\EditorSubmodules</Filter>
+      <Filter>EditorSubmodules</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponentEditor.cpp">
+      <Filter>ComponentEditors</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformEditor.cpp">
+      <Filter>ComponentEditors</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

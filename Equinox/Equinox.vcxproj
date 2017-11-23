@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationSDL.h" />
     <ClInclude Include="BaseComponent.h" />
+    <ClInclude Include="BaseComponentEditor.h" />
     <ClInclude Include="BaseFactory.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ComplexTimer.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseComponentEditor.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CoordinateArrows.cpp" />
     <ClCompile Include="Cube.cpp" />

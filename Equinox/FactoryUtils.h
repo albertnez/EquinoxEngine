@@ -11,6 +11,7 @@ public:
 	virtual void Insert(FactoryBaseClass* factory) = 0;
 	virtual std::vector<FactoryBaseClass*> GetAllFactories() const = 0;
 	virtual size_t Size() const = 0;
+	virtual void Clear() = 0;
 };
 
 template<class BaseClass>
@@ -26,7 +27,7 @@ public:
 template<class FactoryBaseClass>
 IFactoryDictionary<FactoryBaseClass>* GetFactoryDictionary();
 
-template<class ElementClass, class BaseClass>
+template<class ElementClass, typename BaseClass>
 class Factory : AbstractFactoryBase<BaseClass>
 {
 	static_assert(std::is_base_of<BaseClass, ElementClass>::value, "The specified element does not inherit from base class");
@@ -41,23 +42,39 @@ public:
 		return typeid(ElementClass).name();
 	}
 
-	ElementClass* Instantiate() override
+	BaseClass* Instantiate() override
 	{
 		return new ElementClass;
 	}
 };
 
-#define CREATE_STATIC_FACTORY(BaseType) \
+#define CREATE_NAMED_STATIC_FACTORY_BASE(BaseType, FactoryName) \
 	class BaseType##; \
-	using BaseType##FactoryBase = AbstractFactoryBase<BaseType>; \
-	template<class ElementType> using BaseType##Factory = Factory<ElementType, BaseType>; \
-	using I##BaseType##FactoryDictionary = IFactoryDictionary<BaseType##FactoryBase>; \
-	extern I##BaseType##FactoryDictionary* Get##BaseType##FactoryDictionary();
+	using FactoryName##FactoryBase = AbstractFactoryBase<BaseType>; \
+	template<class ElementType> using FactoryName##Factory = Factory<ElementType, BaseType>; \
+	using I##FactoryName##FactoryDictionary = IFactoryDictionary<FactoryName##FactoryBase>;
 
-#define IMPLEMENT_STATIC_FACTORY(BaseType) \
-	template<> I##BaseType##FactoryDictionary* GetFactoryDictionary() \
+#define IMPLEMENT_NAMED_STATIC_FACTORY_ACCESSOR(BaseType, FactoryName) \
+	I##FactoryName##FactoryDictionary* Get##FactoryName##FactoryDictionary() { return GetFactoryDictionary<FactoryName##FactoryBase>(); }
+
+#define CREATE_NAMED_STATIC_FACTORY_NOEXPORT(BaseType, FactoryName) \
+	CREATE_NAMED_STATIC_FACTORY_BASE(BaseType, FactoryName) \
+	IMPLEMENT_NAMED_STATIC_FACTORY_ACCESSOR(BaseType, FactoryName)
+
+#define CREATE_NAMED_STATIC_FACTORY(BaseType, FactoryName) \
+	CREATE_NAMED_STATIC_FACTORY_BASE(BaseType, FactoryName) \
+	extern I##FactoryName##FactoryDictionary* Get##FactoryName##FactoryDictionary();
+
+#define IMPLEMENT_NAMED_STATIC_FACTORY(BaseType, FactoryName) \
+	template<> I##FactoryName##FactoryDictionary* GetFactoryDictionary() \
 	{ \
-		static FactoryDictionary<BaseType##FactoryBase> dictionary; \
+		static FactoryDictionary<FactoryName##FactoryBase> dictionary; \
 		return &dictionary; \
 	} \
-	I##BaseType##FactoryDictionary* Get##BaseType##FactoryDictionary() { return GetFactoryDictionary<BaseType##FactoryBase>(); }
+	IMPLEMENT_NAMED_STATIC_FACTORY_ACCESSOR(BaseType, FactoryName)
+
+#define CREATE_STATIC_FACTORY_NOEXPORT(BaseType) CREATE_NAMED_STATIC_FACTORY_NOEXPORT(BaseType, BaseType)
+
+#define CREATE_STATIC_FACTORY(BaseType)  CREATE_NAMED_STATIC_FACTORY(BaseType, BaseType)
+
+#define IMPLEMENT_STATIC_FACTORY(BaseType) IMPLEMENT_NAMED_STATIC_FACTORY(BaseType, BaseType)

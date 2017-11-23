@@ -5,9 +5,11 @@
 #include "BaseComponent.h"
 #include "ModuleLevelManager.h"
 #include "Level.h"
+#include "BaseComponentEditor.h"
 
-#include <cctype>
 #include "IMGUI/imgui.h"
+#include <unordered_map>
+#include <typeindex>
 
 namespace
 {
@@ -30,20 +32,44 @@ namespace
 class LevelEditor : public EditorSubmodule
 {
 public:
+	void Init() override;
 	void Update() override;
+	void CleanUp() override;
 
 private:
 	void drawProperties();
 	void drawLevelHierachy();
 	void drawLevelHierachy(GameObject* node);
+
+	std::unordered_map<std::type_index, BaseComponentEditor*> _componentEditors;
 };
 
 REGISTER_EDITOR_SUBMODULE(LevelEditor);
+
+void LevelEditor::Init()
+{
+	for (ComponentEditorFactoryBase* editorComponent : GetComponentEditorFactoryDictionary()->GetAllFactories())
+	{
+		BaseComponentEditor* editor = editorComponent->Instantiate();
+		_componentEditors[editor->GetComponentTypeIndex()] = editor;
+	}
+	LOG("Loaded %d component editors", _componentEditors.size());
+	GetComponentEditorFactoryDictionary()->Clear();
+}
 
 void LevelEditor::Update()
 {
 	drawProperties();
 	drawLevelHierachy();
+}
+
+void LevelEditor::CleanUp()
+{
+	for (auto& editor : _componentEditors)
+	{
+		RELEASE(editor.second);
+	}
+	_componentEditors.clear();
 }
 
 void LevelEditor::drawProperties()
@@ -61,7 +87,17 @@ void LevelEditor::drawProperties()
 			{
 				std::string componentName = GenerateNiceNameForComponent(component->GetName());
 				if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
-					component->DrawUI();
+				{
+					auto it = _componentEditors.find(component->GetClassId());
+					if (it != _componentEditors.end())
+					{
+						it->second->DrawUI(component);
+					}
+					else
+					{
+						component->DrawUI();
+					}
+				}
 			}
 		}
 	}

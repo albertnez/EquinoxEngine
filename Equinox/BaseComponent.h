@@ -1,11 +1,14 @@
 ﻿#ifndef __BASECOMPONENT_H__
 #define __BASECOMPONENT_H__
 #include "Globals.h"
+#include <typeindex>
 
 #define DEFINE_COMPONENT(ClassName) \
+		friend class ClassName##Editor; \
 	public: \
-		virtual std::string GetName() const override { return #ClassName; } \
-		inline size_t Size() const override { return sizeof(*this); } \
+		std::string GetName() const override { return #ClassName; } \
+		size_t Size() const override { return sizeof(*this); } \
+		std::type_index GetClassId() const override { return typeid(ClassName); } \
 	private: \
 
 class GameObject;
@@ -41,6 +44,7 @@ public:
 
 	virtual std::string GetName() const = 0;
 	virtual inline size_t Size() const = 0;
+	virtual std::type_index GetClassId() const = 0;
 
 private:
 	static void* CreateBackup(BaseComponent* obj)

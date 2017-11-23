@@ -209,6 +209,9 @@
     <ClInclude Include="FactoryUtils.h">
       <Filter>Utils\Static Factory</Filter>
     </ClInclude>
+    <ClInclude Include="BaseComponentEditor.h">
+      <Filter>Editor Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleRender.cpp">
@@ -324,6 +327,9 @@
     </ClCompile>
     <ClCompile Include="FactoryUtils.cpp">
       <Filter>Utils\Static Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseComponentEditor.cpp">
+      <Filter>Editor Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

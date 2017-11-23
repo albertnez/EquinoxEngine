@@ -2,9 +2,10 @@
 #include "Module.h"
 #include "GameObject.h"
 
-class EditorSubmodule;
 #include <list>
 
+
+class EditorSubmodule;
 class DataImporter;
 
 class ModuleEditor :

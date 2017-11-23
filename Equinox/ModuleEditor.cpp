@@ -6,12 +6,10 @@
 #include "ModuleEditor.h"
 #include "Engine.h"
 #include "ModuleWindow.h"
-#include "BaseComponent.h"
 #include "ModuleLighting.h"
 #include "DataImporter.h"
 #include "EditorSubmodule.h"
 #include "EditorUtils.h"
-#include "ModuleLevelManager.h"
 #include "Level.h"
 
 ModuleEditor::~ModuleEditor()
@@ -31,7 +29,7 @@ bool ModuleEditor::Init()
 		submodule->Init();
 		_submodules.push_back(submodule);
 	}
-
+	submoduleFactoryDictionary->Clear();
 	LOG("Registered %d editor submodules", _submodules.size());
 
 	return true;

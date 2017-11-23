@@ -32,6 +32,11 @@ public:
 		return _factoryMap.size();
 	}
 
+	void Clear()
+	{
+		_factoryMap.clear();
+	}
+
 private:
 	std::unordered_map<std::string, FactoryBaseClass*> _factoryMap;
 };
