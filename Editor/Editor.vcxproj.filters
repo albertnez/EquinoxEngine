@@ -38,5 +38,11 @@
     <ClCompile Include="TransformEditor.cpp">
       <Filter>ComponentEditors</Filter>
     </ClCompile>
+    <ClCompile Include="MaterialComponentEditor.cpp">
+      <Filter>ComponentEditors</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitterEditor.cpp">
+      <Filter>ComponentEditors</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

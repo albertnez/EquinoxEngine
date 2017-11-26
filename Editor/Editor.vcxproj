@@ -155,7 +155,9 @@
     <ClCompile Include="LevelEditor.cpp" />
     <ClCompile Include="LightingEditor.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MaterialComponentEditor.cpp" />
     <ClCompile Include="MeshComponentEditor.cpp" />
+    <ClCompile Include="ParticleEmitterEditor.cpp" />
     <ClCompile Include="TransformEditor.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

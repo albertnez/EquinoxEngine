@@ -34,7 +34,6 @@ public:
 
 	void Update(float dt) override;
 	void EditorUpdate(float dt) override;
-	void DrawUI() override;
 
 	const GLfloat DEFAULT_GL_AMBIENT[4] = { 0.2f, 0.2f, 0.2f, 1.f };
 	const GLfloat DEFAULT_GL_DIFFUSE[4] = { 0.8f, 0.8f, 0.8f, 1.f };

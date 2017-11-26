@@ -63,24 +63,6 @@ void ParticleEmitter::EndPlay()
 	CleanUp();
 }
 
-void ParticleEmitter::DrawUI()
-{
-	ImGui::Checkbox("Simulate On Editor", &_editorSimulation);
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("Restart"))
-	{
-		CleanUp();
-	}
-
-	ImGui::InputFloat2("Emit Area", &EmitArea[0], -1, ImGuiInputTextFlags_CharsDecimal);
-	ImGui::InputInt("Max Particles", &MaxParticles, -1);
-	ImGui::InputFloat("Fall Height", &FallHeight, -1, ImGuiInputTextFlags_CharsDecimal);
-	ImGui::InputFloat("Fall Speed", &FallSpeed, -1, ImGuiInputTextFlags_CharsDecimal);
-	ImGui::InputFloat("Particle's LifeTime", &LifeTime, -1, ImGuiInputTextFlags_CharsDecimal);
-}
-
 void ParticleEmitter::SetTexture(unsigned textureId)
 {
 	_texture = textureId;

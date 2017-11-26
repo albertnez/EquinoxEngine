@@ -25,7 +25,6 @@ public:
 	void EditorUpdate(float dt) override;
 
 	void EndPlay() override;
-	void DrawUI() override;
 	void CleanUp() override;
 
 	void SetTexture(unsigned textureId);

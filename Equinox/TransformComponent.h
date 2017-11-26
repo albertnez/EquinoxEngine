@@ -17,7 +17,6 @@ public:
 
 	void Update(float dt) override;
 	void EditorUpdate(float dt) override;
-	void DrawUI() override;
 
 	float3 Position = float3(0, 0, 0);
 	Quat Rotation = Quat(0, 0, 0, 1);

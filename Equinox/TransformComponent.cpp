@@ -26,11 +26,3 @@ void TransformComponent::EditorUpdate(float dt)
 {
 	Update(dt);
 }
-
-void TransformComponent::DrawUI()
-{
-	ImGui::InputFloat3("Position", &Position[0], -1, ImGuiInputTextFlags_CharsDecimal);
-	float3 rot = Rotation.ToEulerXYZ() * RadToDeg(Rotation.Angle());
-	ImGui::SliderFloat3("Rotation", &rot[0], -360, 360, "%.2f deg");
-	ImGui::InputFloat3("Scale", &Scale[0], -1, ImGuiInputTextFlags_CharsDecimal);
-}

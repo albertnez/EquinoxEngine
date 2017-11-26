@@ -34,8 +34,6 @@ public:
 
 	virtual void EndPlay() {}
 
-	virtual void DrawUI() {};
-
 	virtual void CleanUp()
 	{
 		if (backup)

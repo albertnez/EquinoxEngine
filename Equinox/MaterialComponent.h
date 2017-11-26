@@ -27,8 +27,6 @@ public:
 	~MaterialComponent();
 
 	unsigned AddMaterial(Material* material);
-
-	void DrawUI() override;
 };
 
 #endif

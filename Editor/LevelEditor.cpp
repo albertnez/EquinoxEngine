@@ -93,10 +93,6 @@ void LevelEditor::drawProperties()
 					{
 						it->second->DrawUI(component);
 					}
-					else
-					{
-						component->DrawUI();
-					}
 				}
 			}
 		}
