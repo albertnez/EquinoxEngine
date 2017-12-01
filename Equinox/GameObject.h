@@ -45,8 +45,8 @@ public:
 	TransformComponent* GetTransform() const;
 
 	void DrawBoundingBox();
-	void DrawHierachy();
-	void DrawHierachy(const float4x4& transformMatrix);
+	void DrawHierachy() const;
+	void DrawHierachy(const float4x4& transformMatrix) const;
 	
 	void Update(float dt);
 

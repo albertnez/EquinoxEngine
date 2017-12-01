@@ -62,9 +62,6 @@ void MeshComponent::Update(float dt)
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 
-		if (App->editor->SelectedGameObject == Parent)
-			Parent->DrawBoundingBox();
-
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
 

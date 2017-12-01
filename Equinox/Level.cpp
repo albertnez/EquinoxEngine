@@ -12,14 +12,14 @@
 
 Level::Level()
 {
-	root = new GameObject;
+	_root = new GameObject;
 
 	vec minPoint = vec(-10000, -100, -10000);
 	vec maxPoint = vec(10000, 100, 10000);
 
 	AABB limits = AABB(minPoint, maxPoint);
 
-	quadtree = new Quadtree(limits);
+	_quadtree = new Quadtree(limits);
 }
 
 Level::~Level()
@@ -28,13 +28,13 @@ Level::~Level()
 
 bool Level::CleanUp()
 {
-	cleanUpNodes(root);
+	cleanUpNodes(_root);
 
-	quadtree->Clear();
+	_quadtree->Clear();
 
-	RELEASE(quadtree);
+	RELEASE(_quadtree);
 
-	RELEASE(root);
+	RELEASE(_root);
 
 	return true;
 }
@@ -47,21 +47,15 @@ void Level::PreUpdate(float dt)
 void Level::Update(float dt)
 {
 	std::vector<GameObject*> visibleObjects;
-	quadtree->CollectIntersections(visibleObjects, App->editorCamera->GetCamera()->GetFrustumAABB());
+	_quadtree->CollectIntersections(visibleObjects, App->editorCamera->GetCamera()->GetFrustumAABB());
 
 	for (GameObject* go : visibleObjects)
 		go->VisibleOnCamera = true;
 
-	root->Update(dt);
-
-	if (App->editor->GetDrawHierachy())
-		root->DrawHierachy();
+	_root->Update(dt);
 
 	for (GameObject* go : visibleObjects)
 		go->VisibleOnCamera = false;
-
-	if(App->editor->GetDrawQuadtree())
-		quadtree->DrawQuadtree();
 }
 
 void Level::PostUpdate(float dt)
@@ -71,13 +65,13 @@ void Level::PostUpdate(float dt)
 void Level::RegenerateQuadtree() const
 {
 	std::stack<GameObject*> gameObjects;
-	gameObjects.push(root);
+	gameObjects.push(_root);
 
 	while (!gameObjects.empty())
 	{
 		GameObject* current = gameObjects.top();
 		gameObjects.pop();
-		quadtree->Insert(current);
+		_quadtree->Insert(current);
 
 		for (GameObject* child : current->GetChilds())
 		{
@@ -100,8 +94,13 @@ void Level::AddToScene(GameObject* go)
 {
 	if (go != nullptr)
 	{
-		LinkGameObject(go, root);
+		LinkGameObject(go, _root);
 	}
+}
+
+const Quadtree& Level::GetQuadtree() const
+{
+	return *_quadtree;
 }
 
 void Level::cleanUpNodes(GameObject* node)

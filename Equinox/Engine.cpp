@@ -31,7 +31,6 @@ Engine::Engine()
 
 	modules.push_back(editorCamera = new ModuleEditorCamera());
 
-	modules.push_back(editor = new ModuleEditor());
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(lighting = new ModuleLighting());
@@ -50,6 +49,7 @@ Engine::Engine()
 	modules.push_back(collision = new ModuleCollision());
 	modules.push_back(timer = new ModuleTimer());
 
+	modules.push_back(editor = new ModuleEditor());
 	App = this;
 }
 

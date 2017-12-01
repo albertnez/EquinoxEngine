@@ -25,19 +25,12 @@ public:
 	bool GetDrawHierachy() const;
 	void SetDrawHierachy(bool drawHierachy);
 
-	bool GetDrawQuadtree() const;
-	void SetDrawQuadtree(bool drawQuadtree);
-
 	DataImporter* GetDataImporter() const;
 
 	GameObject* SelectedGameObject = nullptr;
 
 private:
-	void drawLevelHierachy();
-	void drawLevelHierachy(GameObject* node);
-
 	bool _drawHierachy = false;
-	bool _drawQuadtree = false;
 	std::list<float> _fpsValues;
 	std::vector<EditorSubmodule*> _submodules;
 	DataImporter* _dataImporter = nullptr;

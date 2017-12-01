@@ -17,10 +17,13 @@ public:
 	update_status PostUpdate(float DeltaTime) override;
 	bool CleanUp() override;
 
-	Level* GetCurrentLevel() const;
+	void ChangeLevel(std::shared_ptr<Level> level);
+
+	Level& GetCurrentLevel();
+	const Level& GetCurrentLevel() const;
 
 private:
 
-	Level* _currentLevel = nullptr;
+	std::shared_ptr<Level> _currentLevel;
 };
 

@@ -18,29 +18,14 @@ ModuleLevelManager::~ModuleLevelManager()
 
 bool ModuleLevelManager::Init()
 {
-	//_currentLevel = new Level;
+	_currentLevel = std::make_shared<Level>();
 
 	return true;
 }
 
 bool ModuleLevelManager::Start()
 {
-	_currentLevel = App->editor->GetDataImporter()->ImportLevel("Models/street/", "Street.obj");
 	
-	App->animator->Load("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
-
-	////////////
-	GameObject* goPS = new GameObject;
-	TransformComponent* transform = new TransformComponent;
-	ParticleEmitter* peComponent = new ParticleEmitter(200, float2(50.f, 50.f), 20.f, 1.2f, 15.f);
-	unsigned rainTex = App->textures->Load("Models/rainSprite.tga");
-	//unsigned snowTex = App->textures->Load("Models/simpleflake.tga");
-	peComponent->SetTexture(rainTex);
-	goPS->Name = "ParticleSystem";
-	goPS->AddComponent(transform);
-	goPS->AddComponent(peComponent);
-
-	_currentLevel->AddToScene(goPS);
 
 	return true;
 }
@@ -64,12 +49,27 @@ update_status ModuleLevelManager::PostUpdate(float DeltaTime)
 bool ModuleLevelManager::CleanUp()
 {
 	_currentLevel->CleanUp();
-	RELEASE(_currentLevel);
+	_currentLevel.reset();
+
+	assert(_currentLevel.use_count() == 0 && "Level is still referenced somewere");
 
 	return true;
 }
 
-Level* ModuleLevelManager::GetCurrentLevel() const
+void ModuleLevelManager::ChangeLevel(const std::shared_ptr<Level> level)
 {
-	return _currentLevel;
+	_currentLevel->CleanUp();
+	_currentLevel.reset();
+
+	_currentLevel = level;
+}
+
+Level& ModuleLevelManager::GetCurrentLevel()
+{
+	return *_currentLevel;
+}
+
+const Level& ModuleLevelManager::GetCurrentLevel() const
+{
+	return *_currentLevel;
 }

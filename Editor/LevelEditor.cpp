@@ -41,6 +41,7 @@ private:
 	void drawLevelHierachy();
 	void drawLevelHierachy(GameObject* node);
 
+	GameObject* _selectedGameObject = nullptr;
 	std::unordered_map<std::type_index, BaseComponentEditor*> _componentEditors;
 };
 
@@ -61,6 +62,11 @@ void LevelEditor::Update()
 {
 	drawProperties();
 	drawLevelHierachy();
+
+	if (nullptr != _selectedGameObject)
+	{
+		_selectedGameObject->DrawBoundingBox();
+	}
 }
 
 void LevelEditor::CleanUp()
@@ -85,10 +91,10 @@ void LevelEditor::drawProperties()
 		{
 			for (BaseComponent* component : App->editor->SelectedGameObject->GetComponents())
 			{
-				std::string componentName = GenerateNiceNameForComponent(component->GetName());
+				std::string componentName = GenerateNiceNameForComponent(component->GetComponentName());
 				if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
 				{
-					auto it = _componentEditors.find(component->GetClassId());
+					auto it = _componentEditors.find(component->GetComponentClassId());
 					if (it != _componentEditors.end())
 					{
 						it->second->DrawUI(component);
@@ -110,7 +116,7 @@ void LevelEditor::drawLevelHierachy()
 
 	if (ImGui::Begin("Hierachy", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
 	{
-		for (GameObject* node : App->level_manager->GetCurrentLevel()->GetRootNode()->GetChilds())
+		for (GameObject* node : App->level_manager->GetCurrentLevel().GetRootNode()->GetChilds())
 			drawLevelHierachy(node);
 	}
 	ImGui::End();
@@ -129,7 +135,7 @@ void LevelEditor::drawLevelHierachy(GameObject* node)
 	{
 		if (ImGui::IsItemClicked(0))
 		{
-			App->editor->SelectedGameObject = node;
+			_selectedGameObject = node;
 		}
 
 		for (GameObject* child : node->GetChilds())

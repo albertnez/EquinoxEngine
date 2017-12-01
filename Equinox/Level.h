@@ -11,9 +11,6 @@ public:
 	Level();
 	~Level();
 
-	GameObject* root = nullptr;
-	Quadtree* quadtree = nullptr;
-
 	void PreUpdate(float dt);
 	void Update(float dt);
 	void PostUpdate(float dt);
@@ -21,16 +18,21 @@ public:
 
 	void RegenerateQuadtree() const;
 
-	GameObject* GetRootNode() { return root; }
-	const GameObject* GetRootNode() const { return root; }
+	GameObject* GetRootNode() { return _root; }
+	const GameObject* GetRootNode() const { return _root; }
 
 	GameObject* FindGameObject(const char* name);
 	void LinkGameObject(GameObject* node, GameObject* destination);
 
 	void AddToScene(GameObject* go);
 
+	const Quadtree& GetQuadtree() const;
+
 private:
 	void cleanUpNodes(GameObject* node);
+
+	Quadtree* _quadtree = nullptr;
+	GameObject* _root = nullptr;
 };
 
 #endif // __LEVEL_H__

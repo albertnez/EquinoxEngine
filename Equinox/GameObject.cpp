@@ -71,7 +71,7 @@ void GameObject::AddComponent(BaseComponent* component)
 		component->Parent = this;
 		_components.push_back(component);
 
-		if (component->GetName() == "Transform")
+		if (component->GetComponentClassId() == TransformComponent::GetClassId())
 			_transform = static_cast<TransformComponent*>(component);
 	}
 }
@@ -80,7 +80,7 @@ BaseComponent* GameObject::GetComponentByName(const std::string& name) const
 {
 	for (BaseComponent* component : _components)
 	{
-		if (component->GetName() == name)
+		if (component->GetComponentName() == name)
 			return component;
 	}
 
@@ -93,7 +93,7 @@ void GameObject::DeleteComponentByName(const std::string& name)
 	{
 		for (auto it = _components.begin(); it != _components.cend(); ++it)
 		{
-			if ((*it)->GetName() == name)
+			if ((*it)->GetComponentName() == name)
 			{
 				_components.erase(it);
 				(*it)->CleanUp();
@@ -118,7 +118,7 @@ void GameObject::DrawBoundingBox()
 	::DrawBoundingBox(BoundingBox);
 }
 
-void GameObject::DrawHierachy()
+void GameObject::DrawHierachy() const
 {
 	GLboolean light = glIsEnabled(GL_LIGHTING);
 	glDisable(GL_LIGHTING);
@@ -134,7 +134,7 @@ void GameObject::DrawHierachy()
 		glEnable(GL_LIGHTING);
 }
 
-void GameObject::DrawHierachy(const float4x4& transformMatrix)
+void GameObject::DrawHierachy(const float4x4& transformMatrix) const
 {
 	float4x4 localMatrix = transformMatrix * _transform->GetTransformMatrix();
 

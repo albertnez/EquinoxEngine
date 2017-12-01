@@ -161,7 +161,7 @@ namespace
 	}
 }
 
-Level* DataImporter::ImportLevel(const char* path, const char* file) const
+std::shared_ptr<Level> DataImporter::ImportLevel(const char* path, const char* file) const
 {
 	LOG("Importing level %s", file);
 	char filePath[256];
@@ -175,7 +175,7 @@ Level* DataImporter::ImportLevel(const char* path, const char* file) const
 	meshes.reserve(scene->mNumMeshes);
 	ImportMeshes(scene, path, meshes);
 
-	Level* level = new Level;
+	std::shared_ptr<Level> level = std::make_shared<Level>();
 
 	LoadNodes(node, level->GetRootNode(), meshes);
 	level->RegenerateQuadtree(); // TODO: Improve quadtree generation

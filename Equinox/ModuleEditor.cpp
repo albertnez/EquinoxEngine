@@ -11,6 +11,11 @@
 #include "EditorSubmodule.h"
 #include "EditorUtils.h"
 #include "Level.h"
+#include "ParticleEmitter.h"
+#include "TransformComponent.h"
+#include "ModuleAnimation.h"
+#include "ModuleLevelManager.h"
+#include "ModuleTextures.h"
 
 ModuleEditor::~ModuleEditor()
 {
@@ -45,6 +50,26 @@ bool ModuleEditor::Start()
 	}
 
 	App->SetUpdateState(Engine::UpdateState::Stopped);
+
+
+	std::shared_ptr<Level> level = GetDataImporter()->ImportLevel("Models/street/", "Street.obj");
+
+	App->animator->Load("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
+
+	////////////
+	GameObject* goPS = new GameObject;
+	TransformComponent* transform = new TransformComponent;
+	ParticleEmitter* peComponent = new ParticleEmitter(200, float2(50.f, 50.f), 20.f, 1.2f, 15.f);
+	unsigned rainTex = App->textures->Load("Models/rainSprite.tga");
+	//unsigned snowTex = App->textures->Load("Models/simpleflake.tga");
+	peComponent->SetTexture(rainTex);
+	goPS->Name = "ParticleSystem";
+	goPS->AddComponent(transform);
+	goPS->AddComponent(peComponent);
+
+	level->AddToScene(goPS);
+
+	App->level_manager->ChangeLevel(level);
 
 	return true;
 }
@@ -99,13 +124,13 @@ update_status ModuleEditor::Update(float DeltaTime)
 	}
 	ImGui::End();
 
+	ImGui::Render();
+
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleEditor::PostUpdate(float DeltaTime)
 {
-	ImGui::Render();
-
 	return UPDATE_CONTINUE;
 }
 
@@ -136,16 +161,6 @@ bool ModuleEditor::GetDrawHierachy() const
 void ModuleEditor::SetDrawHierachy(bool drawHierachy)
 {
 	_drawHierachy = drawHierachy;
-}
-
-bool ModuleEditor::GetDrawQuadtree() const
-{
-	return _drawQuadtree;
-}
-
-void ModuleEditor::SetDrawQuadtree(bool drawQuadtree)
-{
-	_drawQuadtree = drawQuadtree;
 }
 
 DataImporter* ModuleEditor::GetDataImporter() const

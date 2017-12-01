@@ -6,9 +6,11 @@
 #define DEFINE_COMPONENT(ClassName) \
 		friend class ClassName##Editor; \
 	public: \
-		std::string GetName() const override { return #ClassName; } \
+		static std::string GetName() { return #ClassName; } \
+		static std::type_index GetClassId() { return typeid(ClassName); } \
+		std::string GetComponentName() const override { return #ClassName; } \
 		size_t Size() const override { return sizeof(*this); } \
-		std::type_index GetClassId() const override { return typeid(ClassName); } \
+		std::type_index GetComponentClassId() const override { return typeid(ClassName); } \
 	private: \
 
 class GameObject;
@@ -40,9 +42,9 @@ public:
 			RELEASE(backup);
 	};
 
-	virtual std::string GetName() const = 0;
+	virtual std::string GetComponentName() const = 0;
 	virtual inline size_t Size() const = 0;
-	virtual std::type_index GetClassId() const = 0;
+	virtual std::type_index GetComponentClassId() const = 0;
 
 private:
 	static void* CreateBackup(BaseComponent* obj)

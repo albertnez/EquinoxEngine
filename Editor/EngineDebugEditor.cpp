@@ -5,6 +5,21 @@
 #include "Engine.h"
 #include "ModuleWindow.h"
 #include "EditorUtils.h"
+#include "ModuleLevelManager.h"
+#include "Level.h"
+
+namespace
+{
+	void DrawQuadtreeNodeAABB(const QuadtreeNode& node)
+	{
+		DrawBoundingBox(node.GetBox());
+
+		for(QuadtreeNode* child : node.GetChilds())
+		{
+			DrawQuadtreeNodeAABB(*child);
+		}
+	}
+}
 
 class EngineDebugEditor : public EditorSubmodule
 {
@@ -13,6 +28,8 @@ public:
 
 private:
 	bool _wireframe = false;
+	bool _drawQuadtree = false;
+	bool _drawHierachy = false;
 };
 
 REGISTER_EDITOR_SUBMODULE(EngineDebugEditor);
@@ -38,17 +55,22 @@ void EngineDebugEditor::Update()
 			wireframe ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-		bool drawHierachy = App->editor->GetDrawHierachy();
-		if (ImGui::Checkbox("Draw hierachy", &drawHierachy))
-		{
-			App->editor->SetDrawHierachy(drawHierachy);
-		}
+		ImGui::Checkbox("Draw hierachy", &_drawHierachy);
 
-		bool drawQuadtree = App->editor->GetDrawQuadtree();
-		if (ImGui::Checkbox("Draw quadtree", &drawQuadtree))
-		{
-			App->editor->SetDrawQuadtree(drawQuadtree);
-		}
+		ImGui::Checkbox("Draw quadtree", &_drawQuadtree);
 	}
 	ImGui::End();
+
+	const Level& currentLevel = App->level_manager->GetCurrentLevel();
+	if (_drawQuadtree)
+	{
+		DrawQuadtreeNodeAABB(currentLevel.GetQuadtree().GetRootNode());
+	}
+
+	if (_drawHierachy)
+	{
+		const GameObject* root = currentLevel.GetRootNode();
+
+		root->DrawHierachy();
+	}
 }
