@@ -87,9 +87,9 @@ void LevelEditor::drawProperties()
 	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
 	if (ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
 	{
-		if (App->editor->SelectedGameObject)
+		if (_selectedGameObject)
 		{
-			for (BaseComponent* component : App->editor->SelectedGameObject->GetComponents())
+			for (BaseComponent* component : _selectedGameObject->GetComponents())
 			{
 				std::string componentName = GenerateNiceNameForComponent(component->GetComponentName());
 				if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
@@ -128,7 +128,7 @@ void LevelEditor::drawLevelHierachy(GameObject* node)
 	if (node->GetChilds().size() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf;
 
-	if (App->editor->SelectedGameObject == node)
+	if (_selectedGameObject == node)
 		flags |= ImGuiTreeNodeFlags_Selected;
 
 	if (ImGui::TreeNodeEx(node->Name.c_str(), flags))
