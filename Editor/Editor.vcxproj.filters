@@ -15,6 +15,12 @@
     <Filter Include="ComponentEditors">
       <UniqueIdentifier>{38e3e09d-a180-4905-ab58-77cade868007}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{60af62ab-e202-4166-b2b3-e0396abd05cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base Editor">
+      <UniqueIdentifier>{ba34c7ed-08d1-4bce-9bcb-a14c8df7d8dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -44,5 +50,37 @@
     <ClCompile Include="ParticleEmitterEditor.cpp">
       <Filter>ComponentEditors</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleEditor.cpp">
+      <Filter>Base Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorSubmodule.cpp">
+      <Filter>EditorSubmodules</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="DataImporter.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseComponentEditor.cpp">
+      <Filter>ComponentEditors</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ModuleEditor.h">
+      <Filter>Base Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorSubmodule.h">
+      <Filter>EditorSubmodules</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DataImporter.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseComponentEditor.h">
+      <Filter>ComponentEditors</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

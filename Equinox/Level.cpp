@@ -2,7 +2,6 @@
 #include "ModuleTextures.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
-#include "ModuleEditor.h"
 #include "Quadtree.h"
 #include "ModuleEditorCamera.h"
 

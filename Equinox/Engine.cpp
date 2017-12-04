@@ -8,7 +8,6 @@
 #include "ModuleTimer.h"
 #include "ComplexTimer.h"
 #include "ModuleEditorCamera.h"
-#include "ModuleEditor.h"
 #include "ModuleLighting.h"
 #include "ModuleSettings.h"
 #include "ModuleAnimation.h"

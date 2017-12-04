@@ -5,7 +5,6 @@
 #include "TransformComponent.h"
 #include <MathGeoLib/include/Math/float4x4.h>
 #include "Engine.h"
-#include "ModuleEditor.h"
 
 GameObject::GameObject()
 {

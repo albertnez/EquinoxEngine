@@ -1,11 +1,11 @@
 ﻿#include "ParticleEmitter.h"
-#include <GL/glew.h>
 #include "Globals.h"
-#include "IMGUI/imgui.h"
 #include "Engine.h"
-#include "ModuleEditor.h"
 #include "CameraComponent.h"
 #include "ModuleEditorCamera.h"
+
+#include <GL/glew.h>
+#include "IMGUI/imgui.h"
 
 ParticleEmitter::ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHeight, float FallSpeed, float LifeTime)
 {

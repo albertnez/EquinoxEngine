@@ -41,10 +41,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\SDL\include;$(SolutionDir)External\Assimp\include;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\SDL\include;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\SDL\include;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,15 +89,12 @@
   <ItemGroup>
     <ClInclude Include="AnimationSDL.h" />
     <ClInclude Include="BaseComponent.h" />
-    <ClInclude Include="BaseComponentEditor.h" />
     <ClInclude Include="BaseFactory.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ComplexTimer.h" />
     <ClInclude Include="CoordinateArrows.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Cylinder.h" />
-    <ClInclude Include="EditorSubmodule.h" />
-    <ClInclude Include="EditorUtils.h" />
     <ClInclude Include="FactoryUtils.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
@@ -119,8 +116,6 @@
     <ClInclude Include="ModuleAnimation.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCollision.h" />
-    <ClInclude Include="DataImporter.h" />
-    <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleEditorCamera.h" />
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleLevelManager.h" />
@@ -149,13 +144,10 @@
     <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BaseComponentEditor.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CoordinateArrows.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Cylinder.cpp" />
-    <ClCompile Include="EditorSubmodule.cpp" />
-    <ClCompile Include="EditorUtils.cpp" />
     <ClCompile Include="FactoryUtils.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -170,8 +162,6 @@
     <ClCompile Include="ModuleAnimation.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCollision.cpp" />
-    <ClCompile Include="DataImporter.cpp" />
-    <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleEditorCamera.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleLevelManager.cpp" />

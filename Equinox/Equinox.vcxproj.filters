@@ -26,9 +26,6 @@
     <Filter Include="GameObject\Components">
       <UniqueIdentifier>{68192a36-02bc-4de9-9e93-6dc57eeecade}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Editor Modules">
-      <UniqueIdentifier>{5e0c401c-c562-4ace-886c-a6d97130c061}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils\Static Factory">
       <UniqueIdentifier>{59a50008-2d8f-417e-a57e-a6d8b86cf91b}</UniqueIdentifier>
     </Filter>
@@ -190,27 +187,14 @@
     <ClInclude Include="ModuleLevelManager.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleEditor.h">
-      <Filter>Editor Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="DataImporter.h">
-      <Filter>Editor Modules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleMaterialManager.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleMeshManager.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
-    <ClInclude Include="EditorSubmodule.h">
-      <Filter>Editor Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorUtils.h" />
     <ClInclude Include="FactoryUtils.h">
       <Filter>Utils\Static Factory</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseComponentEditor.h">
-      <Filter>Editor Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -307,29 +291,14 @@
     <ClCompile Include="ModuleLevelManager.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="DataImporter.cpp">
-      <Filter>Editor Modules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleMeshManager.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleMaterialManager.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
-    <ClCompile Include="EditorSubmodule.cpp">
-      <Filter>Editor Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleEditor.cpp">
-      <Filter>Editor Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorUtils.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="FactoryUtils.cpp">
       <Filter>Utils\Static Factory</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseComponentEditor.cpp">
-      <Filter>Editor Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleStats.cpp">
       <Filter>Core Modules</Filter>

@@ -1,11 +1,8 @@
 #include "Level.h"
 #include "ParticleEmitter.h"
 #include "ModuleAnimation.h"
-#include "ModuleTextures.h"
 #include "TransformComponent.h"
 #include "ModuleLevelManager.h"
-#include "ModuleEditor.h"
-#include "DataImporter.h"
 
 ModuleLevelManager::ModuleLevelManager()
 {

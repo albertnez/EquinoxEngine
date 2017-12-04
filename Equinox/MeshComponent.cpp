@@ -1,8 +1,8 @@
 ﻿#include "MeshComponent.h"
+#include "GameObject.h"
+
 #include <GL/glew.h>
 #include "IMGUI/imgui.h"
-#include "Engine.h"
-#include "ModuleEditor.h"
 
 
 MeshComponent::MeshComponent()
