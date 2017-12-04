@@ -180,6 +180,7 @@
     <ClCompile Include="ModuleMeshManager.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSettings.cpp" />
+    <ClCompile Include="ModuleStats.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="ModuleTimer.cpp" />

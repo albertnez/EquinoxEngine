@@ -4,6 +4,7 @@
 #include "Module.h"
 #include <MathGeoLib/include/Geometry/Frustum.h>
 #include "CameraComponent.h"
+#include "ModuleInput.h"
 
 class ModuleEditorCamera :
 	public Module
@@ -12,6 +13,7 @@ public:
 	ModuleEditorCamera();
 	~ModuleEditorCamera();
 
+	bool Init() override;
 	update_status Update(float DeltaTime) override;
 	bool CleanUp() override;
 
@@ -28,6 +30,8 @@ public:
 
 private:
 	CameraComponent* _cameraComponent;
+
+	std::shared_ptr<ModuleInput> _moduleInput;
 };
 
 #endif // __MODULEEDITORCAMERA_H__

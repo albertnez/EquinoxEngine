@@ -24,21 +24,32 @@ namespace
 class EngineDebugEditor : public EditorSubmodule
 {
 public:
+
+	void Init() override;
 	void Update() override;
 
 private:
 	bool _wireframe = false;
 	bool _drawQuadtree = false;
 	bool _drawHierachy = false;
+
+	std::shared_ptr<ModuleWindow> _moduleWindow;
+	std::shared_ptr<ModuleLevelManager> _levelManager;
 };
 
 REGISTER_EDITOR_SUBMODULE(EngineDebugEditor);
 
 
+void EngineDebugEditor::Init()
+{
+	_moduleWindow = App->GetModule<ModuleWindow>();
+	_levelManager = App->GetModule<ModuleLevelManager>();
+}
+
 void EngineDebugEditor::Update()
 {
 	int w, h;
-	App->window->GetWindowSize(w, h);
+	_moduleWindow->GetWindowSize(w, h);
 
 	ImVec2 windowPosition(301, h - 100);
 	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_Always);
@@ -61,7 +72,7 @@ void EngineDebugEditor::Update()
 	}
 	ImGui::End();
 
-	const Level& currentLevel = App->level_manager->GetCurrentLevel();
+	const Level& currentLevel = _levelManager->GetCurrentLevel();
 	if (_drawQuadtree)
 	{
 		DrawQuadtreeNodeAABB(currentLevel.GetQuadtree().GetRootNode());

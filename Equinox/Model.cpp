@@ -78,7 +78,7 @@ void Model::Load(const char* path, const char* file)
 			
 			sprintf_s(filePath, "%s%s", path, fileName.C_Str());
 
-			GLuint matNum = App->textures->Load(filePath);
+			GLuint matNum = App->GetModule<ModuleTextures>()->Load(filePath);
 			assert(matNum != 0);
 
 			materials[i] = matNum;

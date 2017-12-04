@@ -15,11 +15,13 @@ namespace
 {
 	void ImportMeshes(const aiScene* scene, const char* path, std::vector<Mesh*>& meshes)
 	{
+		std::shared_ptr<ModuleTextures> moduleTextures = App->GetModule<ModuleTextures>();
+		std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
 		std::vector<Material*> materials;
 		for (size_t i = 0; i < scene->mNumMaterials; ++i)
 		{
 			aiMaterial* aiMat = scene->mMaterials[i];
-			Material* material = App->materialManager->CreateMaterial();
+			Material* material = materialManager->CreateMaterial();
 
 			aiColor4D ai_property;
 			float shininess;
@@ -42,15 +44,16 @@ namespace
 				aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &fileName);
 				sprintf_s(material->FilePath, "%s%s", path, fileName.C_Str());
 
-				material->texture = App->textures->Load(material->FilePath);
+				material->texture = moduleTextures->Load(material->FilePath);
 			}
 
 			materials.push_back(material);
 		}
 
+		std::shared_ptr<ModuleMeshManager> meshManager = App->GetModule<ModuleMeshManager>();
 		for (size_t i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Mesh* mesh = App->meshManager->CreateMesh();
+			Mesh* mesh = meshManager->CreateMesh();
 			aiMesh* aMesh = scene->mMeshes[i];
 
 			mesh->num_vertices = aMesh->mNumVertices;
@@ -137,12 +140,13 @@ namespace
 			children->AddComponent(materialComponent);
 
 			meshComponent->MaterialComponent = materialComponent;
+			std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
 
 			for (size_t i = 0; i < originalNode->mNumMeshes; ++i)
 			{
 				Mesh* mesh = meshes[originalNode->mMeshes[i]];
 
-				mesh->materialInComponent = materialComponent->AddMaterial(App->materialManager->GetMaterial(mesh->material));
+				mesh->materialInComponent = materialComponent->AddMaterial(materialManager->GetMaterial(mesh->material));
 
 				meshComponent->Meshes.push_back(mesh);
 

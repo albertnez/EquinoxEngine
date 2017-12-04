@@ -26,37 +26,39 @@ Engine::Engine()
 	state = State::CREATION;
 
 	// Order matters: they will init/start/pre/update/post in this order
-	modules.push_back(input = new ModuleInput());
-	modules.push_back(window = new ModuleWindow());
+	AppendModule<ModuleInput>();
+	AppendModule<ModuleWindow>();
 
-	modules.push_back(editorCamera = new ModuleEditorCamera());
+	editorCamera = AppendModule<ModuleEditorCamera>();
 
-	modules.push_back(renderer = new ModuleRender());
-	modules.push_back(textures = new ModuleTextures());
-	modules.push_back(lighting = new ModuleLighting());
-	modules.push_back(audio = new ModuleAudio());
-	modules.push_back(settings = new ModuleSettings());
-	modules.push_back(animator = new ModuleAnimation());
-	modules.push_back(stats = new ModuleStats);
+	AppendModule<ModuleRender>();
+	AppendModule<ModuleTextures>();
+	AppendModule<ModuleLighting>();
+	AppendModule<ModuleAudio>();
+	AppendModule<ModuleSettings>();
+	AppendModule<ModuleAnimation>();
+	_statsModule = AppendModule<ModuleStats>();
 
-	modules.push_back(materialManager = new ModuleMaterialManager);
-	modules.push_back(meshManager = new ModuleMeshManager);
+	AppendModule<ModuleMaterialManager>();
+	AppendModule<ModuleMeshManager>();
 
-	// Game Modules
-	modules.push_back(level_manager = new ModuleLevelManager);
+	// Game modules
+	AppendModule<ModuleLevelManager>();
 
 	// Modules to draw on top of game logic
-	modules.push_back(collision = new ModuleCollision());
-	modules.push_back(timer = new ModuleTimer());
+	AppendModule<ModuleCollision>();
+	AppendModule<ModuleTimer>();
 
-	modules.push_back(editor = new ModuleEditor());
 	App = this;
 }
 
 Engine::~Engine()
 {
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
-		RELEASE(*it);
+	for (auto it = _modules.begin(); it != _modules.end(); ++it)
+	{
+		(*it).reset();
+		assert((*it).use_count() == 0 && "Module is still references somewhere");
+	}
 }
 
 Engine::UpdateState Engine::GetUpdateState() const
@@ -150,14 +152,12 @@ int Engine::Loop()
 
 bool Engine::Init()
 {
-	stats->_total_complex_time.Start();
-	stats->_total_simple_time.Start();
 	bool ret = true;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
-		ret = (*it)->Init(); // we init everything, even if not anabled
+	for(auto it = _modules.begin(); it != _modules.end() && ret; ++it)
+		ret = (*it)->Init(); // we init everything, even if not enabled
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret; ++it)
 	{
 		if((*it)->IsEnabled() == true)
 			ret = (*it)->Start();
@@ -174,26 +174,26 @@ update_status Engine::Update()
 
 	float dt = _isPaused ? 0 : DeltaTime;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PreUpdate(dt);
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->Update(dt);
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PostUpdate(dt);
 
-	++stats->_total_frames;
+	++_statsModule->_total_frames;
 
-	float currentFrameTime = float(stats->_total_simple_time.Read() / 1E3);
+	float currentFrameTime = float(_statsModule->_total_simple_time.Read() / 1E3);
 	DeltaTime = float(currentFrameTime - _timeFromLastFrame);
 	
-	stats->_current_fps = 1 / DeltaTime;
+	_statsModule->_current_fps = 1 / DeltaTime;
 
-	stats->_current_avg = stats->_current_avg ? (stats->_current_avg + stats->_current_fps) / 2 : stats->_current_fps;
+	_statsModule->_current_avg = _statsModule->_current_avg ? (_statsModule->_current_avg + _statsModule->_current_fps) / 2 : _statsModule->_current_fps;
 
 	_timeFromLastFrame = currentFrameTime;
 
@@ -204,14 +204,13 @@ bool Engine::CleanUp()
 {
 	bool ret = true;
 
-	LOG("Total Time: %f microseconds", stats->_total_complex_time.Stop());
-	LOG("Total Time: %i miliseconds", stats->_total_simple_time.Stop());
-	LOG("Total Frames: %f", stats->_total_frames);
-	LOG("Average FPS: %f", stats->_current_avg);
+	LOG("Total Time: %f microseconds", _statsModule->_total_complex_time.Stop());
+	LOG("Total Time: %i miliseconds", _statsModule->_total_simple_time.Stop());
+	LOG("Total Frames: %f", _statsModule->_total_frames);
+	LOG("Average FPS: %f", _statsModule->_current_avg);
 
-	for(list<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it)
+	for(auto it = _modules.rbegin(); it != _modules.rend() && ret; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->CleanUp();
 	return ret;
 }
-

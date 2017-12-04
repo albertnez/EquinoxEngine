@@ -34,4 +34,6 @@ private:
 	std::list<float> _fpsValues;
 	std::vector<EditorSubmodule*> _submodules;
 	DataImporter* _dataImporter = nullptr;
+
+	std::shared_ptr<class ModuleWindow> _moduleWindow;
 };

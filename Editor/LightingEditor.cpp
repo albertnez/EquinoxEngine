@@ -8,37 +8,45 @@
 class LightingEditor : public EditorSubmodule
 {
 public:
+	void Init() override;
 	void Update() override;
 
+private:
+	std::shared_ptr<ModuleWindow> _moduleWindow;
+	std::shared_ptr<ModuleLighting> _moduleLighting;
 };
 
 REGISTER_EDITOR_SUBMODULE(LightingEditor);
 
+void LightingEditor::Init()
+{
+	_moduleWindow = App->GetModule<ModuleWindow>();
+	_moduleLighting = App->GetModule<ModuleLighting>();
+}
+
 void LightingEditor::Update()
 {
 	int w, h;
-	App->window->GetWindowSize(w, h);
+	_moduleWindow->GetWindowSize(w, h);
 	ImVec2 windowPosition(w - 400, h - 400);
 	ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiSetCond_Always);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
 	if (ImGui::Begin("Lighting", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
 	{
-		ModuleLighting* lighting = App->lighting;
-
 		ImGui::PushID("Global Ambient Light");
 		if (ImGui::CollapsingHeader("Global Ambient Light", ImGuiTreeNodeFlags_AllowOverlapMode))
 		{
-			ImGui::Checkbox("Enabled", &lighting->EnableAmbientLight);
+			ImGui::Checkbox("Enabled", &_moduleLighting->EnableAmbientLight);
 
-			if (lighting->EnableAmbientLight)
+			if (_moduleLighting->EnableAmbientLight)
 			{
-				ImGui::InputFloat4("Ambient", &lighting->AmbientLight[0], -1, ImGuiInputTextFlags_CharsDecimal);
+				ImGui::InputFloat4("Ambient", &_moduleLighting->AmbientLight[0], -1, ImGuiInputTextFlags_CharsDecimal);
 			}
 		}
 		ImGui::PopID();
 
 		int i = 0;
-		for (Light* light : lighting->Lights)
+		for (Light* light : _moduleLighting->Lights)
 		{
 			std::string name = "Light-" + std::to_string(i);
 			ImGui::PushID(name.c_str());
@@ -64,10 +72,10 @@ void LightingEditor::Update()
 						ImGui::InputFloat3("Direction", &light->Direction[0], -1, ImGuiInputTextFlags_CharsDecimal);
 					}
 
-					int current_type = lighting->GetLabelByType(light->Type);
+					int current_type = _moduleLighting->GetLabelByType(light->Type);
 					ImGui::Combo("Type", &current_type, "Point\0Directional\0Spotlight\0Default\0");
-					if (lighting->GetTypeByLabel(current_type) != light->Type)
-						lighting->SetLightType(light, lighting->GetTypeByLabel(current_type));
+					if (_moduleLighting->GetTypeByLabel(current_type) != light->Type)
+						_moduleLighting->SetLightType(light, _moduleLighting->GetTypeByLabel(current_type));
 				}
 			}
 			i++;

@@ -1,26 +1,14 @@
 #ifndef __APPLICATION_CPP__
 #define __APPLICATION_CPP__
 
-#include<list>
 #include "Globals.h"
 #include "Module.h"
 
-class ModuleMaterialManager;
-class ModuleMeshManager;
-class ModuleStats;
-class ModuleRender;
-class ModuleWindow;
-class ModuleTextures;
-class ModuleInput;
-class ModuleAudio;
-class ModuleCollision;
-class ModuleLevelManager;
-class ModuleTimer;
+#include <list>
+#include <map>
+#include <typeindex>
+
 class ModuleEditorCamera;
-class ModuleEditor;
-class ModuleSettings;
-class ModuleLighting;
-class ModuleAnimation;
 
 // Game modules ---
 
@@ -53,38 +41,51 @@ public:
 
 	int Loop();
 
+	template<typename Type>
+	std::shared_ptr<Type> GetModule() const
+	{
+		static_assert(std::is_base_of<Module, Type>::value, "The specified type does not inherit from module");
+		auto it = _moduleMap.find(typeid(Type));
+		return it != _moduleMap.end() ? std::static_pointer_cast<Type>(it->second) : nullptr;
+	}
+
+	template<typename ModuleType>
+	std::shared_ptr<ModuleType> AppendModule()
+	{
+		static_assert(std::is_base_of<Module, ModuleType>::value, "The specified type does not inherit from module");
+		std::shared_ptr<ModuleType> mod(new ModuleType);
+		_moduleMap[typeid(ModuleType)] = mod;
+		_modules.push_back(mod);
+
+		if (state >= START)
+		{
+			mod->Init();
+			if (true == mod->IsEnabled())
+			{
+				mod->Start();
+			}
+		}
+		return mod;
+	}
+
 	bool Init();
 	update_status Update();
 	bool CleanUp();
 
 public:
-	ModuleMeshManager* meshManager;
-	ModuleMaterialManager* materialManager;
-	ModuleRender* renderer;
-	ModuleWindow* window;
-	ModuleTextures* textures;
-	ModuleInput* input;
-	ModuleAudio* audio;
-	ModuleCollision* collision;
-	ModuleTimer* timer;
-	ModuleEditorCamera* editorCamera;
-	ModuleEditor* editor;
-	ModuleSettings* settings;
-	ModuleLighting* lighting;
-	ModuleAnimation* animator;
-	ModuleStats* stats;
-
-	// Game modules ---
-	ModuleLevelManager* level_manager;
+	std::shared_ptr<ModuleEditorCamera> editorCamera;
 
 	float DeltaTime;
 
 private:
-	State state;
+	State state = CREATION;
 	UpdateState _updateState = UpdateState::Playing;
 	bool _isPaused = false;
 
-	std::list<Module*> modules;
+	std::shared_ptr<class ModuleStats> _statsModule;
+
+	std::map<std::type_index, std::shared_ptr<Module>> _moduleMap;
+	std::list<std::shared_ptr<Module>> _modules;
 
 	float _timeFromLastFrame = 0;
 };

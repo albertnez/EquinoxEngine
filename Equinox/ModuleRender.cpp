@@ -36,6 +36,8 @@ ModuleRender::~ModuleRender()
 // Called before render is available
 bool ModuleRender::Init()
 {
+	_moduleWindow = App->GetModule<ModuleWindow>();
+	_moduleInput = App->GetModule<ModuleInput>();
 	return true;
 }
 
@@ -43,7 +45,7 @@ bool ModuleRender::Start()
 {
 	LOG("Creating Renderer context");
 	bool ret = true;
-	context = SDL_GL_CreateContext(App->window->window);
+	context = SDL_GL_CreateContext(_moduleWindow->window);
 
 	if (context == nullptr)
 	{
@@ -82,7 +84,7 @@ bool ModuleRender::Start()
 		glEnable(GL_BLEND);
 
 		int w, h;
-		SDL_GetWindowSize(App->window->window, &w, &h);
+		_moduleWindow->GetWindowSize(w, h);
 		App->editorCamera->SetAspectRatio(float(w) / float(h));
 
 		Quat rotation_plane = Quat::FromEulerXYZ(DEG2RAD(0.f), DEG2RAD(0.f), DEG2RAD(0.f));
@@ -97,16 +99,16 @@ bool ModuleRender::Start()
 
 update_status ModuleRender::PreUpdate(float DeltaTime)
 {	
-	ModuleEditorCamera* camera = App->editorCamera;
+	std::shared_ptr<ModuleEditorCamera> camera = App->editorCamera;
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glLoadMatrixf(camera->GetProjectionMatrix());
 
-	if (App->input->GetWindowEvent(WE_RESIZE))
+	if (_moduleInput->GetWindowEvent(WE_RESIZE))
 	{
 		int w, h;
-		SDL_GetWindowSize(App->window->window, &w, &h);
+		_moduleWindow->GetWindowSize(w, h);
 		camera->SetAspectRatio(float(w) / float(h));
 		glViewport(0, 0, w, h);
 	}
@@ -134,7 +136,7 @@ update_status ModuleRender::Update(float DeltaTime)
 
 update_status ModuleRender::PostUpdate(float DeltaTime)
 {
-	SDL_GL_SwapWindow(App->window->window);
+	SDL_GL_SwapWindow(_moduleWindow->window);
 
 	return UPDATE_CONTINUE;
 }

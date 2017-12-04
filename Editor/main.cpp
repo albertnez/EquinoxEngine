@@ -1,4 +1,6 @@
 #include "Engine.h"
+#include "ModuleEditor.h"
+
 #include <Windows.h>
 
 int CALLBACK WinMain(HINSTANCE hInstance,
@@ -10,7 +12,7 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 
 	LOG("Engine Creation ----------------");
 	Engine* engine = new Engine;
-
+	engine->AppendModule<ModuleEditor>();
 	int main_return = engine->Loop();
 
 	RELEASE(engine);

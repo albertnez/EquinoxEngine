@@ -30,6 +30,9 @@ public:
 		
 private:
 	std::list<Primitive*> objects;
+
+	std::shared_ptr<class ModuleWindow> _moduleWindow;
+	std::shared_ptr<class ModuleInput> _moduleInput;
 };
 
 #endif // __MODULERENDER_H__

@@ -37,12 +37,14 @@ bool ModuleEditor::Init()
 	submoduleFactoryDictionary->Clear();
 	LOG("Registered %d editor submodules", _submodules.size());
 
+	_moduleWindow = App->GetModule<ModuleWindow>();
+
 	return true;
 }
 
 bool ModuleEditor::Start()
 {
-	ImGui_ImplSdlGL3_Init(App->window->window);
+	ImGui_ImplSdlGL3_Init(_moduleWindow->window);
 
 	for (EditorSubmodule* submodule : _submodules)
 	{
@@ -54,13 +56,13 @@ bool ModuleEditor::Start()
 
 	std::shared_ptr<Level> level = GetDataImporter()->ImportLevel("Models/street/", "Street.obj");
 
-	App->animator->Load("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
+	App->GetModule<ModuleAnimation>()->Load("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 
 	////////////
 	GameObject* goPS = new GameObject;
 	TransformComponent* transform = new TransformComponent;
 	ParticleEmitter* peComponent = new ParticleEmitter(200, float2(50.f, 50.f), 20.f, 1.2f, 15.f);
-	unsigned rainTex = App->textures->Load("Models/rainSprite.tga");
+	unsigned rainTex = App->GetModule<ModuleTextures>()->Load("Models/rainSprite.tga");
 	//unsigned snowTex = App->textures->Load("Models/simpleflake.tga");
 	peComponent->SetTexture(rainTex);
 	goPS->Name = "ParticleSystem";
@@ -69,14 +71,14 @@ bool ModuleEditor::Start()
 
 	level->AddToScene(goPS);
 
-	App->level_manager->ChangeLevel(level);
+	App->GetModule<ModuleLevelManager>()->ChangeLevel(level);
 
 	return true;
 }
 
 update_status ModuleEditor::PreUpdate(float DeltaTime)
 {
-	ImGui_ImplSdlGL3_NewFrame(App->window->window);
+	ImGui_ImplSdlGL3_NewFrame(_moduleWindow->window);
 
 	return UPDATE_CONTINUE;
 }
@@ -84,7 +86,7 @@ update_status ModuleEditor::PreUpdate(float DeltaTime)
 update_status ModuleEditor::Update(float DeltaTime)
 {
 	int w, h;
-	App->window->GetWindowSize(w, h);
+	_moduleWindow->GetWindowSize(w, h);
 
 	for (EditorSubmodule* submodule : _submodules)
 	{

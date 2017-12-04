@@ -331,6 +331,9 @@
     <ClCompile Include="BaseComponentEditor.cpp">
       <Filter>Editor Modules</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleStats.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="FactoryDictionary.h">

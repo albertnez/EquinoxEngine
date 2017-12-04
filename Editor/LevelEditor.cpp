@@ -43,6 +43,9 @@ private:
 
 	GameObject* _selectedGameObject = nullptr;
 	std::unordered_map<std::type_index, BaseComponentEditor*> _componentEditors;
+
+	std::shared_ptr<ModuleWindow> _moduleWindow;
+	std::shared_ptr<ModuleLevelManager> _levelManager;
 };
 
 REGISTER_EDITOR_SUBMODULE(LevelEditor);
@@ -56,6 +59,9 @@ void LevelEditor::Init()
 	}
 	LOG("Loaded %d component editors", _componentEditors.size());
 	GetComponentEditorFactoryDictionary()->Clear();
+
+	_moduleWindow = App->GetModule<ModuleWindow>();
+	_levelManager = App->GetModule<ModuleLevelManager>();
 }
 
 void LevelEditor::Update()
@@ -81,7 +87,7 @@ void LevelEditor::CleanUp()
 void LevelEditor::drawProperties()
 {
 	int w, h;
-	App->window->GetWindowSize(w, h);
+	_moduleWindow->GetWindowSize(w, h);
 	ImVec2 windowPosition(w - 400, 0);
 	ImGui::SetNextWindowSize(ImVec2(400, h - 400), ImGuiSetCond_Always);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiSetCond_Always);
@@ -109,14 +115,14 @@ void LevelEditor::drawProperties()
 void LevelEditor::drawLevelHierachy()
 {
 	int w, h;
-	App->window->GetWindowSize(w, h);
+	_moduleWindow->GetWindowSize(w, h);
 
 	ImGui::SetNextWindowSize(ImVec2(300, h), ImGuiSetCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_Always);
 
 	if (ImGui::Begin("Hierachy", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
 	{
-		for (GameObject* node : App->level_manager->GetCurrentLevel().GetRootNode()->GetChilds())
+		for (GameObject* node : _levelManager->GetCurrentLevel().GetRootNode()->GetChilds())
 			drawLevelHierachy(node);
 	}
 	ImGui::End();

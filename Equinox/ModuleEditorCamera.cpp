@@ -16,6 +16,12 @@ ModuleEditorCamera::~ModuleEditorCamera()
 {
 }
 
+bool ModuleEditorCamera::Init()
+{
+	_moduleInput = App->GetModule<ModuleInput>();
+
+	return true;
+}
 
 update_status ModuleEditorCamera::Update(float DeltaTime)
 {
@@ -25,11 +31,11 @@ update_status ModuleEditorCamera::Update(float DeltaTime)
 	float rotateRight = 0;
 	SDL_ShowCursor(1);
 	SDL_SetRelativeMouseMode(SDL_FALSE);
-	if(App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT))
+	if(_moduleInput->GetMouseButtonDown(SDL_BUTTON_RIGHT))
 	{
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 		SDL_ShowCursor(0);
-		iPoint mouse_movement = App->input->GetMouseMotion();
+		iPoint mouse_movement = _moduleInput->GetMouseMotion();
 		float2 mouse_drag = { float(mouse_movement.x), float(mouse_movement.y) };
 
 		if(!mouse_drag.IsZero())
@@ -39,13 +45,13 @@ update_status ModuleEditorCamera::Update(float DeltaTime)
 		rotateRight = -mouse_drag.x * 3.f;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_UP))
+	if (_moduleInput->GetKey(SDL_SCANCODE_UP))
 		rotateUp += 1;
-	if (App->input->GetKey(SDL_SCANCODE_DOWN))
+	if (_moduleInput->GetKey(SDL_SCANCODE_DOWN))
 		rotateUp -= 1;
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT))
+	if (_moduleInput->GetKey(SDL_SCANCODE_RIGHT))
 		rotateRight -= 1;
-	if (App->input->GetKey(SDL_SCANCODE_LEFT))
+	if (_moduleInput->GetKey(SDL_SCANCODE_LEFT))
 		rotateRight += 1;
 
 	CLAMP(rotateUp, -1, 1);
@@ -73,7 +79,7 @@ update_status ModuleEditorCamera::Update(float DeltaTime)
 		}
 	}
 
-	iPoint wheel_movement = App->input->GetMouseWheel();
+	iPoint wheel_movement = _moduleInput->GetMouseWheel();
 
 	if(wheel_movement.y != 0)
 	{
@@ -83,20 +89,20 @@ update_status ModuleEditorCamera::Update(float DeltaTime)
 			movement -= _cameraComponent->Orientation();
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_Q))
+	if (_moduleInput->GetKey(SDL_SCANCODE_Q))
 		movement += float3::unitY;
-	if (App->input->GetKey(SDL_SCANCODE_E))
+	if (_moduleInput->GetKey(SDL_SCANCODE_E))
 		movement -= float3::unitY;
-	if (App->input->GetKey(SDL_SCANCODE_W))
+	if (_moduleInput->GetKey(SDL_SCANCODE_W))
 		movement += _cameraComponent->Orientation();
-	if (App->input->GetKey(SDL_SCANCODE_S))
+	if (_moduleInput->GetKey(SDL_SCANCODE_S))
 		movement -= _cameraComponent->Orientation();
-	if (App->input->GetKey(SDL_SCANCODE_A))
+	if (_moduleInput->GetKey(SDL_SCANCODE_A))
 		movement -= _cameraComponent->GetWorldRight();
-	if (App->input->GetKey(SDL_SCANCODE_D))
+	if (_moduleInput->GetKey(SDL_SCANCODE_D))
 		movement += _cameraComponent->GetWorldRight();
 
-	float velocity = (App->input->GetKey(SDL_SCANCODE_LSHIFT) || wheel_movement.y != 0)? 0.6f : 0.1f;
+	float velocity = (_moduleInput->GetKey(SDL_SCANCODE_LSHIFT) || wheel_movement.y != 0)? 0.6f : 0.1f;
 
 	_cameraComponent->SetPos(_cameraComponent->Position() + movement*velocity);
 

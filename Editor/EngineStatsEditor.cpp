@@ -18,18 +18,26 @@ namespace
 class EngineStatsEditor : public EditorSubmodule
 {
 public:
+	void Init() override;
 	void Update() override;
 
 private:
 	std::list<float> _fpsValues;
+
+	std::shared_ptr<ModuleWindow> _moduleWindow;
 };
 
 REGISTER_EDITOR_SUBMODULE(EngineStatsEditor)
 
+void EngineStatsEditor::Init()
+{
+	_moduleWindow = App->GetModule<ModuleWindow>();
+}
+
 void EngineStatsEditor::Update()
 {
 	int w, h;
-	App->window->GetWindowSize(w, h);
+	_moduleWindow->GetWindowSize(w, h);
 
 	ImVec2 windowPosition(0, h - 100);
 	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiSetCond_Always);
