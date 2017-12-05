@@ -3,7 +3,7 @@
 #include "CameraComponent.h"
 #include "ModuleInput.h"
 
-#include <SDL/include/SDL.h>
+#include <SDL.h>
 #include <Math/Quat.h>
 #include "ModuleCameraManager.h"
 
@@ -15,7 +15,7 @@ public:
 	void CleanUp() override;
 
 private:
-	CameraComponent* _cameraComponent;
+	CameraComponent* _cameraComponent = nullptr;
 
 	std::shared_ptr<ModuleInput> _moduleInput;
 };
