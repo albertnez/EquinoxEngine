@@ -188,3 +188,40 @@ std::shared_ptr<Level> DataImporter::ImportLevel(const char* path, const char* f
 
 	return level;
 }
+
+std::shared_ptr<Animation> DataImporter::ImportAnimation(const char* name, const char* filePath) const
+{
+	LOG("Loading animation %s", filePath);
+
+	const aiScene* scene = aiImportFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
+
+	aiAnimation** animations = scene->mAnimations;
+
+	std::shared_ptr<Animation> animation = App->GetModule<ModuleAnimation>()->CreateAnimation(name);
+	animation->Duration = animations[0]->mDuration;
+	animation->Channels = std::vector<Channel*>(animations[0]->mNumChannels);
+
+	for (unsigned int i = 0; i < animations[0]->mNumChannels; ++i)
+	{
+		aiNodeAnim* aiNodeAnim = animations[0]->mChannels[i];
+		
+		animation->Channels[i] = new Channel();
+		animation->Channels[i]->NodeName = aiNodeAnim->mNodeName.C_Str();
+
+		for(unsigned int j = 0; j < aiNodeAnim->mNumPositionKeys; ++j)
+		{
+			aiVector3D position = aiNodeAnim->mPositionKeys[j].mValue;
+			animation->Channels[i]->Positions.push_back(&float3(position.x, position.y, position.z));
+		}
+
+		for (unsigned int j = 0; j < aiNodeAnim->mNumRotationKeys; ++j)
+		{
+			aiQuaternion rotation = aiNodeAnim->mRotationKeys[j].mValue;
+			animation->Channels[i]->Rotations.push_back(&Quat(rotation.x, rotation.y, rotation.z, rotation.w));
+		}
+	}
+
+	aiReleaseImport(scene);
+
+	return animation;
+}

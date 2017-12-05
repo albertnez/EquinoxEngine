@@ -55,8 +55,7 @@ bool ModuleEditor::Start()
 
 
 	std::shared_ptr<Level> level = GetDataImporter()->ImportLevel("Models/street/", "Street.obj");
-
-	App->GetModule<ModuleAnimation>()->Load("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
+	GetDataImporter()->ImportAnimation("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
 
 	////////////
 	GameObject* goPS = new GameObject;
