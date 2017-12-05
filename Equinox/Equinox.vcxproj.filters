@@ -3,7 +3,8 @@
   <ItemGroup>
     <Filter Include="Main">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>
+      </Extensions>
     </Filter>
     <Filter Include="Game Modules">
       <UniqueIdentifier>{15b5cbc6-cd68-4e6e-8935-b04f2fdf7bf4}</UniqueIdentifier>
