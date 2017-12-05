@@ -27,8 +27,6 @@ public:
 
 	DataImporter* GetDataImporter() const;
 
-	GameObject* SelectedGameObject = nullptr;
-
 private:
 	bool _drawHierachy = false;
 	std::list<float> _fpsValues;
