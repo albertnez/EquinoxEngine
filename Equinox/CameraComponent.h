@@ -8,11 +8,15 @@ class CameraComponent :
 	public BaseComponent
 {
 	DEFINE_COMPONENT(CameraComponent);
+
+	friend class ModuleCameraManager;
 public:
 	CameraComponent();
 	~CameraComponent();
 
 	void Update(float dt) override;
+
+	int GetCameraId() const;
 
 	void SetFOV(float fov);
 	void SetAspectRatio(float ratio);
@@ -32,6 +36,7 @@ public:
 private:
 	math::Frustum _frustum;
 
+	int _cameraId = -1;
 };
 
 #endif

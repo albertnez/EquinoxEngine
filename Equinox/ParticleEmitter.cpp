@@ -2,10 +2,10 @@
 #include "Globals.h"
 #include "Engine.h"
 #include "CameraComponent.h"
-#include "ModuleEditorCamera.h"
 
 #include <GL/glew.h>
 #include "IMGUI/imgui.h"
+#include "ModuleCameraManager.h"
 
 ParticleEmitter::ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHeight, float FallSpeed, float LifeTime)
 {
@@ -21,6 +21,7 @@ ParticleEmitter::ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHe
 	_controlFallSpeed = FallSpeed;
 	_controlLifeTime = LifeTime;
 
+	_cameraManager = App->GetModule<ModuleCameraManager>();
 }
 
 ParticleEmitter::~ParticleEmitter()
@@ -87,7 +88,7 @@ void ParticleEmitter::drawParticle(Particle* particle)
 	glColor3f(1.f, 1.f, 1.f);
 
 	float3 up, right;
-	ComputeQuad(*App->editorCamera->GetCamera(), up, right, particle);
+	ComputeQuad(*_cameraManager->GetMainCamera(), up, right, particle);
 	//right = float3::unitZ; 
 
 	float3 position = particle->Position;

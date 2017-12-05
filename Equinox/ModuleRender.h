@@ -33,6 +33,7 @@ private:
 
 	std::shared_ptr<class ModuleWindow> _moduleWindow;
 	std::shared_ptr<class ModuleInput> _moduleInput;
+	std::shared_ptr<class ModuleCameraManager> _cameraManager;
 };
 
 #endif // __MODULERENDER_H__

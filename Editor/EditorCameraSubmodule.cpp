@@ -1,46 +1,52 @@
-#include "ModuleEditorCamera.h"
-#include "Engine.h"
+﻿#include "EditorSubmodule.h"
+#include "EditorUtils.h"
+#include "CameraComponent.h"
 #include "ModuleInput.h"
 
-#include <MathGeoLib/include/Math/Quat.h>
-#include <SDL.h>
+#include <SDL/include/SDL.h>
+#include <Math/Quat.h>
+#include "ModuleCameraManager.h"
 
-using namespace math;
-
-ModuleEditorCamera::ModuleEditorCamera()
+class EditorCameraSubmodule : public EditorSubmodule
 {
-	_cameraComponent = new ::CameraComponent();
-}
+public:
+	void Start() override;
+	void Update() override;
+	void CleanUp() override;
 
-ModuleEditorCamera::~ModuleEditorCamera()
-{
-}
+private:
+	CameraComponent* _cameraComponent;
 
-bool ModuleEditorCamera::Init()
+	std::shared_ptr<ModuleInput> _moduleInput;
+};
+
+REGISTER_EDITOR_SUBMODULE(EditorCameraSubmodule)
+
+void EditorCameraSubmodule::Start()
 {
 	_moduleInput = App->GetModule<ModuleInput>();
-
-	return true;
+	_cameraComponent = new CameraComponent;
+	App->GetModule<ModuleCameraManager>()->SetMainCamera(_cameraComponent);
 }
 
-update_status ModuleEditorCamera::Update(float DeltaTime)
+void EditorCameraSubmodule::Update()
 {
 	float3 movement = float3::zero;
-	
+
 	float rotateUp = 0;
 	float rotateRight = 0;
 	SDL_ShowCursor(1);
 	SDL_SetRelativeMouseMode(SDL_FALSE);
-	if(_moduleInput->GetMouseButtonDown(SDL_BUTTON_RIGHT))
+	if (_moduleInput->GetMouseButtonDown(SDL_BUTTON_RIGHT))
 	{
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 		SDL_ShowCursor(0);
 		iPoint mouse_movement = _moduleInput->GetMouseMotion();
 		float2 mouse_drag = { float(mouse_movement.x), float(mouse_movement.y) };
 
-		if(!mouse_drag.IsZero())
+		if (!mouse_drag.IsZero())
 			mouse_drag.Normalize();
-		
+
 		rotateUp = -mouse_drag.y * 3.f;
 		rotateRight = -mouse_drag.x * 3.f;
 	}
@@ -81,9 +87,9 @@ update_status ModuleEditorCamera::Update(float DeltaTime)
 
 	iPoint wheel_movement = _moduleInput->GetMouseWheel();
 
-	if(wheel_movement.y != 0)
+	if (wheel_movement.y != 0)
 	{
-		if(wheel_movement.y > 0)
+		if (wheel_movement.y > 0)
 			movement += _cameraComponent->Orientation();
 		else
 			movement -= _cameraComponent->Orientation();
@@ -102,60 +108,13 @@ update_status ModuleEditorCamera::Update(float DeltaTime)
 	if (_moduleInput->GetKey(SDL_SCANCODE_D))
 		movement += _cameraComponent->GetWorldRight();
 
-	float velocity = (_moduleInput->GetKey(SDL_SCANCODE_LSHIFT) || wheel_movement.y != 0)? 0.6f : 0.1f;
+	float velocity = (_moduleInput->GetKey(SDL_SCANCODE_LSHIFT) || wheel_movement.y != 0) ? 0.6f : 0.1f;
 
 	_cameraComponent->SetPos(_cameraComponent->Position() + movement*velocity);
-
-	return UPDATE_CONTINUE;
 }
 
-bool ModuleEditorCamera::CleanUp()
+void EditorCameraSubmodule::CleanUp()
 {
+	_cameraComponent->CleanUp();
 	RELEASE(_cameraComponent);
-	return true;
-}
-
-void ModuleEditorCamera::SetFOV(float fov) const
-{
-	_cameraComponent->SetFOV(fov);
-}
-
-void ModuleEditorCamera::SetAspectRatio(float ratio) const
-{
-	_cameraComponent->SetAspectRatio(ratio);
-}
-
-void ModuleEditorCamera::SetPlaneDistances(float near, float far) const
-{
-	_cameraComponent->SetPlaneDistances(near, far);
-}
-
-float3 ModuleEditorCamera::Position() const
-{
-	return _cameraComponent->Position();
-}
-
-float3 ModuleEditorCamera::Orientation() const
-{
-	return _cameraComponent->Orientation();
-}
-
-void ModuleEditorCamera::LookAt(float x, float y, float z) const
-{
-	_cameraComponent->LookAt(x, y, z);
-}
-
-float* ModuleEditorCamera::GetProjectionMatrix() const
-{
-	return _cameraComponent->GetProjectionMatrix();
-}
-
-float* ModuleEditorCamera::GetViewMatrix() const
-{
-	return _cameraComponent->GetViewMatrix();
-}
-
-CameraComponent* ModuleEditorCamera::GetCamera() const
-{
-	return _cameraComponent;
 }

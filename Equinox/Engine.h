@@ -8,10 +8,6 @@
 #include <map>
 #include <typeindex>
 
-class ModuleEditorCamera;
-
-// Game modules ---
-
 class Engine
 {
 public:
@@ -71,9 +67,6 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
-
-public:
-	std::shared_ptr<ModuleEditorCamera> editorCamera;
 
 	float DeltaTime;
 

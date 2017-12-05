@@ -21,6 +21,11 @@ void CameraComponent::Update(float dt)
 {
 }
 
+int CameraComponent::GetCameraId() const
+{
+	return _cameraId;
+}
+
 void CameraComponent::SetFOV(float fov)
 {
 	_frustum.SetVerticalFovAndAspectRatio(fov, _frustum.AspectRatio());

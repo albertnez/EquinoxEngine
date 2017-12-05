@@ -1,4 +1,3 @@
-#include "Model.h"
 #include "Globals.h"
 #include "Engine.h"
 #include "ModuleRender.h"
@@ -8,22 +7,12 @@
 #include <windows.h>
 #include "GL/glew.h"
 #include <gl/GL.h>
-#include <gl/GLU.h>
-#include "Cube.h"
-#include "Sphere.h"
-#include "Cylinder.h"
 #include "Plane.h"
-#include "ModuleEditorCamera.h"
 #include "ModuleAnimation.h"
 #include "CoordinateArrows.h"
-#include "IL/ilut_config.h"
-#include "IL/il.h"
-#include "IL/ilut.h"
-#include "IL/ilu.h"
-#include "ModuleTextures.h"
 #include "Level.h"
-#include "ParticleEmitter.h"
 #include "TransformComponent.h"
+#include "ModuleCameraManager.h"
 
 ModuleRender::ModuleRender()
 {
@@ -38,6 +27,7 @@ bool ModuleRender::Init()
 {
 	_moduleWindow = App->GetModule<ModuleWindow>();
 	_moduleInput = App->GetModule<ModuleInput>();
+	_cameraManager = App->GetModule<ModuleCameraManager>();
 	return true;
 }
 
@@ -85,7 +75,11 @@ bool ModuleRender::Start()
 
 		int w, h;
 		_moduleWindow->GetWindowSize(w, h);
-		App->editorCamera->SetAspectRatio(float(w) / float(h));
+		CameraComponent* camera = _cameraManager->GetMainCamera();
+		if (nullptr != camera)
+		{
+			camera->SetAspectRatio(float(w) / float(h));
+		}
 
 		Quat rotation_plane = Quat::FromEulerXYZ(DEG2RAD(0.f), DEG2RAD(0.f), DEG2RAD(0.f));
 		objects.push_back(new ::Plane(float3(0, 0.f, -5.f), rotation_plane, 60));
@@ -99,7 +93,8 @@ bool ModuleRender::Start()
 
 update_status ModuleRender::PreUpdate(float DeltaTime)
 {	
-	std::shared_ptr<ModuleEditorCamera> camera = App->editorCamera;
+	
+	CameraComponent* camera = _cameraManager->GetMainCamera();
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

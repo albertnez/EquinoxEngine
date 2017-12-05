@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Equinox;$(SolutionDir)External\Assimp\include;$(SolutionDir)External;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Equinox;$(SolutionDir)External\MathGeoLib\include;$(SolutionDir)External\Assimp\include;$(SolutionDir)External;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);$(SolutionDir)External;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -79,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Equinox;$(SolutionDir)External\Assimp\include;$(SolutionDir)External;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Equinox;$(SolutionDir)External\MathGeoLib\include;$(SolutionDir)External\Assimp\include;$(SolutionDir)External;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);$(SolutionDir)External;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="BaseComponentEditor.cpp" />
     <ClCompile Include="DataImporter.cpp" />
+    <ClCompile Include="EditorCameraSubmodule.cpp" />
     <ClCompile Include="EditorSubmodule.cpp" />
     <ClCompile Include="EditorUtils.cpp" />
     <ClCompile Include="EngineDebugEditor.cpp" />

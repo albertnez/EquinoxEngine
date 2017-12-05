@@ -65,6 +65,9 @@
     <ClCompile Include="BaseComponentEditor.cpp">
       <Filter>ComponentEditors</Filter>
     </ClCompile>
+    <ClCompile Include="EditorCameraSubmodule.cpp">
+      <Filter>EditorSubmodules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleEditor.h">

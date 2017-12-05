@@ -1,6 +1,8 @@
 #include "BaseComponentEditor.h"
 #include "ParticleEmitter.h"
 
+#include "IMGUI/imgui.h"
+
 DEFINE_COMPONENT_EDITOR(ParticleEmitter)
 {
 	BASE_COMPONENT_EDITOR(ParticleEmitter)

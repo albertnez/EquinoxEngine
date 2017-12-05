@@ -2,7 +2,6 @@
 #define __PARTICLE_EMITTER_H__
 #include "BaseComponent.h"
 #include <MathGeoLib/include/Math/float2.h>
-#include "IMGUI/imgui.h"
 
 class CameraComponent;
 
@@ -38,12 +37,6 @@ public:
 	float LifeTime;
 
 private:
-
-	unsigned _texture = 0;
-	float _width, _height;
-
-	bool _editorSimulation = false;
-
 	void drawParticle(Particle* particle);
 	void generateParticles();
 	void checkValues();
@@ -56,6 +49,13 @@ private:
 	float _controlFallHeight;
 	float _controlFallSpeed;
 	float _controlLifeTime;
+
+	unsigned _texture = 0;
+	float _width, _height;
+
+	bool _editorSimulation = false;
+
+	std::shared_ptr<class ModuleCameraManager> _cameraManager;
 };
 
 #endif

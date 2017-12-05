@@ -1,12 +1,10 @@
 ﻿#include "Level.h"
-#include "ModuleTextures.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
+#include "ModuleCameraManager.h"
 #include "Quadtree.h"
-#include "ModuleEditorCamera.h"
 
 #include "IMGUI/imgui.h"
-
 #include <stack>
 
 Level::Level()
@@ -46,7 +44,7 @@ void Level::PreUpdate(float dt)
 void Level::Update(float dt)
 {
 	std::vector<GameObject*> visibleObjects;
-	_quadtree->CollectIntersections(visibleObjects, App->editorCamera->GetCamera()->GetFrustumAABB());
+	_quadtree->CollectIntersections(visibleObjects, App->GetModule<ModuleCameraManager>()->GetMainCamera()->GetFrustumAABB());
 
 	for (GameObject* go : visibleObjects)
 		go->VisibleOnCamera = true;

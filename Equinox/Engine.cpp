@@ -7,7 +7,6 @@
 #include "ModuleCollision.h"
 #include "ModuleTimer.h"
 #include "ComplexTimer.h"
-#include "ModuleEditorCamera.h"
 #include "ModuleLighting.h"
 #include "ModuleSettings.h"
 #include "ModuleAnimation.h"
@@ -15,6 +14,7 @@
 #include "ModuleLevelManager.h"
 #include "ModuleMaterialManager.h"
 #include "ModuleMeshManager.h"
+#include "ModuleCameraManager.h"
 
 using namespace std;
 
@@ -28,7 +28,7 @@ Engine::Engine()
 	AppendModule<ModuleInput>();
 	AppendModule<ModuleWindow>();
 
-	editorCamera = AppendModule<ModuleEditorCamera>();
+	AppendModule<ModuleCameraManager>();
 
 	AppendModule<ModuleRender>();
 	AppendModule<ModuleTextures>();
