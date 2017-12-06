@@ -2,7 +2,6 @@
 #define __PARTICLE_EMITTER_H__
 #include "BaseComponent.h"
 #include <MathGeoLib/include/Math/float2.h>
-#include "IMGUI/imgui.h"
 
 class CameraComponent;
 
@@ -16,7 +15,7 @@ struct Particle
 
 class ParticleEmitter : public BaseComponent
 {
-	DEFAULT_COMPONENT_IMPLEMENTATION;
+	DEFINE_COMPONENT(ParticleEmitter);
 public:
 	ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHeight, float FallSpeed, float LifeTime);
 	~ParticleEmitter();
@@ -25,7 +24,6 @@ public:
 	void EditorUpdate(float dt) override;
 
 	void EndPlay() override;
-	void DrawUI() override;
 	void CleanUp() override;
 
 	void SetTexture(unsigned textureId);
@@ -39,12 +37,6 @@ public:
 	float LifeTime;
 
 private:
-
-	unsigned _texture = 0;
-	float _width, _height;
-
-	bool _editorSimulation = false;
-
 	void drawParticle(Particle* particle);
 	void generateParticles();
 	void checkValues();
@@ -57,6 +49,13 @@ private:
 	float _controlFallHeight;
 	float _controlFallSpeed;
 	float _controlLifeTime;
+
+	unsigned _texture = 0;
+	float _width, _height;
+
+	bool _editorSimulation = false;
+
+	std::shared_ptr<class ModuleCameraManager> _cameraManager;
 };
 
 #endif

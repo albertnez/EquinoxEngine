@@ -9,6 +9,8 @@ class ModuleStats :
 	friend class Engine;
 public:
 
+	bool Init() override;
+
 	float CurrentFPS() const { return _current_fps; }
 	float CurrentAvgFPS() const { return _current_avg; }
 	float PreciseUptime() const { return _total_complex_time.Read(); }

@@ -2,7 +2,6 @@
 #define __GLOBALS_H__
 
 #include "MemLeaks.h"
-#include "SDL/include/SDL_rect.h"
 #include <GL/glew.h>
 #include <MathGeoLib/include/Geometry/AABB.h>
 
@@ -56,7 +55,7 @@ typedef unsigned int uint;
 #define RESIZABLE true
 #define TITLE "Equinox Engine Editor"
 
-inline void DrawBoundingBox(AABB& boundingBox)
+inline void DrawBoundingBox(const AABB& boundingBox)
 {
 	glPushMatrix();
 

@@ -4,12 +4,15 @@
 
 #include <list>
 
+
+class EditorSubmodule;
 class DataImporter;
+
 class ModuleEditor :
 	public Module
 {
 public:
-	ModuleEditor();
+	ModuleEditor() = default;
 	~ModuleEditor();
 
 	bool Init() override;
@@ -19,26 +22,16 @@ public:
 	update_status PostUpdate(float DeltaTime) override;
 	bool CleanUp() override;
 
-	bool IsPlaying() const { return _isPlaying; }
-	bool IsPaused() const { return _isPaused; }
+	bool GetDrawHierachy() const;
+	void SetDrawHierachy(bool drawHierachy);
 
 	DataImporter* GetDataImporter() const;
 
-	GameObject* SelectedGameObject = nullptr;
-
-	bool DrawHierachy = false;
-	bool DrawQuadtree = false;
-
 private:
-	void drawLevelHierachy();
-	void drawLevelHierachy(GameObject* node);
-
-	static float ListGetter(void* data, int id);
-
-	bool _wireframe = false;
-	bool _isPlaying = false;
-	bool _isPaused = false;
+	bool _drawHierachy = false;
 	std::list<float> _fpsValues;
+	std::vector<EditorSubmodule*> _submodules;
 	DataImporter* _dataImporter = nullptr;
-};
 
+	std::shared_ptr<class ModuleWindow> _moduleWindow;
+};

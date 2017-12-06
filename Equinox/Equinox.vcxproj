@@ -41,10 +41,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\SDL\include;$(SolutionDir)External\Assimp\include;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\SDL\include;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)External;$(SolutionDir)External\SDL\include;$(SolutionDir)External\DevIL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -52,13 +52,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>$(SolutionDir)External\MathGeoLib\$(PlatformTarget)\$(ConfigurationName)\MathGeoLib.lib;opengl32.lib;$(SolutionDir)External\glew-2.0.0\$(PlatformTarget)\glew32.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\DevIL.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILU.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILUT.lib;$(SolutionDir)External\Assimp\$(PlatformTarget)\assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
     <CustomBuildStep>
       <Command>
@@ -93,6 +95,7 @@
     <ClInclude Include="CoordinateArrows.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="FactoryUtils.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameObject.h" />
@@ -108,14 +111,11 @@
     <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="MemLeaks.h" />
     <ClInclude Include="MeshComponent.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleAnimation.h" />
     <ClInclude Include="ModuleAudio.h" />
+    <ClInclude Include="ModuleCameraManager.h" />
     <ClInclude Include="ModuleCollision.h" />
-    <ClInclude Include="DataImporter.h" />
-    <ClInclude Include="ModuleEditor.h" />
-    <ClInclude Include="ModuleEditorCamera.h" />
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleLevelManager.h" />
     <ClInclude Include="ModuleLighting.h" />
@@ -147,6 +147,7 @@
     <ClCompile Include="CoordinateArrows.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Cylinder.cpp" />
+    <ClCompile Include="FactoryUtils.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="IMGUI\imgui.cpp" />
@@ -156,13 +157,10 @@
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="MaterialComponent.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModuleAnimation.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
+    <ClCompile Include="ModuleCameraManager.cpp" />
     <ClCompile Include="ModuleCollision.cpp" />
-    <ClCompile Include="DataImporter.cpp" />
-    <ClCompile Include="ModuleEditor.cpp" />
-    <ClCompile Include="ModuleEditorCamera.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleLevelManager.cpp" />
     <ClCompile Include="ModuleLighting.cpp" />
@@ -170,6 +168,7 @@
     <ClCompile Include="ModuleMeshManager.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSettings.cpp" />
+    <ClCompile Include="ModuleStats.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="ModuleTimer.cpp" />
@@ -178,6 +177,9 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FactoryDictionary.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -58,7 +58,7 @@ public:
 		return childs;
 	}
 
-	AABB GetBox() const
+	const AABB& GetBox() const
 	{
 		return box;
 	}
@@ -140,25 +140,13 @@ public:
 		root->CollectIntersections(objects, primitive);
 	}
 
-	void DrawQuadtree()
+	const QuadtreeNode& GetRootNode() const
 	{
-		for (QuadtreeNode* node : root->GetChilds())
-		{
-			DrawNodeAABB(node);
-		}
+		return *root;
 	}
 
 private:
-
-	void DrawNodeAABB(QuadtreeNode* node)
-	{
-		::DrawBoundingBox(node->GetBox());
-		for (QuadtreeNode* qn : node->GetChilds())
-		{
-			DrawNodeAABB(qn);
-		}
-	}
-	
+		
 	void Clear(QuadtreeNode* node)
 	{
 		for (QuadtreeNode* qn : node->GetChilds())

@@ -15,21 +15,23 @@ namespace
 {
 	void ImportMeshes(const aiScene* scene, const char* path, std::vector<Mesh*>& meshes)
 	{
+		std::shared_ptr<ModuleTextures> moduleTextures = App->GetModule<ModuleTextures>();
+		std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
 		std::vector<Material*> materials;
 		for (size_t i = 0; i < scene->mNumMaterials; ++i)
 		{
 			aiMaterial* aiMat = scene->mMaterials[i];
-			Material* material = App->materialManager->CreateMaterial();
+			Material* material = materialManager->CreateMaterial();
 
 			aiColor4D ai_property;
 			float shininess;
 
 			if (aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ai_property) == AI_SUCCESS)
-				material->ambient = ai_property;
+				material->ambient = float4(&ai_property[0]);
 			if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, ai_property) == AI_SUCCESS)
-				material->diffuse = ai_property;
+				material->diffuse = float4(&ai_property[0]);
 			if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, ai_property) == AI_SUCCESS)
-				material->specular = ai_property;
+				material->specular = float4(&ai_property[0]);
 			if (aiMat->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
 				material->shininess = shininess;
 
@@ -42,15 +44,16 @@ namespace
 				aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &fileName);
 				sprintf_s(material->FilePath, "%s%s", path, fileName.C_Str());
 
-				material->texture = App->textures->Load(material->FilePath);
+				material->texture = moduleTextures->Load(material->FilePath);
 			}
 
 			materials.push_back(material);
 		}
 
+		std::shared_ptr<ModuleMeshManager> meshManager = App->GetModule<ModuleMeshManager>();
 		for (size_t i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Mesh* mesh = App->meshManager->CreateMesh();
+			Mesh* mesh = meshManager->CreateMesh();
 			aiMesh* aMesh = scene->mMeshes[i];
 
 			mesh->num_vertices = aMesh->mNumVertices;
@@ -58,7 +61,7 @@ namespace
 
 			mesh->material = materials[aMesh->mMaterialIndex]->id;
 
-			GLuint* indexes = new Uint32[aMesh->mNumFaces * 3];
+			GLuint* indexes = new uint32_t[aMesh->mNumFaces * 3];
 
 			for (unsigned iFace = 0; iFace < aMesh->mNumFaces; ++iFace)
 			{
@@ -137,12 +140,13 @@ namespace
 			children->AddComponent(materialComponent);
 
 			meshComponent->MaterialComponent = materialComponent;
+			std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
 
 			for (size_t i = 0; i < originalNode->mNumMeshes; ++i)
 			{
 				Mesh* mesh = meshes[originalNode->mMeshes[i]];
 
-				mesh->materialInComponent = materialComponent->AddMaterial(App->materialManager->GetMaterial(mesh->material));
+				mesh->materialInComponent = materialComponent->AddMaterial(materialManager->GetMaterial(mesh->material));
 
 				meshComponent->Meshes.push_back(mesh);
 
@@ -161,7 +165,7 @@ namespace
 	}
 }
 
-Level* DataImporter::ImportLevel(const char* path, const char* file)
+std::shared_ptr<Level> DataImporter::ImportLevel(const char* path, const char* file) const
 {
 	LOG("Importing level %s", file);
 	char filePath[256];
@@ -175,7 +179,7 @@ Level* DataImporter::ImportLevel(const char* path, const char* file)
 	meshes.reserve(scene->mNumMeshes);
 	ImportMeshes(scene, path, meshes);
 
-	Level* level = new Level;
+	std::shared_ptr<Level> level = std::make_shared<Level>();
 
 	LoadNodes(node, level->GetRootNode(), meshes);
 	level->RegenerateQuadtree(); // TODO: Improve quadtree generation
@@ -183,4 +187,41 @@ Level* DataImporter::ImportLevel(const char* path, const char* file)
 	aiReleaseImport(scene);
 
 	return level;
+}
+
+std::shared_ptr<Animation> DataImporter::ImportAnimation(const char* name, const char* filePath) const
+{
+	LOG("Loading animation %s", filePath);
+
+	const aiScene* scene = aiImportFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
+
+	aiAnimation** animations = scene->mAnimations;
+
+	std::shared_ptr<Animation> animation = App->GetModule<ModuleAnimation>()->CreateAnimation(name);
+	animation->Duration = animations[0]->mDuration;
+	animation->Channels = std::vector<Channel*>(animations[0]->mNumChannels);
+
+	for (unsigned int i = 0; i < animations[0]->mNumChannels; ++i)
+	{
+		aiNodeAnim* aiNodeAnim = animations[0]->mChannels[i];
+		
+		animation->Channels[i] = new Channel();
+		animation->Channels[i]->NodeName = aiNodeAnim->mNodeName.C_Str();
+
+		for(unsigned int j = 0; j < aiNodeAnim->mNumPositionKeys; ++j)
+		{
+			aiVector3D position = aiNodeAnim->mPositionKeys[j].mValue;
+			animation->Channels[i]->Positions.push_back(&float3(position.x, position.y, position.z));
+		}
+
+		for (unsigned int j = 0; j < aiNodeAnim->mNumRotationKeys; ++j)
+		{
+			aiQuaternion rotation = aiNodeAnim->mRotationKeys[j].mValue;
+			animation->Channels[i]->Rotations.push_back(&Quat(rotation.x, rotation.y, rotation.z, rotation.w));
+		}
+	}
+
+	aiReleaseImport(scene);
+
+	return animation;
 }

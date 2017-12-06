@@ -5,7 +5,6 @@
 #include "TransformComponent.h"
 #include <MathGeoLib/include/Math/float4x4.h>
 #include "Engine.h"
-#include "ModuleEditor.h"
 
 GameObject::GameObject()
 {
@@ -71,7 +70,7 @@ void GameObject::AddComponent(BaseComponent* component)
 		component->Parent = this;
 		_components.push_back(component);
 
-		if (component->Name == "Transform")
+		if (component->GetComponentClassId() == TransformComponent::GetClassId())
 			_transform = static_cast<TransformComponent*>(component);
 	}
 }
@@ -80,7 +79,7 @@ BaseComponent* GameObject::GetComponentByName(const std::string& name) const
 {
 	for (BaseComponent* component : _components)
 	{
-		if (component->Name == name)
+		if (component->GetComponentName() == name)
 			return component;
 	}
 
@@ -93,7 +92,7 @@ void GameObject::DeleteComponentByName(const std::string& name)
 	{
 		for (auto it = _components.begin(); it != _components.cend(); ++it)
 		{
-			if ((*it)->Name == name)
+			if ((*it)->GetComponentName() == name)
 			{
 				_components.erase(it);
 				(*it)->CleanUp();
@@ -105,7 +104,7 @@ void GameObject::DeleteComponentByName(const std::string& name)
 
 void GameObject::DeleteComponent(BaseComponent* component)
 {
-	_components.remove(component);
+	_componentsToRemove.push_back(component);
 }
 
 TransformComponent* GameObject::GetTransform() const
@@ -118,7 +117,7 @@ void GameObject::DrawBoundingBox()
 	::DrawBoundingBox(BoundingBox);
 }
 
-void GameObject::DrawHierachy()
+void GameObject::DrawHierachy() const
 {
 	GLboolean light = glIsEnabled(GL_LIGHTING);
 	glDisable(GL_LIGHTING);
@@ -134,7 +133,7 @@ void GameObject::DrawHierachy()
 		glEnable(GL_LIGHTING);
 }
 
-void GameObject::DrawHierachy(const float4x4& transformMatrix)
+void GameObject::DrawHierachy(const float4x4& transformMatrix) const
 {
 	float4x4 localMatrix = transformMatrix * _transform->GetTransformMatrix();
 
@@ -158,14 +157,23 @@ void GameObject::Update(float dt)
 	glPushMatrix();
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
+	for (BaseComponent* baseComponent : _componentsToRemove)
+	{
+		_components.remove(baseComponent);
+		RELEASE(baseComponent);
+	}
+	_componentsToRemove.clear();
+
 	for (BaseComponent* baseComponent : _components)
 	{
 		if (baseComponent->Enabled)
 		{
-			if (App->editor->IsPlaying())
+			if (Engine::UpdateState::Playing == App->GetUpdateState())
 			{
-				if (_isPlaying)
+				if (Engine::UpdateState::Playing == _playState)
+				{
 					baseComponent->Update(dt);
+				}
 				else // TODO: When serialization is available, back up gameobject tree to disk
 				{
 					BaseComponent::CreateBackup(baseComponent);
@@ -174,20 +182,22 @@ void GameObject::Update(float dt)
 			}
 			else
 			{
-				if (_isPlaying) // TODO: When serialization is available, restore gameobject tree from disk
+				if (Engine::UpdateState::Playing == _playState) // TODO: When serialization is available, restore gameobject tree from disk
 				{
 					baseComponent->EndPlay();
 					BaseComponent::RestoreBackup(baseComponent);
 				}
 				else
-					baseComponent->EditorUpdate(App->editor->IsPaused() ? 0 : dt);
+				{
+					baseComponent->EditorUpdate(dt);
+				}
 			}
 		
 		
 		}
 	}
 
-	_isPlaying = App->editor->IsPlaying();
+	_playState = App->GetUpdateState();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

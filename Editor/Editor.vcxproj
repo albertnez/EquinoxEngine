@@ -71,14 +71,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Equinox;$(SolutionDir)External;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)External</LibraryPath>
+    <IncludePath>$(SolutionDir)Equinox;$(SolutionDir)External\MathGeoLib\include;$(SolutionDir)External\Assimp\include;$(SolutionDir)External\SDL\include;$(SolutionDir)External;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)External;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)Equinox;$(SolutionDir)External\MathGeoLib\include;$(SolutionDir)External\Assimp\include;$(SolutionDir)External\SDL\include;$(SolutionDir)External;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)External;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -94,9 +96,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(OutDir)Equinox.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)Equinox.lib;$(SolutionDir)External\MathGeoLib\$(PlatformTarget)\$(ConfigurationName)\MathGeoLib.lib;opengl32.lib;$(SolutionDir)External\glew-2.0.0\$(PlatformTarget)\glew32.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\DevIL.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILU.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILUT.lib;$(SolutionDir)External\Assimp\$(PlatformTarget)\assimp-vc140-mt.lib;$(SolutionDir)External\SDL\libx86\SDL2.lib;$(SolutionDir)External\SDL\libx86\SDL2main.lib;$(SolutionDir)External\SDL_image\libx86\SDL2_image.lib;$(SolutionDir)External\SDL_mixer\libx86\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,6 +131,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(OutDir)Equinox.lib;$(SolutionDir)External\MathGeoLib\$(PlatformTarget)\$(ConfigurationName)\MathGeoLib.lib;opengl32.lib;$(SolutionDir)External\glew-2.0.0\$(PlatformTarget)\glew32.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\DevIL.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILU.lib;$(SolutionDir)External\DevIL\$(PlatformTarget)\Release\ILUT.lib;$(SolutionDir)External\Assimp\$(PlatformTarget)\assimp-vc140-mt.lib;$(SolutionDir)External\SDL\libx86\SDL2.lib;$(SolutionDir)External\SDL\libx86\SDL2main.lib;$(SolutionDir)External\SDL_image\libx86\SDL2_image.lib;$(SolutionDir)External\SDL_mixer\libx86\SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,7 +152,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseComponentEditor.cpp" />
+    <ClCompile Include="DataImporter.cpp" />
+    <ClCompile Include="EditorCameraSubmodule.cpp" />
+    <ClCompile Include="EditorSubmodule.cpp" />
+    <ClCompile Include="EditorUtils.cpp" />
+    <ClCompile Include="EngineDebugEditor.cpp" />
+    <ClCompile Include="EngineStatsEditor.cpp" />
+    <ClCompile Include="LevelEditor.cpp" />
+    <ClCompile Include="LightingEditor.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MaterialComponentEditor.cpp" />
+    <ClCompile Include="MeshComponentEditor.cpp" />
+    <ClCompile Include="ModuleEditor.cpp" />
+    <ClCompile Include="ParticleEmitterEditor.cpp" />
+    <ClCompile Include="TransformEditor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaseComponentEditor.h" />
+    <ClInclude Include="DataImporter.h" />
+    <ClInclude Include="EditorSubmodule.h" />
+    <ClInclude Include="EditorUtils.h" />
+    <ClInclude Include="ModuleEditor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
