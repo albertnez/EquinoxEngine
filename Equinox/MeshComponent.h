@@ -2,18 +2,18 @@
 #define __COMPONENT_MESH_H__
 #include "BaseComponent.h"
 #include <GL/glew.h>
-#include <assimp/vector3.h>
 #include <list>
 #include "MaterialComponent.h"
 
 struct Mesh
 {
-	unsigned material = 0;
+	int id = -1;
+	int material = 0;
 	GLuint vertexID = 0;
 	GLuint normalID = 0;
 	GLuint textureCoordsID = 0;
 	int materialInComponent = 0;
-	aiVector3D** textureCoords;
+	float3** textureCoords;
 	GLuint indexesID = 0;
 	unsigned num_vertices = 0;
 	unsigned num_indices = 0;
@@ -25,7 +25,7 @@ class ShaderProgram;
 class MeshComponent :
 	public BaseComponent
 {
-	DEFAULT_COMPONENT_IMPLEMENTATION;
+	DEFINE_COMPONENT(MeshComponent);
 public:
 	std::list<Mesh*> Meshes;
 	MaterialComponent* MaterialComponent;
@@ -36,7 +36,6 @@ public:
 
 	void Update(float dt) override;
 	void EditorUpdate(float dt) override;
-	void DrawUI() override;
 
 	const GLfloat DEFAULT_GL_AMBIENT[4] = { 0.2f, 0.2f, 0.2f, 1.f };
 	const GLfloat DEFAULT_GL_DIFFUSE[4] = { 0.8f, 0.8f, 0.8f, 1.f };

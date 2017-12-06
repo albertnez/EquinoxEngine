@@ -1,4 +1,3 @@
-#include "Model.h"
 #include "Globals.h"
 #include "Engine.h"
 #include "ModuleRender.h"
@@ -8,23 +7,12 @@
 #include <windows.h>
 #include "GL/glew.h"
 #include <gl/GL.h>
-#include <gl/GLU.h>
-#include "Cube.h"
-#include "Sphere.h"
-#include "Cylinder.h"
 #include "Plane.h"
-#include "ModuleEditorCamera.h"
 #include "ModuleAnimation.h"
 #include "CoordinateArrows.h"
-#include "IL/ilut_config.h"
-#include "IL/il.h"
-#include "IL/ilut.h"
-#include "IL/ilu.h"
-#include "ModuleTextures.h"
 #include "Level.h"
-#include "ParticleEmitter.h"
 #include "TransformComponent.h"
-#include "ProgramManager.h"
+#include "ModuleCameraManager.h"
 
 struct ShaderProgram;
 
@@ -39,6 +27,9 @@ ModuleRender::~ModuleRender()
 // Called before render is available
 bool ModuleRender::Init()
 {
+	_moduleWindow = App->GetModule<ModuleWindow>();
+	_moduleInput = App->GetModule<ModuleInput>();
+	_cameraManager = App->GetModule<ModuleCameraManager>();
 	return true;
 }
 
@@ -46,7 +37,7 @@ bool ModuleRender::Start()
 {
 	LOG("Creating Renderer context");
 	bool ret = true;
-	context = SDL_GL_CreateContext(App->window->window);
+	context = SDL_GL_CreateContext(_moduleWindow->window);
 
 	if (context == nullptr)
 	{
@@ -85,66 +76,36 @@ bool ModuleRender::Start()
 		glEnable(GL_BLEND);
 
 		int w, h;
-		SDL_GetWindowSize(App->window->window, &w, &h);
-		App->editorCamera->SetAspectRatio(float(w) / float(h));
+		_moduleWindow->GetWindowSize(w, h);
+		CameraComponent* camera = _cameraManager->GetMainCamera();
+		if (nullptr != camera)
+		{
+			camera->SetAspectRatio(float(w) / float(h));
+		}
 
 		Quat rotation_plane = Quat::FromEulerXYZ(DEG2RAD(0.f), DEG2RAD(0.f), DEG2RAD(0.f));
 		objects.push_back(new ::Plane(float3(0, 0.f, -5.f), rotation_plane, 60));
 
-		/////////// SHADER TEST
-
-		ProgramManager* pManager = App->programManager;
-		ShaderProgram* texture_program = pManager->CreateProgram("StandardTextureDiffuse");
-		ShaderProgram* notexture_program = pManager->CreateProgram("StandardColorDiffuse");
-
-		pManager->AddShaderToProgram(texture_program, "Shaders/SimpleVertexShader.ver", GL_VERTEX_SHADER);
-		pManager->AddShaderToProgram(texture_program, "Shaders/SimpleFragmentShader.frag", GL_FRAGMENT_SHADER, { "#define TEXTURE\n" });
-
-		pManager->CompileAndAttachProgramShaders(texture_program);
-
-		pManager->AddShaderToProgram(notexture_program, "Shaders/SimpleVertexShader.ver", GL_VERTEX_SHADER);
-		pManager->AddShaderToProgram(notexture_program, "Shaders/SimpleFragmentShader.frag", GL_FRAGMENT_SHADER);
-
-		pManager->CompileAndAttachProgramShaders(notexture_program);
-
-		/////////// 
-    
-		_scene = new Level();
-		_scene->Load("Models/street/", "Street.obj");
-		App->animator->Load("Idle", "Models/ArmyPilot/Animations/ArmyPilot_Idle.fbx");
-		
-		////////////
-		GameObject* goPS = new GameObject;
-		TransformComponent* transform = new TransformComponent;
-		ParticleEmitter* peComponent = new ParticleEmitter(200, float2(50.f, 50.f), 20.f, 1.2f, 15.f);
-		unsigned rainTex = App->textures->Load("Models/rainSprite.tga");
-		//unsigned snowTex = App->textures->Load("Models/simpleflake.tga");
-		peComponent->SetTexture(rainTex);
-		goPS->Name = "ParticleSystem";
-		goPS->AddComponent(transform);
-		goPS->AddComponent(peComponent);
-
-		_scene->AddToScene(goPS);
-
-		////////////
-
 		objects.push_back(new CoordinateArrows());
+
+		SetVSync(-1);
 	}
 	return ret;
 }
 
 update_status ModuleRender::PreUpdate(float DeltaTime)
 {	
-	ModuleEditorCamera* camera = App->editorCamera;
+	
+	CameraComponent* camera = _cameraManager->GetMainCamera();
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glLoadMatrixf(camera->GetProjectionMatrix());
 
-	if (App->input->GetWindowEvent(WE_RESIZE))
+	if (_moduleInput->GetWindowEvent(WE_RESIZE))
 	{
 		int w, h;
-		SDL_GetWindowSize(App->window->window, &w, &h);
+		_moduleWindow->GetWindowSize(w, h);
 		camera->SetAspectRatio(float(w) / float(h));
 		glViewport(0, 0, w, h);
 	}
@@ -164,19 +125,15 @@ update_status ModuleRender::Update(float DeltaTime)
 {
 	bool ret = true;
 
-	_scene->Update(DeltaTime);
-
 	for (std::list<Primitive*>::iterator it = objects.begin(); it != objects.end(); ++it)
 		(*it)->Draw();
-
-	_scene->DrawUI();
 
 	return ret ? UPDATE_CONTINUE : UPDATE_ERROR;
 }
 
 update_status ModuleRender::PostUpdate(float DeltaTime)
 {
-	SDL_GL_SwapWindow(App->window->window);
+	SDL_GL_SwapWindow(_moduleWindow->window);
 
 	return UPDATE_CONTINUE;
 }
@@ -192,9 +149,6 @@ bool ModuleRender::CleanUp()
 		SDL_GL_DeleteContext(context);
 	}
 
-	_scene->CleanUp();
-	RELEASE(_scene);
-
 	for (std::list<Primitive*>::iterator it = objects.begin(); it != objects.end(); ++it)
 	{
 		(*it)->CleanUp();
@@ -202,5 +156,27 @@ bool ModuleRender::CleanUp()
 	}
 
 	return true;
+}
+
+using PFNWGLSWAPINTERVALFARPROC = BOOL(APIENTRY *)(int);
+void ModuleRender::SetVSync(int interval) const
+{
+	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = reinterpret_cast<PFNWGLSWAPINTERVALFARPROC>(wglGetProcAddress("wglSwapIntervalEXT"));
+
+	if (wglSwapIntervalEXT)
+	{
+		if (wglSwapIntervalEXT(interval))
+		{
+			LOG("VSync changed");
+		}
+		else
+		{
+			LOG("VSync change failed");
+		}
+	}
+	else
+	{
+		LOG("VSync change unsupported");
+	}
 }
 

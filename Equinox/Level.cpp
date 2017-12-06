@@ -1,106 +1,80 @@
 ﻿#include "Level.h"
-#include <assimp/cimport.h>
-#include <assimp/postprocess.h>
-#include "ModuleTextures.h"
 #include "GameObject.h"
-#include "MeshComponent.h"
 #include "TransformComponent.h"
-#include "MaterialComponent.h"
-#include "ModuleWindow.h"
-#include "IMGUI/imgui.h"
-#include "ModuleEditor.h"
+#include "ModuleCameraManager.h"
 #include "Quadtree.h"
-#include "ModuleEditorCamera.h"
+
+#include "IMGUI/imgui.h"
+#include <stack>
 
 Level::Level()
 {
-	root = new GameObject;
+	_root = new GameObject;
 
 	vec minPoint = vec(-10000, -100, -10000);
 	vec maxPoint = vec(10000, 100, 10000);
 
 	AABB limits = AABB(minPoint, maxPoint);
 
-	quadtree = new Quadtree(limits);
+	_quadtree = new Quadtree(limits);
 }
 
 Level::~Level()
 {
 }
 
-void Level::Load(const char* path, const char* file)
-{
-	LOG("Loading level %s", file);
-	char filePath[256];
-	sprintf_s(filePath, "%s%s", path, file);
-
-	const aiScene* scene = aiImportFile(filePath, aiProcessPreset_TargetRealtime_MaxQuality);
-
-	aiNode* node = scene->mRootNode;
-
-	loadMeshes(scene, path);
-
-	loadNodes(node, root);
-
-	aiReleaseImport(scene);
-}
-
 bool Level::CleanUp()
 {
-	for (Material* mat : materials)
-	{
-		RELEASE(mat);
-	}
-	for (Mesh* mesh : meshes)
-	{
-		RELEASE(mesh);
-	}
+	cleanUpNodes(_root);
 
-	cleanUpNodes(root);
+	_quadtree->Clear();
 
-	quadtree->Clear();
+	RELEASE(_quadtree);
 
-	RELEASE(quadtree);
-
-	RELEASE(root);
+	RELEASE(_root);
 
 	return true;
+}
+
+void Level::PreUpdate(float dt)
+{
+	
 }
 
 void Level::Update(float dt)
 {
 	std::vector<GameObject*> visibleObjects;
-	quadtree->CollectIntersections(visibleObjects, App->editorCamera->GetCamera()->GetFrustumAABB());
+	_quadtree->CollectIntersections(visibleObjects, App->GetModule<ModuleCameraManager>()->GetMainCamera()->GetFrustumAABB());
 
 	for (GameObject* go : visibleObjects)
 		go->VisibleOnCamera = true;
 
-	root->Update(dt);
-
-	if (App->editor->DrawHierachy)
-		root->DrawHierachy();
+	_root->Update(dt);
 
 	for (GameObject* go : visibleObjects)
 		go->VisibleOnCamera = false;
-
-	if(App->editor->DrawQuadtree)
-		quadtree->DrawQuadtree();
 }
 
-void Level::DrawUI()
+void Level::PostUpdate(float dt)
 {
-	int w, h;
-	SDL_GetWindowSize(App->window->window, &w, &h);
+}
 
-	ImGui::SetNextWindowSize(ImVec2(300, h), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiSetCond_Always);
+void Level::RegenerateQuadtree() const
+{
+	std::stack<GameObject*> gameObjects;
+	gameObjects.push(_root);
 
-	if (ImGui::Begin("Hierachy", nullptr, ImGuiWindowFlags_AlwaysUseWindowPadding))
+	while (!gameObjects.empty())
 	{
-		for (GameObject* node : root->GetChilds())
-			drawHierachy(node);
+		GameObject* current = gameObjects.top();
+		gameObjects.pop();
+		_quadtree->Insert(current);
+
+		for (GameObject* child : current->GetChilds())
+		{
+			gameObjects.push(child);
+		}
 	}
-	ImGui::End();
 }
 
 GameObject* Level::FindGameObject(const char* name)
@@ -117,180 +91,13 @@ void Level::AddToScene(GameObject* go)
 {
 	if (go != nullptr)
 	{
-		LinkGameObject(go, root);
+		LinkGameObject(go, _root);
 	}
 }
 
-void Level::loadNodes(aiNode* originalNode, GameObject* node)
+const Quadtree& Level::GetQuadtree() const
 {
-	if (originalNode == nullptr)
-		return;
-
-	GameObject* children = new GameObject;
-
-	children->Name = originalNode->mName.C_Str();
-	children->SetParent(node);
-
-	aiVector3D position;
-	aiVector3D scale;
-	aiQuaternion rotation;
-
-	originalNode->mTransformation.Decompose(scale, rotation, position);
-	TransformComponent* transform = new TransformComponent;
-	transform->Position = float3(position.x, position.y, position.z);
-	transform->Scale = float3(scale.x, scale.y, scale.z);
-	transform->Rotation = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
-
-	children->AddComponent(transform);
-
-	std::vector<vec> vertex_boundingbox;
-
-	if (originalNode->mMeshes != nullptr)
-	{
-		vertex_boundingbox.resize(originalNode->mNumMeshes * 8);
-		MeshComponent* meshComponent = new MeshComponent;
-		children->AddComponent(meshComponent);
-
-		MaterialComponent* materialComponent = new MaterialComponent;
-		children->AddComponent(materialComponent);
-
-		meshComponent->MaterialComponent = materialComponent;
-
-		for (int i = 0; i < originalNode->mNumMeshes; ++i)
-		{
-			Mesh* mesh = meshes[originalNode->mMeshes[i]];
-			
-			mesh->materialInComponent = materialComponent->AddMaterial(materials[mesh->material]);
-			
-			meshComponent->Meshes.push_back(mesh);
-
-			mesh->boundingBox.GetCornerPoints(&vertex_boundingbox[i * 8]);
-		}
-	}
-
-	children->BoundingBox.SetNegativeInfinity();
-	if (!vertex_boundingbox.empty())
-		children->BoundingBox.Enclose(reinterpret_cast<float3*>(&vertex_boundingbox[0]), originalNode->mNumMeshes * 8);
-
-	quadtree->Insert(children);
-	
-	for (int i = 0; i < originalNode->mNumChildren; ++i)
-	{
-		loadNodes(originalNode->mChildren[i], children);
-	}
-}
-
-void Level::loadMeshes(const aiScene* scene, const char* path)
-{
-	for (int i = 0; i < scene->mNumMeshes; ++i)
-	{
-		Mesh* mesh = new Mesh;
-		aiMesh* aMesh = scene->mMeshes[i];
-
-		mesh->num_vertices = aMesh->mNumVertices;
-		mesh->num_indices = aMesh->mNumFaces * 3;
-		
-		GLuint* indexes = new Uint32[aMesh->mNumFaces * 3];
-
-		for (unsigned iFace = 0; iFace < aMesh->mNumFaces; ++iFace)
-		{
-			aiFace* face = &aMesh->mFaces[iFace];
-
-			indexes[(iFace * 3)] = face->mIndices[0];
-			indexes[(iFace * 3) + 1] = face->mIndices[1];
-			indexes[(iFace * 3) + 2] = face->mIndices[2];
-		}
-
-		mesh->material = aMesh->mMaterialIndex;
-
-		if (aMesh->mVertices != nullptr)
-		{
-			glGenBuffers(1, &mesh->vertexID);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexID);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh->num_vertices * 3, &aMesh->mVertices[0], GL_STATIC_DRAW);
-		}
-
-		if (aMesh->mNormals != nullptr)
-		{
-			glGenBuffers(1, &mesh->normalID);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh->normalID);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh->num_vertices * 3, &aMesh->mNormals[0], GL_STATIC_DRAW);
-		}
-		
-		if (aMesh->mTextureCoords[0] != nullptr)
-		{
-			glGenBuffers(1, &mesh->textureCoordsID);
-			glBindBuffer(GL_ARRAY_BUFFER, mesh->textureCoordsID);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(aiVector3D) * mesh->num_vertices, &aMesh->mTextureCoords[0][0], GL_STATIC_DRAW);
-		}
-
-		glGenBuffers(1, &mesh->indexesID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexesID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(aiVector3D) * aMesh->mNumFaces, indexes, GL_STATIC_DRAW);
-
-		meshes.push_back(mesh);
-
-		mesh->boundingBox.SetNegativeInfinity();
-		mesh->boundingBox.Enclose(reinterpret_cast<float3*>(&aMesh->mVertices[0]), mesh->num_vertices);
-
-		RELEASE_ARRAY(indexes);
-	}
-
-	for (int i = 0; i < scene->mNumMaterials; ++i)
-	{
-		aiMaterial* aiMat = scene->mMaterials[i];
-		Material* material = new Material;
-
-		aiColor4D ai_property;
-		float shininess;
-
-		if (aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ai_property) == AI_SUCCESS)
-			material->ambient = ai_property;
-		if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, ai_property) == AI_SUCCESS)
-			material->diffuse = ai_property;
-		if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, ai_property) == AI_SUCCESS)
-			material->specular = ai_property;
-		if (aiMat->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
-			material->shininess = shininess;
-
-		int numTexturesByMaterial = scene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE);
-		if (numTexturesByMaterial > 0)
-		{
-			aiMaterial* aMaterial = scene->mMaterials[i];
-
-			aiString fileName;
-			aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &fileName);
-			sprintf_s(material->FilePath, "%s%s", path, fileName.C_Str());
-
-			material->texture = App->textures->Load(material->FilePath);
-		}
-		
-		materials.push_back(material);
-	}
-}
-
-void Level::drawHierachy(GameObject* node)
-{
-	int flags = ImGuiTreeNodeFlags_DefaultOpen;
-	if (node->GetChilds().size() == 0)
-		flags |= ImGuiTreeNodeFlags_Leaf;
-
-	if (App->editor->SelectedGameObject == node)
-		flags |= ImGuiTreeNodeFlags_Selected;
-
-	if (ImGui::TreeNodeEx(node->Name.c_str(), flags))
-	{
-		if (ImGui::IsItemClicked(0))
-		{
-			App->editor->SelectedGameObject = node;
-		}
-
-		for (GameObject* child : node->GetChilds())
-		{
-			drawHierachy(child);
-		}
-		ImGui::TreePop();
-	}
+	return *_quadtree;
 }
 
 void Level::cleanUpNodes(GameObject* node)

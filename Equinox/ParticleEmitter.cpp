@@ -1,16 +1,14 @@
 ﻿#include "ParticleEmitter.h"
-#include <GL/glew.h>
 #include "Globals.h"
-#include "IMGUI/imgui.h"
 #include "Engine.h"
-#include "ModuleEditor.h"
 #include "CameraComponent.h"
-#include "ModuleEditorCamera.h"
+
+#include <GL/glew.h>
+#include "IMGUI/imgui.h"
+#include "ModuleCameraManager.h"
 
 ParticleEmitter::ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHeight, float FallSpeed, float LifeTime)
 {
-	Name = "Particle System";
-
 	this->MaxParticles = MaxParticles;
 	this->EmitArea = EmitArea;
 	this->FallHeight = FallHeight;
@@ -23,6 +21,7 @@ ParticleEmitter::ParticleEmitter(int MaxParticles, float2 EmitArea, float FallHe
 	_controlFallSpeed = FallSpeed;
 	_controlLifeTime = LifeTime;
 
+	_cameraManager = App->GetModule<ModuleCameraManager>();
 }
 
 ParticleEmitter::~ParticleEmitter()
@@ -56,34 +55,13 @@ void ParticleEmitter::Update(float dt)
 
 void ParticleEmitter::EditorUpdate(float dt)
 {
-	if (_editorSimulation && !App->editor->IsPlaying())
+	if (_editorSimulation)
 		Update(dt);
 }
 
-void ParticleEmitter::DrawUI()
+void ParticleEmitter::EndPlay()
 {
-	ImGui::Checkbox("Simulate On Editor", &_editorSimulation);
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("Restart"))
-	{
-		restart();
-	}
-
-	ImGui::InputFloat2("Emit Area", &EmitArea[0], -1, ImGuiInputTextFlags_CharsDecimal);
-	ImGui::InputInt("Max Particles", &MaxParticles, -1);
-	ImGui::InputFloat("Fall Height", &FallHeight, -1, ImGuiInputTextFlags_CharsDecimal);
-	ImGui::InputFloat("Fall Speed", &FallSpeed, -1, ImGuiInputTextFlags_CharsDecimal);
-	ImGui::InputFloat("Particle's LifeTime", &LifeTime, -1, ImGuiInputTextFlags_CharsDecimal);
-}
-
-void ParticleEmitter::CleanUp()
-{
-	for (Particle* particle : ParticlePool)
-	{
-		RELEASE(particle);
-	}
+	CleanUp();
 }
 
 void ParticleEmitter::SetTexture(unsigned textureId)
@@ -110,7 +88,7 @@ void ParticleEmitter::drawParticle(Particle* particle)
 	glColor3f(1.f, 1.f, 1.f);
 
 	float3 up, right;
-	ComputeQuad(*App->editorCamera->GetCamera(), up, right, particle);
+	ComputeQuad(*_cameraManager->GetMainCamera(), up, right, particle);
 	//right = float3::unitZ; 
 
 	float3 position = particle->Position;
@@ -171,7 +149,7 @@ void ParticleEmitter::generateParticles()
 
 }
 
-void ParticleEmitter::restart()
+void ParticleEmitter::CleanUp()
 {
 	for (Particle* particle : ParticlePool)
 	{
@@ -196,7 +174,7 @@ void ParticleEmitter::checkValues()
 		_controlFallSpeed = FallSpeed;
 		_controlLifeTime = LifeTime;
 
-		restart();
+		CleanUp();
 	}
 
 }

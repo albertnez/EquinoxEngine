@@ -1,12 +1,9 @@
-#include "StatsModule.h"
+#include "ModuleStats.h"
 
-
-
-StatsModule::StatsModule()
+bool ModuleStats::Init()
 {
-}
+	_total_complex_time.Start();
+	_total_simple_time.Start();
 
-
-StatsModule::~StatsModule()
-{
+	return true;
 }

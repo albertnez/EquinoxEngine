@@ -4,25 +4,13 @@
 #include <string>
 #include <list>
 #include <MathGeoLib/include/Geometry/AABB.h>
+#include "Engine.h"
 
 class BaseComponent;
 class TransformComponent;
 
 class GameObject
 {
-
-public:
-	std::string Name = "GameObject";
-	bool Enabled = true;
-	AABB BoundingBox;
-	bool VisibleOnCamera = false;
-	
-private:
-	GameObject* _parent = nullptr;
-	TransformComponent* _transform = nullptr;
-	std::vector<GameObject*> _childs;
-	std::list<BaseComponent*> _components;
-	bool _isPlaying = false;
 
 public:
 	GameObject();
@@ -44,12 +32,24 @@ public:
 	TransformComponent* GetTransform() const;
 
 	void DrawBoundingBox();
-	void DrawHierachy();
-	void DrawHierachy(const float4x4& transformMatrix);
+	void DrawHierachy() const;
+	void DrawHierachy(const float4x4& transformMatrix) const;
 	
 	void Update(float dt);
-
 	bool CleanUp();
+
+	std::string Name = "GameObject";
+	bool Enabled = true;
+	AABB BoundingBox;
+	bool VisibleOnCamera = false;
+
+private:
+	GameObject* _parent = nullptr;
+	TransformComponent* _transform = nullptr;
+	std::vector<GameObject*> _childs;
+	std::list<BaseComponent*> _componentsToRemove;
+	std::list<BaseComponent*> _components;
+	Engine::UpdateState _playState = Engine::UpdateState::Stopped;
 
 };
 

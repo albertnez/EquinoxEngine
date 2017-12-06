@@ -3,7 +3,8 @@
   <ItemGroup>
     <Filter Include="Main">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>
+      </Extensions>
     </Filter>
     <Filter Include="Game Modules">
       <UniqueIdentifier>{15b5cbc6-cd68-4e6e-8935-b04f2fdf7bf4}</UniqueIdentifier>
@@ -26,12 +27,12 @@
     <Filter Include="GameObject\Components">
       <UniqueIdentifier>{68192a36-02bc-4de9-9e93-6dc57eeecade}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Static Factory">
+      <UniqueIdentifier>{59a50008-2d8f-417e-a57e-a6d8b86cf91b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleRender.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleTextures.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="ModuleWindow.h">
@@ -63,9 +64,6 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleSceneManager.h">
-      <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Game Modules</Filter>
@@ -112,13 +110,7 @@
     <ClInclude Include="Cylinder.h">
       <Filter>Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleEditorCamera.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="CoordinateArrows.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
       <Filter>Primitives</Filter>
     </ClInclude>
     <ClInclude Include="IMGUI\imgui_internal.h">
@@ -138,9 +130,6 @@
     </ClInclude>
     <ClInclude Include="IMGUI\imgui.h">
       <Filter>Utils\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleEditor.h">
-      <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="IMGUI\imgui_impl_sdl_gl3.h">
       <Filter>Utils\IMGUI</Filter>
@@ -172,9 +161,6 @@
     <ClInclude Include="CameraComponent.h">
       <Filter>GameObject\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleAnimation.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationSDL.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -187,15 +173,33 @@
     <ClInclude Include="ParticleEmitter.h">
       <Filter>GameObject\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleLevelManager.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="FactoryUtils.h">
+      <Filter>Utils\Static Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleMaterialManager.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleMeshManager.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleTextures.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleAnimation.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleCameraManager.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
     <ClInclude Include="ProgramManager.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleRender.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleTextures.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleWindow.cpp">
@@ -216,9 +220,6 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleSceneManager.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleTimer.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
@@ -237,9 +238,6 @@
     <ClCompile Include="Cylinder.cpp">
       <Filter>Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleEditorCamera.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
     <ClCompile Include="CoordinateArrows.cpp">
       <Filter>Primitives</Filter>
     </ClCompile>
@@ -249,14 +247,8 @@
     <ClCompile Include="IMGUI\imgui.cpp">
       <Filter>Utils\IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleEditor.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
     <ClCompile Include="IMGUI\imgui_impl_sdl_gl3.cpp">
       <Filter>Utils\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Primitives</Filter>
     </ClCompile>
     <ClCompile Include="ModuleLighting.cpp">
       <Filter>Core Modules</Filter>
@@ -282,7 +274,31 @@
     <ClCompile Include="CameraComponent.cpp">
       <Filter>GameObject\Components</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleLevelManager.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="FactoryUtils.cpp">
+      <Filter>Utils\Static Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleStats.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleMaterialManager.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleMeshManager.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleTextures.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
     <ClCompile Include="ModuleAnimation.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleCameraManager.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ParticleEmitter.cpp">
@@ -291,5 +307,10 @@
     <ClCompile Include="ProgramManager.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FactoryDictionary.h">
+      <Filter>Utils\Static Factory</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -24,12 +24,12 @@ public:
 	ModuleAnimation(bool start_enabled = true);
 	~ModuleAnimation();
 
+	std::shared_ptr<Animation> CreateAnimation(const std::string& name);
+
 	bool CleanUp() override;
 
-	void Load(const char* name, const char* file);
-
 private:
-	typedef std::map<std::string, Animation*> AnimationsMap;
+	typedef std::map<std::string, std::shared_ptr<Animation>> AnimationsMap;
 
 	AnimationsMap _animations;
 };

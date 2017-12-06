@@ -3,7 +3,6 @@
 
 #include "Module.h"
 #include "Rectangle3.h"
-#include <GL/glew.h>
 
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
@@ -24,14 +23,17 @@ public:
 	update_status Update(float DeltaTime);
 	update_status PostUpdate(float DeltaTime);
 	bool CleanUp();
+	void SetVSync(int interval) const;
 
 public:
-	SDL_GLContext context = nullptr;
+	void* context = nullptr;
 		
 private:
 	std::list<Primitive*> objects;
 
-	Level* _scene = nullptr;
+	std::shared_ptr<class ModuleWindow> _moduleWindow;
+	std::shared_ptr<class ModuleInput> _moduleInput;
+	std::shared_ptr<class ModuleCameraManager> _cameraManager;
 };
 
 #endif // __MODULERENDER_H__
