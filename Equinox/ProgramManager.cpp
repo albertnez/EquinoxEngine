@@ -12,8 +12,15 @@ ProgramManager::~ProgramManager()
 
 }
 
-bool ProgramManager::Init()
+bool ProgramManager::Start()
 {
+	ShaderProgram* unlit = CreateProgram("Unlit");
+
+	AddShaderToProgram(unlit, "Shaders/SimpleVertexShader.ver", GL_VERTEX_SHADER);
+	AddShaderToProgram(unlit, "Shaders/SimpleFragmentShader.frag", GL_FRAGMENT_SHADER, { "#define TEXTURE\n" });
+
+	CompileAndAttachProgramShaders(unlit);
+
 	return true;
 }
 
@@ -100,6 +107,11 @@ bool ProgramManager::UseProgram(ShaderProgram* program) const
 		return true;
 	}
 	return false;
+}
+
+void ProgramManager::UseDefaultProgram() const
+{
+	glUseProgram(0);
 }
 
 bool ProgramManager::UseProgram(const std::string &name) const

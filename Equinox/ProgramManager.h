@@ -16,7 +16,7 @@ public:
 	ProgramManager();
 	~ProgramManager();
 
-	bool Init() override;
+	bool Start() override;
 	bool CleanUp() override;
 
 	ShaderProgram* CreateProgram(const std::string &name);
@@ -25,6 +25,7 @@ public:
 	ShaderProgram* GetProgramByName(const std::string &name) const;
 	bool UseProgram(const std::string &name) const;
 	bool UseProgram(ShaderProgram* program) const;
+	void UseDefaultProgram() const;
 
 	bool CompileAndAttachProgramShaders(ShaderProgram* program) const;
 

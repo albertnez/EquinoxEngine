@@ -27,10 +27,6 @@ class MeshComponent :
 {
 	DEFINE_COMPONENT(MeshComponent);
 public:
-	std::list<Mesh*> Meshes;
-	MaterialComponent* MaterialComponent;
-
-public:
 	MeshComponent();
 	~MeshComponent();
 
@@ -42,9 +38,13 @@ public:
 	const GLfloat DEFAULT_GL_SPECULAR[4] = { 0.f, 0.f, 0.f, 1.f };
 	const GLfloat DEFAULT_GL_SHININESS = 0.f;	
 
+	std::list<Mesh*> Meshes;
+	MaterialComponent* MaterialComponent;
+
 private:
-	ShaderProgram* _shaderTexture;
-	ShaderProgram* _shaderColor;
+	std::shared_ptr<class ProgramManager> _programManager;
+
+	ShaderProgram* _shaderUnlit;
 };
 
 #endif

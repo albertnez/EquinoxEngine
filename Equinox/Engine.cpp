@@ -15,6 +15,7 @@
 #include "ModuleMaterialManager.h"
 #include "ModuleMeshManager.h"
 #include "ModuleCameraManager.h"
+#include "ProgramManager.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ Engine::Engine()
 	AppendModule<ModuleCameraManager>();
 
 	AppendModule<ModuleRender>();
+	AppendModule<ProgramManager>();
 	AppendModule<ModuleTextures>();
 	AppendModule<ModuleLighting>();
 	AppendModule<ModuleAudio>();
