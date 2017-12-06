@@ -10,6 +10,8 @@ DEFINE_COMPONENT_EDITOR(TransformComponent)
 public:
 
 	void DrawUI(BaseComponent* component) override;
+	bool IsRemovable() const override;
+	bool CanBeDisabled() const override;
 };
 
 void TransformComponentEditor::DrawUI(BaseComponent* component)
@@ -21,6 +23,16 @@ void TransformComponentEditor::DrawUI(BaseComponent* component)
 	float3 rot = transformComponent->Rotation.ToEulerXYZ() * RadToDeg(transformComponent->Rotation.Angle());
 	ImGui::SliderFloat3("Rotation", &rot[0], -360, 360, "%.2f deg");
 	ImGui::InputFloat3("Scale", &transformComponent->Scale[0], -1, ImGuiInputTextFlags_CharsDecimal);
+}
+
+bool TransformComponentEditor::IsRemovable() const
+{
+	return false;
+}
+
+bool TransformComponentEditor::CanBeDisabled() const
+{
+	return false;
 }
 
 REGISTER_COMPONENT_EDITOR(TransformComponentEditor)

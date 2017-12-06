@@ -12,6 +12,16 @@ public:
 	virtual std::type_index GetComponentTypeIndex() const = 0;
 
 	virtual void DrawUI(BaseComponent* component) = 0;
+
+	virtual bool IsRemovable() const
+	{
+		return true;
+	}
+
+	virtual bool CanBeDisabled() const
+	{
+		return true;
+	}
 };
 
 CREATE_NAMED_STATIC_FACTORY(BaseComponentEditor, ComponentEditor)

@@ -98,14 +98,47 @@ void LevelEditor::drawProperties()
 			for (BaseComponent* component : _selectedGameObject->GetComponents())
 			{
 				std::string componentName = GenerateNiceNameForComponent(component->GetComponentName());
+				ImGui::PushID(component->GetComponentName().c_str());
 				if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowOverlapMode))
 				{
 					auto it = _componentEditors.find(component->GetComponentClassId());
 					if (it != _componentEditors.end())
 					{
-						it->second->DrawUI(component);
+						BaseComponentEditor* editor = it->second;
+						if (editor->CanBeDisabled())
+						{
+							ImGui::Checkbox("Enabled", &component->Enabled);
+						}
+
+						if (editor->IsRemovable())
+						{
+							if (editor->CanBeDisabled())
+							{
+								ImGui::SameLine();
+							}
+
+							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(255, 0, 0));
+							if (ImGui::Button("Delete Component"))
+							{
+								_selectedGameObject->DeleteComponent(component);
+							}
+							ImGui::PopStyleColor();
+						}
+
+						editor->DrawUI(component);
+					}
+					else
+					{
+						ImGui::Checkbox("Enabled", &component->Enabled); ImGui::SameLine();
+						ImGui::PushStyleColor(ImGuiCol_Button, ImColor(255, 0, 0));
+						if (ImGui::Button("Delete Component"))
+						{
+							_selectedGameObject->DeleteComponent(component);
+						}
+						ImGui::PopStyleColor();
 					}
 				}
+				ImGui::PopID();
 			}
 		}
 	}

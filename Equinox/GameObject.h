@@ -13,19 +13,6 @@ class GameObject
 {
 
 public:
-	std::string Name = "GameObject";
-	bool Enabled = true;
-	AABB BoundingBox;
-	bool VisibleOnCamera = false;
-	
-private:
-	GameObject* _parent = nullptr;
-	TransformComponent* _transform = nullptr;
-	std::vector<GameObject*> _childs;
-	std::list<BaseComponent*> _components;
-	Engine::UpdateState _playState = Engine::UpdateState::Stopped;
-
-public:
 	GameObject();
 	~GameObject();
 
@@ -49,8 +36,20 @@ public:
 	void DrawHierachy(const float4x4& transformMatrix) const;
 	
 	void Update(float dt);
-
 	bool CleanUp();
+
+	std::string Name = "GameObject";
+	bool Enabled = true;
+	AABB BoundingBox;
+	bool VisibleOnCamera = false;
+
+private:
+	GameObject* _parent = nullptr;
+	TransformComponent* _transform = nullptr;
+	std::vector<GameObject*> _childs;
+	std::list<BaseComponent*> _componentsToRemove;
+	std::list<BaseComponent*> _components;
+	Engine::UpdateState _playState = Engine::UpdateState::Stopped;
 
 };
 

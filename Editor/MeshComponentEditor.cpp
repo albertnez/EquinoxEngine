@@ -15,12 +15,6 @@ void MeshComponentEditor::DrawUI(BaseComponent* component)
 	MeshComponent* meshComponent = static_cast<MeshComponent*>(component);
 	assert(nullptr != meshComponent && "Component is not of type mesh component");
 
-	ImGui::Checkbox("Enabled", &meshComponent->Enabled); /*ImGui::SameLine();
-											  ImGui::PushStyleColor(ImGuiCol_Button, ImColor(255, 0, 0));
-											  if (ImGui::Button("Delete Component"))
-											  Parent->DeleteComponent(this);
-											  ImGui::PopStyleColor();*/
-
 	ImGui::PushStyleColor(ImGuiCol_Text, ImColor(240, 230, 140));
 
 	ImGui::LabelText("", "%i mesh(es)", meshComponent->Meshes.size());

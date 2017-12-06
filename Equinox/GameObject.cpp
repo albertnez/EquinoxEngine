@@ -104,7 +104,7 @@ void GameObject::DeleteComponentByName(const std::string& name)
 
 void GameObject::DeleteComponent(BaseComponent* component)
 {
-	_components.remove(component);
+	_componentsToRemove.push_back(component);
 }
 
 TransformComponent* GameObject::GetTransform() const
@@ -156,6 +156,13 @@ void GameObject::Update(float dt)
 {
 	glPushMatrix();
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	for (BaseComponent* baseComponent : _componentsToRemove)
+	{
+		_components.remove(baseComponent);
+		RELEASE(baseComponent);
+	}
+	_componentsToRemove.clear();
 
 	for (BaseComponent* baseComponent : _components)
 	{
