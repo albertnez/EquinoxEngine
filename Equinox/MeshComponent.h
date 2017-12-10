@@ -20,7 +20,7 @@ struct Mesh
 	AABB boundingBox;
 };
 
-class ShaderProgram;
+struct ShaderProgram;
 
 class MeshComponent :
 	public BaseComponent
@@ -44,7 +44,7 @@ public:
 private:
 	std::shared_ptr<class ProgramManager> _programManager;
 
-	ShaderProgram* _shaderUnlit;
+	std::shared_ptr<ShaderProgram> _shaderUnlit;
 };
 
 #endif

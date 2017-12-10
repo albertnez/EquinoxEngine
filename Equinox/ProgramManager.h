@@ -19,21 +19,21 @@ public:
 	bool Start() override;
 	bool CleanUp() override;
 
-	ShaderProgram* CreateProgram(const std::string &name);
-	void AddShaderToProgram(ShaderProgram* program, const char* filepath, const GLenum shaderType, const std::vector<char*>& preprocessor = std::vector<char*>(0)) const;
+	std::shared_ptr<ShaderProgram> CreateProgram(const std::string &name);
+	void AddShaderToProgram(std::shared_ptr<ShaderProgram> program, const char* filepath, const GLenum shaderType, const std::vector<char*>& preprocessor = std::vector<char*>(0)) const;
 
-	ShaderProgram* GetProgramByName(const std::string &name) const;
+	std::shared_ptr<ShaderProgram> GetProgramByName(const std::string &name) const;
 	bool UseProgram(const std::string &name) const;
-	bool UseProgram(ShaderProgram* program) const;
+	bool UseProgram(std::shared_ptr<ShaderProgram> program) const;
 	void UseDefaultProgram() const;
 
-	bool CompileAndAttachProgramShaders(ShaderProgram* program) const;
+	bool CompileAndAttachProgramShaders(std::shared_ptr<ShaderProgram> program) const;
 
 private:
-	std::map<std::string, ShaderProgram*> programs;
+	std::map<std::string, std::shared_ptr<ShaderProgram>> programs;
 
 	void logShaderCompiler(const GLuint shader) const;
-	void logProgramLinker(const ShaderProgram* program) const;
+	void logProgramLinker(const std::shared_ptr<ShaderProgram> program) const;
 };
 
 #endif

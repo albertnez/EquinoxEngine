@@ -14,7 +14,7 @@ ProgramManager::~ProgramManager()
 
 bool ProgramManager::Start()
 {
-	ShaderProgram* unlit = CreateProgram("Unlit");
+	std::shared_ptr<ShaderProgram> unlit = CreateProgram("Unlit");
 
 	AddShaderToProgram(unlit, "Shaders/SimpleVertexShader.ver", GL_VERTEX_SHADER);
 	AddShaderToProgram(unlit, "Shaders/SimpleFragmentShader.frag", GL_FRAGMENT_SHADER, { "#define TEXTURE\n" });
@@ -28,13 +28,13 @@ bool ProgramManager::CleanUp()
 {
 	for (auto elem : programs)
 	{
-		ShaderProgram* program = elem.second;
+		std::shared_ptr<ShaderProgram> program = elem.second;
 		for (GLuint shader : program->shaders)
 			glDeleteShader(shader);
 
 		glDeleteProgram(program->id);
 
-		RELEASE(program);
+		program.reset();
 	}
 
 	programs.clear();
@@ -42,15 +42,15 @@ bool ProgramManager::CleanUp()
 	return true;
 }
 
-ShaderProgram* ProgramManager::CreateProgram(const std::string& name)
+std::shared_ptr<ShaderProgram> ProgramManager::CreateProgram(const std::string& name)
 {
 	if (programs.find(name) == programs.end())
 	{
 		GLuint shaderProgramId = glCreateProgram();
-		ShaderProgram* shaderProgram = new ShaderProgram;
+		std::shared_ptr<ShaderProgram> shaderProgram = std::make_shared<ShaderProgram>();
 		shaderProgram->id = shaderProgramId;
 		shaderProgram->shaders.clear();
-		programs.insert(std::pair<std::string, ShaderProgram*>(name, shaderProgram));
+		programs.insert(std::pair<std::string, std::shared_ptr<ShaderProgram>>(name, shaderProgram));
 
 		return shaderProgram;
 	}
@@ -58,7 +58,7 @@ ShaderProgram* ProgramManager::CreateProgram(const std::string& name)
 	return nullptr;
 }
 
-void ProgramManager::AddShaderToProgram(ShaderProgram* program, const char* filepath, const GLenum shaderType, const std::vector<char*>& preprocessor) const
+void ProgramManager::AddShaderToProgram(std::shared_ptr<ShaderProgram> program, const char* filepath, const GLenum shaderType, const std::vector<char*>& preprocessor) const
 {
 	if (program != nullptr)
 	{
@@ -93,13 +93,13 @@ void ProgramManager::AddShaderToProgram(ShaderProgram* program, const char* file
 	}
 }
 
-ShaderProgram* ProgramManager::GetProgramByName(const std::string &name) const
+std::shared_ptr<ShaderProgram> ProgramManager::GetProgramByName(const std::string &name) const
 {
 	auto it = programs.find(name);
 	return it != programs.end() ? it->second : nullptr;
 }
 
-bool ProgramManager::UseProgram(ShaderProgram* program) const
+bool ProgramManager::UseProgram(std::shared_ptr<ShaderProgram> program) const
 {
 	if (program != nullptr)
 	{
@@ -116,7 +116,7 @@ void ProgramManager::UseDefaultProgram() const
 
 bool ProgramManager::UseProgram(const std::string &name) const
 {
-	ShaderProgram* itShader = GetProgramByName(name);
+	std::shared_ptr<ShaderProgram> itShader = GetProgramByName(name);
 	if (itShader != nullptr)
 	{
 		return UseProgram(itShader);
@@ -141,7 +141,7 @@ void ProgramManager::logShaderCompiler(const GLuint shader) const
 	LOG("Shader Compiler LOG End");
 }
 
-void ProgramManager::logProgramLinker(const ShaderProgram* program) const
+void ProgramManager::logProgramLinker(const std::shared_ptr<ShaderProgram> program) const
 {
 	GLint maxLength = 0;
 	glGetProgramiv(program->id, GL_INFO_LOG_LENGTH, &maxLength);
@@ -161,7 +161,7 @@ void ProgramManager::logProgramLinker(const ShaderProgram* program) const
 	LOG("Program Linker LOG End");
 }
 
-bool ProgramManager::CompileAndAttachProgramShaders(ShaderProgram* program) const
+bool ProgramManager::CompileAndAttachProgramShaders(std::shared_ptr<ShaderProgram> program) const
 {
 	for (GLuint shader : program->shaders) {
 		glCompileShader(shader);
