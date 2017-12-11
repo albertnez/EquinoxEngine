@@ -132,25 +132,27 @@ void ProgramManager::logShaderCompiler(const GLuint shader) const
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
 	// The maxLength includes the NULL character
-	std::vector<GLchar> errorLog(maxLength);
-	glGetShaderInfoLog(shader, maxLength, &maxLength, &errorLog[0]);
+	char* errorLog = new char[maxLength];
+	glGetShaderInfoLog(shader, maxLength, &maxLength, errorLog);
 
 	// Delete to avoid leak
 	glDeleteShader(shader);
 
 	LOG("Shader Compiler LOG Start");
-	LOG(&errorLog[0]);
+	LOG(errorLog);
 	LOG("Shader Compiler LOG End");
+
+	RELEASE(errorLog);
 }
 
 void ProgramManager::logProgramLinker(const std::shared_ptr<ShaderProgram> program) const
 {
-	GLint maxLength = 0;
+	int maxLength = 0;
 	glGetProgramiv(program->id, GL_INFO_LOG_LENGTH, &maxLength);
 
 	// The maxLength includes the NULL character
-	std::vector<GLchar> infoLog(maxLength);
-	glGetProgramInfoLog(program->id, maxLength, &maxLength, &infoLog[0]);
+	char* infoLog = new char[maxLength];
+	glGetProgramInfoLog(program->id, maxLength, nullptr, infoLog);
 
 	// Delete to avoid leak
 	for (GLuint shader : program->shaders)
@@ -159,8 +161,10 @@ void ProgramManager::logProgramLinker(const std::shared_ptr<ShaderProgram> progr
 	glDeleteProgram(program->id);
 
 	LOG("Program Linker LOG Start");
-	LOG(&infoLog[0]);
+	LOG(infoLog);
 	LOG("Program Linker LOG End");
+
+	RELEASE(infoLog);
 }
 
 bool ProgramManager::CompileAndAttachProgramShaders(std::shared_ptr<ShaderProgram> program) const
