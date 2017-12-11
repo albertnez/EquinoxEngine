@@ -14,6 +14,8 @@
 #include "TransformComponent.h"
 #include "ModuleCameraManager.h"
 
+struct ShaderProgram;
+
 ModuleRender::ModuleRender()
 {
 }

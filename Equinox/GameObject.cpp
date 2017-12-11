@@ -155,7 +155,6 @@ void GameObject::DrawHierachy(const float4x4& transformMatrix) const
 void GameObject::Update(float dt)
 {
 	glPushMatrix();
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	for (BaseComponent* baseComponent : _componentsToRemove)
 	{
@@ -200,8 +199,6 @@ void GameObject::Update(float dt)
 	_playState = App->GetUpdateState();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	for (GameObject* child : _childs)
 	{

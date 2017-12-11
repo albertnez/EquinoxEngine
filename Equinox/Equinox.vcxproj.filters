@@ -194,6 +194,9 @@
     <ClInclude Include="ModuleCameraManager.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ProgramManager.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleRender.cpp">
@@ -296,6 +299,12 @@
       <Filter>Game Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleCameraManager.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>GameObject\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgramManager.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
   </ItemGroup>
