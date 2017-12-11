@@ -44,7 +44,9 @@ bool ProgramManager::CleanUp()
 
 std::shared_ptr<ShaderProgram> ProgramManager::CreateProgram(const std::string& name)
 {
-	if (programs.find(name) == programs.end())
+	auto it = programs.find(name);
+	assert(it == programs.end() && "Shader is being created twice!");
+	if (it == programs.end())
 	{
 		GLuint shaderProgramId = glCreateProgram();
 		std::shared_ptr<ShaderProgram> shaderProgram = std::make_shared<ShaderProgram>();
