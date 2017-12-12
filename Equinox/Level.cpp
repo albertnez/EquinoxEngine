@@ -92,6 +92,7 @@ void Level::AddToScene(GameObject* go)
 	if (go != nullptr)
 	{
 		LinkGameObject(go, _root);
+		_quadtree->Insert(go);
 	}
 }
 

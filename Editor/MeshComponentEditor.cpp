@@ -24,9 +24,9 @@ void MeshComponentEditor::DrawUI(BaseComponent* component)
 	for (std::shared_ptr<Mesh> mesh : meshComponent->Meshes)
 	{
 		vertex += mesh->GetNumVertices();
-		indices += mesh->GetNumIndices();
-		ImGui::LabelText("", "Mesh %i: %i triangles (%i indices, %i vertices)", i, mesh->GetNumIndices() / 3, mesh->GetNumIndices(),
-		                 mesh->GetNumIndices());
+		indices += mesh->GetNumIndexes();
+		ImGui::LabelText("", "Mesh %i: %i triangles (%i indices, %i vertices)", i, mesh->GetNumIndexes() / 3, mesh->GetNumIndexes(),
+		                 mesh->GetNumIndexes());
 		++i;
 	}
 

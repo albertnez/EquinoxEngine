@@ -186,9 +186,9 @@ void Mesh::SetIndexes(const uint32_t* indexes, int numIndexes)
 	}
 }
 
-uint32_t Mesh::GetNumIndices() const
+uint32_t Mesh::GetNumIndexes() const
 {
-	return num_indices;
+	return _indexes.size();
 }
 
 const AABB& Mesh::GetBoundingBox() const

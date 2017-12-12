@@ -12,7 +12,7 @@ public:
 	ModuleMeshManager();
 	~ModuleMeshManager();
 
-	bool Init() override;
+	bool Start() override;
 	bool CleanUp() override;
 
 	std::shared_ptr<Mesh> CreateMesh(const std::string& name);

@@ -45,7 +45,7 @@ public:
 	const std::vector<uint32_t>& GetIndexes() const;
 	const uint32_t* GetIndexesArray() const;
 	void SetIndexes(const uint32_t* indexes, int numIndexes);
-	uint32_t GetNumIndices() const;
+	uint32_t GetNumIndexes() const;
 
 	const AABB& GetBoundingBox() const;
 

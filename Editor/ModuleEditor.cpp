@@ -16,6 +16,9 @@
 #include "ModuleAnimation.h"
 #include "ModuleLevelManager.h"
 #include "ModuleTextures.h"
+#include "MeshComponent.h"
+#include "ModuleMeshManager.h"
+#include "ModuleMaterialManager.h"
 
 ModuleEditor::~ModuleEditor()
 {
@@ -71,6 +74,18 @@ bool ModuleEditor::Start()
 	level->AddToScene(goPS);
 
 	App->GetModule<ModuleLevelManager>()->ChangeLevel(level);
+
+	GameObject* cube = new GameObject;
+	cube->Name = "Cube";
+	TransformComponent* transform2 = new TransformComponent;
+	cube->AddComponent(transform2);
+	MeshComponent* meshComponent = new MeshComponent;
+	std::shared_ptr<Mesh> cubeMesh = App->GetModule<ModuleMeshManager>()->GetMesh("Cube");
+	cubeMesh->SetMaterial(App->GetModule<ModuleMaterialManager>()->GetMaterial(1));
+	meshComponent->Meshes.push_back(cubeMesh);
+	cube->BoundingBox.Enclose(cubeMesh->GetBoundingBox());
+	cube->AddComponent(meshComponent);
+	level->AddToScene(cube);
 
 	return true;
 }

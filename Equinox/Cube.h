@@ -3,6 +3,8 @@
 
 #include "Primitive.h"
 
+class Mesh;
+
 class Cube :
 	public Primitive
 {
@@ -12,6 +14,8 @@ public:
 	Cube(const float3& position, const Quat& rotation, int textureId);
 	Cube(const float3& position, const Quat& rotation, const float3& color);
 	~Cube();
+
+	static void GenerateMesh(std::shared_ptr<Mesh> mesh);
 
 	void Draw() override;
 

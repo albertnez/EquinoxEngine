@@ -1,7 +1,8 @@
-#include "Cube.h"
 #include <GL/glew.h>
-#include <MathGeoLib/include/Math/float3.h>
 #include <MathGeoLib/include/Math/MathFunc.h>
+
+#include "Cube.h"
+#include "Mesh.h"
 
 
 Cube::Cube() : 
@@ -18,6 +19,98 @@ Cube::Cube(const float3& position, const Quat& rotation, const float3& color) :
 	Primitive(position, rotation, color) {}
 
 Cube::~Cube() {}
+
+void Cube::GenerateMesh(std::shared_ptr<Mesh> cube)
+{
+	static float3 vertices[] = {
+		float3(0.5f, 0.0f, -0.5f),
+		float3(-0.5f, 0.0f, -0.5f),
+		float3(-0.5f, 1.0f, -0.5f),
+		float3(0.5f, 1.0f, -0.5f),
+
+		float3(-0.5f, 0.0f, -0.5f),
+		float3(-0.5f, 0.0f, 0.5f),
+		float3(-0.5f, 1.0f, 0.5f),
+		float3(-0.5f, 1.0f, -0.5f),
+
+		float3(-0.5f, 0.0f, 0.5f),
+		float3(0.5f, 0.0f, 0.5f),
+		float3(0.5f, 1.0f, 0.5f),
+		float3(-0.5f, 1.0f, 0.5f),
+
+		float3(0.5f, 0.0f, 0.5f),
+		float3(0.5f, 0.0f, -0.5f),
+		float3(0.5f, 1.0f, -0.5f),
+		float3(0.5f, 1.0f, 0.5f),
+
+		float3(0.5f, 1.0f, -0.5f),
+		float3(-0.5f, 1.0f, -0.5f),
+		float3(-0.5f, 1.0f, 0.5f),
+		float3(0.5f, 1.0f, 0.5f),
+
+		float3(-0.5f, 0.0f, -0.5f),
+		float3(0.5f, 0.0f, -0.5f),
+		float3(0.5f, 0.0f, 0.5f),
+		float3(-0.5f, 0.0f, 0.5f)
+	};
+
+	static float3 textureCoords[] = {
+		float3(0.0f, 0.0f, 0.0f),
+		float3(1.0f, 0.0f, 0.0f),
+		float3(1.0f, 1.0f, 0.0f),
+		float3(0.0f, 1.0f, 0.0f),
+
+		float3(0.0f, 0.0f, 0.0f),
+		float3(1.0f, 0.0f, 0.0f),
+		float3(1.0f, 1.0f, 0.0f),
+		float3(0.0f, 1.0f, 0.0f),
+
+		float3(0.0f, 0.0f, 0.0f),
+		float3(1.0f, 0.0f, 0.0f),
+		float3(1.0f, 1.0f, 0.0f),
+		float3(0.0f, 1.0f, 0.0f),
+
+		float3(0.0f, 0.0f, 0.0f),
+		float3(1.0f, 0.0f, 0.0f),
+		float3(1.0f, 1.0f, 0.0f),
+		float3(0.0f, 1.0f, 0.0f),
+
+		float3(0.0f, 0.0f, 0.0f),
+		float3(1.0f, 0.0f, 0.0f),
+		float3(1.0f, 1.0f, 0.0f),
+		float3(0.0f, 1.0f, 0.0f),
+
+		float3(0.0f, 0.0f, 0.0f),
+		float3(1.0f, 0.0f, 0.0f),
+		float3(1.0f, 1.0f, 0.0f),
+		float3(0.0f, 1.0f, 0.0f)
+	};
+
+	static uint32_t indexes[] = {
+		0, 1, 2,
+		2, 3, 0,
+		
+		4, 5, 6,
+		6, 7, 4,
+		
+		8, 9, 10,
+		10, 11, 8,
+
+		12, 13, 14,
+		14, 15, 12,
+
+		16, 17, 18,
+		18, 19, 16,
+
+		20, 21, 22,
+		22, 23, 20
+	};
+
+	cube->SetVertices(vertices, ARRAY_LENGTH(vertices));
+	cube->SetNormals(vertices, ARRAY_LENGTH(vertices));
+	cube->SetTextureCoords(textureCoords, ARRAY_LENGTH(textureCoords));
+	cube->SetIndexes(indexes, ARRAY_LENGTH(indexes));
+}
 
 void Cube::Draw()
 {

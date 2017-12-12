@@ -13,7 +13,7 @@ ModuleMeshManager::~ModuleMeshManager()
 {
 }
 
-bool ModuleMeshManager::Init()
+bool ModuleMeshManager::Start()
 {
 	Cube::GenerateMesh(CreateMesh("Cube"));
 

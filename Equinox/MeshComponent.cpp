@@ -33,10 +33,10 @@ void MeshComponent::Update(float dt)
 			glColor3f(1.f, 1.f, 1.f);
 			Material* mat = mesh->GetMaterial();
 
-			glMaterialfv(GL_FRONT, GL_AMBIENT, reinterpret_cast<GLfloat*>(&mat->ambient));
+			/*glMaterialfv(GL_FRONT, GL_AMBIENT, reinterpret_cast<GLfloat*>(&mat->ambient));
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, reinterpret_cast<GLfloat*>(&mat->diffuse));
 			glMaterialfv(GL_FRONT, GL_SPECULAR, reinterpret_cast<GLfloat*>(&mat->specular));
-			glMaterialf(GL_FRONT, GL_SHININESS, mat->shininess);
+			glMaterialf(GL_FRONT, GL_SHININESS, mat->shininess);*/
 
 			graphicsDevice->BindBuffer(GL_ARRAY_BUFFER, mesh->GetVertexId());
 			glVertexPointer(3, GL_FLOAT, 0, nullptr);
@@ -50,7 +50,7 @@ void MeshComponent::Update(float dt)
 			_programManager->UseProgram(_shaderUnlit);
 			int diffuse_id = glGetUniformLocation(_shaderUnlit->id, "diffuse");
 			int useColor_id = glGetUniformLocation(_shaderUnlit->id, "useColor");
-			if (mesh->GetTextureCoordsId() && 0 != mat->texture)
+			if (nullptr != mat && mesh->GetTextureCoordsId() && 0 != mat->texture)
 			{
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 				graphicsDevice->BindBuffer(GL_ARRAY_BUFFER, mesh->GetTextureCoordsId());
@@ -63,12 +63,15 @@ void MeshComponent::Update(float dt)
 				glUniform1i(useColor_id, 1);
 			}
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, mat->texture);
-			glUniform1i(diffuse_id, 0);
+			if (nullptr != mat)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, mat->texture);
+				glUniform1i(diffuse_id, 0);
+			}
 
 			graphicsDevice->BindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetIndexesId());
-			glDrawElements(GL_TRIANGLES, mesh->GetNumIndices(), GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, mesh->GetNumIndexes(), GL_UNSIGNED_INT, nullptr);
 
 			glMaterialfv(GL_FRONT, GL_AMBIENT, DEFAULT_GL_AMBIENT);
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, DEFAULT_GL_DIFFUSE);
