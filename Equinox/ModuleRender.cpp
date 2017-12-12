@@ -179,4 +179,3 @@ void ModuleRender::SetVSync(int interval) const
 		LOG("VSync change unsupported");
 	}
 }
-

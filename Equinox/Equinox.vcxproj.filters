@@ -30,6 +30,12 @@
     <Filter Include="Utils\Static Factory">
       <UniqueIdentifier>{59a50008-2d8f-417e-a57e-a6d8b86cf91b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Classes">
+      <UniqueIdentifier>{77536987-d5ea-4a7e-87ab-07d96cdc42a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Graphics">
+      <UniqueIdentifier>{3e0f7711-17c9-495d-a7d0-cfa450ef1888}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleRender.h">
@@ -197,6 +203,12 @@
     <ClInclude Include="ProgramManager.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLGraphicsDevice.h">
+      <Filter>Utils\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleRender.cpp">
@@ -306,6 +318,12 @@
     </ClCompile>
     <ClCompile Include="ProgramManager.cpp">
       <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLGraphicsDevice.cpp">
+      <Filter>Utils\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

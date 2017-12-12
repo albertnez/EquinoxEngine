@@ -10,160 +10,7 @@
 #include "ModuleTextures.h"
 #include "ModuleMaterialManager.h"
 #include "ModuleMeshManager.h"
-
-namespace
-{
-	void ImportMeshes(const aiScene* scene, const char* path, std::vector<Mesh*>& meshes)
-	{
-		std::shared_ptr<ModuleTextures> moduleTextures = App->GetModule<ModuleTextures>();
-		std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
-		std::vector<Material*> materials;
-		for (size_t i = 0; i < scene->mNumMaterials; ++i)
-		{
-			aiMaterial* aiMat = scene->mMaterials[i];
-			Material* material = materialManager->CreateMaterial();
-
-			aiColor4D ai_property;
-			float shininess;
-
-			if (aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ai_property) == AI_SUCCESS)
-				material->ambient = float4(&ai_property[0]);
-			if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, ai_property) == AI_SUCCESS)
-				material->diffuse = float4(&ai_property[0]);
-			if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, ai_property) == AI_SUCCESS)
-				material->specular = float4(&ai_property[0]);
-			if (aiMat->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
-				material->shininess = shininess;
-
-			int numTexturesByMaterial = scene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE);
-			if (numTexturesByMaterial > 0)
-			{
-				aiMaterial* aMaterial = scene->mMaterials[i];
-
-				aiString fileName;
-				aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &fileName);
-				sprintf_s(material->FilePath, "%s%s", path, fileName.C_Str());
-
-				material->texture = moduleTextures->Load(material->FilePath);
-			}
-
-			materials.push_back(material);
-		}
-
-		std::shared_ptr<ModuleMeshManager> meshManager = App->GetModule<ModuleMeshManager>();
-		for (size_t i = 0; i < scene->mNumMeshes; ++i)
-		{
-			Mesh* mesh = meshManager->CreateMesh();
-			aiMesh* aMesh = scene->mMeshes[i];
-
-			mesh->num_vertices = aMesh->mNumVertices;
-			mesh->num_indices = aMesh->mNumFaces * 3;
-
-			mesh->material = materials[aMesh->mMaterialIndex]->id;
-
-			GLuint* indexes = new uint32_t[aMesh->mNumFaces * 3];
-
-			for (unsigned iFace = 0; iFace < aMesh->mNumFaces; ++iFace)
-			{
-				aiFace* face = &aMesh->mFaces[iFace];
-
-				indexes[(iFace * 3)] = face->mIndices[0];
-				indexes[(iFace * 3) + 1] = face->mIndices[1];
-				indexes[(iFace * 3) + 2] = face->mIndices[2];
-			}
-
-			if (aMesh->mVertices != nullptr)
-			{
-				glGenBuffers(1, &mesh->vertexID);
-				glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexID);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh->num_vertices * 3, &aMesh->mVertices[0], GL_STATIC_DRAW);
-			}
-
-			if (aMesh->mNormals != nullptr)
-			{
-				glGenBuffers(1, &mesh->normalID);
-				glBindBuffer(GL_ARRAY_BUFFER, mesh->normalID);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh->num_vertices * 3, &aMesh->mNormals[0], GL_STATIC_DRAW);
-			}
-
-			if (aMesh->mTextureCoords[0] != nullptr)
-			{
-				glGenBuffers(1, &mesh->textureCoordsID);
-				glBindBuffer(GL_ARRAY_BUFFER, mesh->textureCoordsID);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(aiVector3D) * mesh->num_vertices, &aMesh->mTextureCoords[0][0], GL_STATIC_DRAW);
-			}
-
-			glGenBuffers(1, &mesh->indexesID);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexesID);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(aiVector3D) * aMesh->mNumFaces, indexes, GL_STATIC_DRAW);
-
-			meshes.push_back(mesh);
-
-			mesh->boundingBox.SetNegativeInfinity();
-			mesh->boundingBox.Enclose(reinterpret_cast<float3*>(&aMesh->mVertices[0]), mesh->num_vertices);
-
-			RELEASE_ARRAY(indexes);
-		}
-	}
-
-	void LoadNodes(aiNode* originalNode, GameObject* node, const std::vector<Mesh*>& meshes)
-	{
-		if (originalNode == nullptr)
-			return;
-
-		GameObject* children = new GameObject;
-
-		children->Name = originalNode->mName.C_Str();
-		children->SetParent(node);
-
-		aiVector3D position;
-		aiVector3D scale;
-		aiQuaternion rotation;
-
-		originalNode->mTransformation.Decompose(scale, rotation, position);
-		TransformComponent* transform = new TransformComponent;
-		transform->Position = float3(position.x, position.y, position.z);
-		transform->Scale = float3(scale.x, scale.y, scale.z);
-		transform->Rotation = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
-
-		children->AddComponent(transform);
-
-		std::vector<vec> vertex_boundingbox;
-
-		if (originalNode->mMeshes != nullptr)
-		{
-			vertex_boundingbox.resize(originalNode->mNumMeshes * 8);
-			MeshComponent* meshComponent = new MeshComponent;
-			children->AddComponent(meshComponent);
-
-			MaterialComponent* materialComponent = new MaterialComponent;
-			children->AddComponent(materialComponent);
-
-			meshComponent->MaterialComponent = materialComponent;
-			std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
-
-			for (size_t i = 0; i < originalNode->mNumMeshes; ++i)
-			{
-				Mesh* mesh = meshes[originalNode->mMeshes[i]];
-
-				mesh->materialInComponent = materialComponent->AddMaterial(materialManager->GetMaterial(mesh->material));
-
-				meshComponent->Meshes.push_back(mesh);
-
-				mesh->boundingBox.GetCornerPoints(&vertex_boundingbox[i * 8]);
-			}
-		}
-
-		children->BoundingBox.SetNegativeInfinity();
-		if (!vertex_boundingbox.empty())
-			children->BoundingBox.Enclose(reinterpret_cast<float3*>(&vertex_boundingbox[0]), originalNode->mNumMeshes * 8);
-
-		for (size_t i = 0; i < originalNode->mNumChildren; ++i)
-		{
-			LoadNodes(originalNode->mChildren[i], children, meshes);
-		}
-	}
-}
+#include "ModuleAnimation.h"
 
 std::shared_ptr<Level> DataImporter::ImportLevel(const char* path, const char* file) const
 {
@@ -175,13 +22,15 @@ std::shared_ptr<Level> DataImporter::ImportLevel(const char* path, const char* f
 
 	aiNode* node = scene->mRootNode;
 
-	std::vector<Mesh*> meshes;
+	std::vector<std::shared_ptr<Mesh>> meshes;
+	std::vector<Material*> materials;
 	meshes.reserve(scene->mNumMeshes);
-	ImportMeshes(scene, path, meshes);
+	//ImportMeshes(scene, path, meshes);
+	ImportMaterials(scene, path, materials);
 
 	std::shared_ptr<Level> level = std::make_shared<Level>();
 
-	LoadNodes(node, level->GetRootNode(), meshes);
+	LoadNodes(scene, node, level->GetRootNode(), materials);
 	level->RegenerateQuadtree(); // TODO: Improve quadtree generation
 
 	aiReleaseImport(scene);
@@ -224,4 +73,248 @@ std::shared_ptr<Animation> DataImporter::ImportAnimation(const char* name, const
 	aiReleaseImport(scene);
 
 	return animation;
+}
+
+void DataImporter::ImportMeshes(const aiScene* scene, const char* path, std::vector<std::shared_ptr<Mesh>>& meshes)
+{
+	std::shared_ptr<ModuleTextures> moduleTextures = App->GetModule<ModuleTextures>();
+	std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
+	std::vector<Material*> materials;
+	for (size_t i = 0; i < scene->mNumMaterials; ++i)
+	{
+		aiMaterial* aiMat = scene->mMaterials[i];
+		Material* material = materialManager->CreateMaterial();
+
+		aiColor4D ai_property;
+		float shininess;
+
+		if (aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ai_property) == AI_SUCCESS)
+			material->ambient = float4(&ai_property[0]);
+		if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, ai_property) == AI_SUCCESS)
+			material->diffuse = float4(&ai_property[0]);
+		if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, ai_property) == AI_SUCCESS)
+			material->specular = float4(&ai_property[0]);
+		if (aiMat->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
+			material->shininess = shininess;
+
+		int numTexturesByMaterial = scene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE);
+		if (numTexturesByMaterial > 0)
+		{
+			aiMaterial* aMaterial = scene->mMaterials[i];
+
+			aiString fileName;
+			aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &fileName);
+			sprintf_s(material->FilePath, "%s%s", path, fileName.C_Str());
+
+			material->texture = moduleTextures->Load(material->FilePath);
+		}
+
+		materials.push_back(material);
+	}
+
+	std::shared_ptr<ModuleMeshManager> meshManager = App->GetModule<ModuleMeshManager>();
+	for (size_t i = 0; i < scene->mNumMeshes; ++i)
+	{
+		aiMesh* aMesh = scene->mMeshes[i];
+		std::shared_ptr<Mesh> mesh = meshManager->CreateMesh(aMesh->mName.C_Str());
+
+		mesh->num_vertices = aMesh->mNumVertices;
+		mesh->num_indices = aMesh->mNumFaces * 3;
+
+		mesh->_material = materials[aMesh->mMaterialIndex];
+
+		GLuint* indexes = new uint32_t[aMesh->mNumFaces * 3];
+
+		for (unsigned iFace = 0; iFace < aMesh->mNumFaces; ++iFace)
+		{
+			aiFace* face = &aMesh->mFaces[iFace];
+
+			indexes[(iFace * 3)] = face->mIndices[0];
+			indexes[(iFace * 3) + 1] = face->mIndices[1];
+			indexes[(iFace * 3) + 2] = face->mIndices[2];
+		}
+
+		if (aMesh->mVertices != nullptr)
+		{
+			mesh->SetVertices(reinterpret_cast<float3*>(&aMesh->mVertices), aMesh->mNumVertices);
+			/*glGenBuffers(1, &mesh->vertexID);
+			glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexID);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh->num_vertices * 3, &aMesh->mVertices[0], GL_STATIC_DRAW);*/
+		}
+
+		if (aMesh->mNormals != nullptr)
+		{
+			glGenBuffers(1, &mesh->normalID);
+			glBindBuffer(GL_ARRAY_BUFFER, mesh->normalID);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh->num_vertices * 3, &aMesh->mNormals[0], GL_STATIC_DRAW);
+		}
+
+		if (aMesh->mTextureCoords[0] != nullptr)
+		{
+			glGenBuffers(1, &mesh->textureCoordsID);
+			glBindBuffer(GL_ARRAY_BUFFER, mesh->textureCoordsID);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(aiVector3D) * mesh->num_vertices, &aMesh->mTextureCoords[0][0], GL_STATIC_DRAW);
+		}
+
+		glGenBuffers(1, &mesh->indexesID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexesID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(aiVector3D) * aMesh->mNumFaces, indexes, GL_STATIC_DRAW);
+
+		meshes.push_back(mesh);
+
+		mesh->boundingBox.SetNegativeInfinity();
+		mesh->boundingBox.Enclose(reinterpret_cast<float3*>(&aMesh->mVertices[0]), mesh->num_vertices);
+
+		RELEASE_ARRAY(indexes);
+	}
+}
+
+void DataImporter::ImportMaterials(const aiScene* scene, const char* path, std::vector<Material*>& materials)
+{
+	std::shared_ptr<ModuleTextures> moduleTextures = App->GetModule<ModuleTextures>();
+	std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
+	materials.reserve(scene->mNumMaterials);
+
+	for (size_t i = 0; i < scene->mNumMaterials; ++i)
+	{
+		aiMaterial* aiMat = scene->mMaterials[i];
+		Material* material = materialManager->CreateMaterial();
+
+		aiColor4D ai_property;
+		float shininess;
+
+		if (aiMat->Get(AI_MATKEY_COLOR_AMBIENT, ai_property) == AI_SUCCESS)
+			material->ambient = float4(&ai_property[0]);
+		if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, ai_property) == AI_SUCCESS)
+			material->diffuse = float4(&ai_property[0]);
+		if (aiMat->Get(AI_MATKEY_COLOR_SPECULAR, ai_property) == AI_SUCCESS)
+			material->specular = float4(&ai_property[0]);
+		if (aiMat->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
+			material->shininess = shininess;
+
+		int numTexturesByMaterial = scene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE);
+		if (numTexturesByMaterial > 0)
+		{
+			aiMaterial* aMaterial = scene->mMaterials[i];
+
+			aiString fileName;
+			aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &fileName);
+			sprintf_s(material->FilePath, "%s%s", path, fileName.C_Str());
+
+			material->texture = moduleTextures->Load(material->FilePath);
+		}
+
+		materials.push_back(material);
+	}
+}
+
+void DataImporter::ImportMeshes(const aiNode* node, const aiScene* scene, const std::vector<Material*>& materials, std::vector<std::shared_ptr<Mesh>>& meshes)
+{
+	std::shared_ptr<ModuleMeshManager> meshManager = App->GetModule<ModuleMeshManager>();
+	meshes.reserve(node->mNumMeshes);
+
+	for (size_t i = 0; i < node->mNumMeshes; ++i)
+	{
+		std::string name = node->mName.C_Str();
+		if (node->mNumMeshes > 1)
+		{
+			name += "_" + std::to_string(i);
+		}
+		aiMesh* aMesh = scene->mMeshes[node->mMeshes[i]];
+		std::shared_ptr<Mesh> mesh = meshManager->CreateMesh(name);
+
+		mesh->num_indices = aMesh->mNumFaces * 3;
+
+		mesh->SetMaterial(materials[aMesh->mMaterialIndex]);
+
+		GLuint* indexes = new uint32_t[aMesh->mNumFaces * 3];
+
+		for (unsigned iFace = 0; iFace < aMesh->mNumFaces; ++iFace)
+		{
+			aiFace* face = &aMesh->mFaces[iFace];
+
+			indexes[(iFace * 3)] = face->mIndices[0];
+			indexes[(iFace * 3) + 1] = face->mIndices[1];
+			indexes[(iFace * 3) + 2] = face->mIndices[2];
+		}
+
+		if (aMesh->mVertices != nullptr)
+		{
+			mesh->SetVertices(reinterpret_cast<float3*>(aMesh->mVertices), aMesh->mNumVertices);
+		}
+
+		if (aMesh->mNormals != nullptr)
+		{
+			mesh->SetNormals(reinterpret_cast<float3*>(aMesh->mNormals), aMesh->mNumVertices);
+		}
+
+		if (aMesh->mTextureCoords[0] != nullptr)
+		{
+			mesh->SetTextureCoords(reinterpret_cast<float3*>(aMesh->mTextureCoords[0]), aMesh->mNumVertices);
+		}
+
+		mesh->SetIndexes(indexes, aMesh->mNumFaces * 3);
+
+		RELEASE_ARRAY(indexes);
+
+		meshes.push_back(mesh);
+	}
+}
+
+void DataImporter::LoadNodes(const aiScene* scene, aiNode* originalNode, GameObject* node, const std::vector<Material*>& materials)
+{
+	if (originalNode == nullptr)
+		return;
+
+	GameObject* children = new GameObject;
+
+	children->Name = originalNode->mName.C_Str();
+	children->SetParent(node);
+
+	aiVector3D position;
+	aiVector3D scale;
+	aiQuaternion rotation;
+
+	originalNode->mTransformation.Decompose(scale, rotation, position);
+	TransformComponent* transform = new TransformComponent;
+	transform->Position = float3(position.x, position.y, position.z);
+	transform->Scale = float3(scale.x, scale.y, scale.z);
+	transform->Rotation = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
+
+	children->AddComponent(transform);
+
+	std::vector<vec> vertex_boundingbox;
+
+	if (originalNode->mMeshes != nullptr)
+	{
+		vertex_boundingbox.resize(originalNode->mNumMeshes * 8);
+		MeshComponent* meshComponent = new MeshComponent;
+		children->AddComponent(meshComponent);
+
+		MaterialComponent* materialComponent = new MaterialComponent;
+		children->AddComponent(materialComponent);
+
+		meshComponent->MaterialComponent = materialComponent;
+		std::shared_ptr<ModuleMaterialManager> materialManager = App->GetModule<ModuleMaterialManager>();
+		std::vector<std::shared_ptr<Mesh>> meshes;
+		ImportMeshes(originalNode, scene, materials, meshes);
+
+		for (size_t i = 0; i < meshes.size(); ++i)
+		{
+			std::shared_ptr<Mesh> mesh = meshes[i];
+
+			meshComponent->Meshes.push_back(mesh);
+
+			mesh->boundingBox.GetCornerPoints(&vertex_boundingbox[i * 8]);
+		}
+	}
+
+	children->BoundingBox.SetNegativeInfinity();
+	if (!vertex_boundingbox.empty())
+		children->BoundingBox.Enclose(reinterpret_cast<float3*>(&vertex_boundingbox[0]), originalNode->mNumMeshes * 8);
+
+	for (size_t i = 0; i < originalNode->mNumChildren; ++i)
+	{
+		LoadNodes(scene, originalNode->mChildren[i], children, materials);
+	}
 }

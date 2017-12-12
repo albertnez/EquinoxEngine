@@ -16,6 +16,7 @@
 #include "ModuleMeshManager.h"
 #include "ModuleCameraManager.h"
 #include "ProgramManager.h"
+#include "OpenGLGraphicsDevice.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ Engine::Engine()
 	AppendModule<ModuleCameraManager>();
 
 	AppendModule<ModuleRender>();
+	AppendModule<OpenGLGraphicsDevice>();
 	AppendModule<ProgramManager>();
 	AppendModule<ModuleTextures>();
 	AppendModule<ModuleLighting>();

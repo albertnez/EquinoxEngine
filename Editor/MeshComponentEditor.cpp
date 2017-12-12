@@ -21,12 +21,12 @@ void MeshComponentEditor::DrawUI(BaseComponent* component)
 	int vertex, indices;
 	vertex = indices = 0;
 	int i = 0;
-	for (Mesh* mesh : meshComponent->Meshes)
+	for (std::shared_ptr<Mesh> mesh : meshComponent->Meshes)
 	{
-		vertex += mesh->num_vertices;
-		indices += mesh->num_indices;
-		ImGui::LabelText("", "Mesh %i: %i triangles (%i indices, %i vertices)", i, mesh->num_indices / 3, mesh->num_indices,
-		                 mesh->num_vertices);
+		vertex += mesh->GetNumVertices();
+		indices += mesh->GetNumIndices();
+		ImGui::LabelText("", "Mesh %i: %i triangles (%i indices, %i vertices)", i, mesh->GetNumIndices() / 3, mesh->GetNumIndices(),
+		                 mesh->GetNumIndices());
 		++i;
 	}
 

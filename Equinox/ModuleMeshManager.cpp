@@ -2,6 +2,7 @@
 #include "MeshComponent.h"
 
 #include <cassert>
+#include "Cube.h"
 
 ModuleMeshManager::ModuleMeshManager()
 {
@@ -12,6 +13,13 @@ ModuleMeshManager::~ModuleMeshManager()
 {
 }
 
+bool ModuleMeshManager::Init()
+{
+	Cube::GenerateMesh(CreateMesh("Cube"));
+
+	return true;
+}
+
 bool ModuleMeshManager::CleanUp()
 {
 	LOG("Cleaning meshes and MeshManager");
@@ -19,7 +27,7 @@ bool ModuleMeshManager::CleanUp()
 
 	for (auto meshPair : _meshContainer)
 	{
-		RELEASE(meshPair.second);
+		meshPair.second.reset();
 	}
 
 	_meshContainer.clear();
@@ -27,17 +35,24 @@ bool ModuleMeshManager::CleanUp()
 	return true;
 }
 
-Mesh* ModuleMeshManager::CreateMesh()
+std::shared_ptr<Mesh> ModuleMeshManager::CreateMesh(const std::string& name)
 {
-	Mesh* mesh = new Mesh;
-	mesh->id = _lastId++;
-	_meshContainer[mesh->id] = mesh;
-	return mesh;
+	auto it = _meshContainer.find(name);
+	assert(_meshContainer.end() == it && "Mesh already created!");
+	if (_meshContainer.end() == it)
+	{
+		std::shared_ptr<Mesh> mesh(new Mesh);
+		mesh->id = _lastId++;
+		mesh->name = name;
+		_meshContainer[name] = mesh;
+		return mesh;
+	}
+	return it->second;
 }
 
-Mesh* ModuleMeshManager::GetMeshById(int id) const
+std::shared_ptr<Mesh> ModuleMeshManager::GetMesh(const std::string& name) const
 {
-	const auto it = _meshContainer.find(id);
+	const auto it = _meshContainer.find(name);
 
 	if (it == _meshContainer.end())
 	{

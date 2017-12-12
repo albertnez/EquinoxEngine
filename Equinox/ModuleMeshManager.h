@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-struct Mesh;
+class Mesh;
 
 class ModuleMeshManager :
 	public Module
@@ -12,14 +12,15 @@ public:
 	ModuleMeshManager();
 	~ModuleMeshManager();
 
+	bool Init() override;
 	bool CleanUp() override;
 
-	Mesh* CreateMesh();
-	Mesh* GetMeshById(int id) const;
+	std::shared_ptr<Mesh> CreateMesh(const std::string& name);
+	std::shared_ptr<Mesh> GetMesh(const std::string& name) const;
 
 private:
 	int _lastId = 0;
 
-	std::unordered_map<int, Mesh*> _meshContainer;
+	std::unordered_map<std::string, std::shared_ptr<Mesh>> _meshContainer;
 };
 

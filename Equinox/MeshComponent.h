@@ -4,21 +4,8 @@
 #include <GL/glew.h>
 #include <list>
 #include "MaterialComponent.h"
+#include "Mesh.h"
 
-struct Mesh
-{
-	int id = -1;
-	int material = 0;
-	GLuint vertexID = 0;
-	GLuint normalID = 0;
-	GLuint textureCoordsID = 0;
-	int materialInComponent = 0;
-	float3** textureCoords;
-	GLuint indexesID = 0;
-	unsigned num_vertices = 0;
-	unsigned num_indices = 0;
-	AABB boundingBox;
-};
 
 struct ShaderProgram;
 
@@ -38,7 +25,7 @@ public:
 	const GLfloat DEFAULT_GL_SPECULAR[4] = { 0.f, 0.f, 0.f, 1.f };
 	const GLfloat DEFAULT_GL_SHININESS = 0.f;	
 
-	std::list<Mesh*> Meshes;
+	std::list<std::shared_ptr<Mesh>> Meshes;
 	MaterialComponent* MaterialComponent;
 
 private:

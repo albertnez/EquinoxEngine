@@ -48,8 +48,14 @@ public:
 	template<typename ModuleType>
 	std::shared_ptr<ModuleType> AppendModule()
 	{
+		return AppendModule(new ModuleType);
+	}
+
+	template<typename ModuleType>
+	std::shared_ptr<ModuleType> AppendModule(ModuleType* instance)
+	{
 		static_assert(std::is_base_of<Module, ModuleType>::value, "The specified type does not inherit from module");
-		std::shared_ptr<ModuleType> mod(new ModuleType);
+		std::shared_ptr<ModuleType> mod(instance);
 		_moduleMap[typeid(ModuleType)] = mod;
 		_modules.push_back(mod);
 

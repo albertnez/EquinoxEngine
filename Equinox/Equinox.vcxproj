@@ -100,6 +100,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="OpenGLGraphicsDevice.h" />
     <ClInclude Include="IMGUI\imconfig.h" />
     <ClInclude Include="IMGUI\imgui.h" />
     <ClInclude Include="IMGUI\imgui_impl_sdl_gl3.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="MemLeaks.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleAnimation.h" />
@@ -157,6 +159,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="MaterialComponent.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="ModuleAnimation.cpp" />
     <ClCompile Include="ModuleAudio.cpp" />
@@ -173,6 +176,7 @@
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="ModuleTimer.cpp" />
+    <ClCompile Include="OpenGLGraphicsDevice.cpp" />
     <ClCompile Include="parson.c" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="Plane.cpp" />
