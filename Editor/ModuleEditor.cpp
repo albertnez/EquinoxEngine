@@ -12,7 +12,6 @@
 #include "EditorUtils.h"
 #include "Level.h"
 #include "ParticleEmitter.h"
-#include "TransformComponent.h"
 #include "ModuleAnimation.h"
 #include "ModuleLevelManager.h"
 #include "ModuleTextures.h"
@@ -62,13 +61,11 @@ bool ModuleEditor::Start()
 
 	////////////
 	GameObject* goPS = new GameObject;
-	TransformComponent* transform = new TransformComponent;
 	ParticleEmitter* peComponent = new ParticleEmitter(200, float2(50.f, 50.f), 20.f, 1.2f, 15.f);
 	unsigned rainTex = App->GetModule<ModuleTextures>()->Load("Models/rainSprite.tga");
 	//unsigned snowTex = App->textures->Load("Models/simpleflake.tga");
 	peComponent->SetTexture(rainTex);
 	goPS->Name = "ParticleSystem";
-	goPS->AddComponent(transform);
 	goPS->AddComponent(peComponent);
 
 	level->AddToScene(goPS);
@@ -77,8 +74,6 @@ bool ModuleEditor::Start()
 
 	GameObject* cube = new GameObject;
 	cube->Name = "Cube";
-	TransformComponent* transform2 = new TransformComponent;
-	cube->AddComponent(transform2);
 	MeshComponent* meshComponent = new MeshComponent;
 	std::shared_ptr<Mesh> cubeMesh = App->GetModule<ModuleMeshManager>()->GetMesh("Cube");
 	cubeMesh->SetMaterial(App->GetModule<ModuleMaterialManager>()->GetMaterial(1));

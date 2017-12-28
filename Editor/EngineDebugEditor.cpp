@@ -72,7 +72,7 @@ void EngineDebugEditor::Update()
 	}
 	ImGui::End();
 
-	const Level& currentLevel = _levelManager->GetCurrentLevel();
+	Level& currentLevel = _levelManager->GetCurrentLevel();
 	if (_drawQuadtree)
 	{
 		DrawQuadtreeNodeAABB(currentLevel.GetQuadtree().GetRootNode());
@@ -80,7 +80,7 @@ void EngineDebugEditor::Update()
 
 	if (_drawHierachy)
 	{
-		const GameObject* root = currentLevel.GetRootNode();
+		GameObject* root = currentLevel.GetRootNode();
 
 		root->DrawHierachy();
 	}

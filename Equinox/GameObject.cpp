@@ -1,12 +1,13 @@
-﻿#include "GameObject.h"
+﻿#include <GL/glew.h>
+#include <MathGeoLib/include/Math/float4x4.h>
+
+#include "GameObject.h"
 #include "BaseComponent.h"
 #include "Globals.h"
-#include <GL/glew.h>
-#include "TransformComponent.h"
-#include <MathGeoLib/include/Math/float4x4.h>
 #include "Engine.h"
 
 GameObject::GameObject()
+	: _transform(Transform(this))
 {
 	BoundingBox.SetNegativeInfinity();
 }
@@ -69,9 +70,6 @@ void GameObject::AddComponent(BaseComponent* component)
 	{
 		component->Parent = this;
 		_components.push_back(component);
-
-		if (component->GetComponentClassId() == TransformComponent::GetClassId())
-			_transform = static_cast<TransformComponent*>(component);
 	}
 }
 
@@ -107,17 +105,25 @@ void GameObject::DeleteComponent(BaseComponent* component)
 	_componentsToRemove.push_back(component);
 }
 
-TransformComponent* GameObject::GetTransform() const
+Transform& GameObject::GetTransform()
+{
+	return _transform;
+}
+
+const Transform& GameObject::GetTransform() const
 {
 	return _transform;
 }
 
 void GameObject::DrawBoundingBox()
 {
+	glPushMatrix();
+	_transform.Update(0);
 	::DrawBoundingBox(BoundingBox);
+	glPopMatrix();
 }
 
-void GameObject::DrawHierachy() const
+void GameObject::DrawHierachy()
 {
 	GLboolean light = glIsEnabled(GL_LIGHTING);
 	glDisable(GL_LIGHTING);
@@ -133,11 +139,11 @@ void GameObject::DrawHierachy() const
 		glEnable(GL_LIGHTING);
 }
 
-void GameObject::DrawHierachy(const float4x4& transformMatrix) const
+void GameObject::DrawHierachy(const float4x4& transformMatrix)
 {
-	float4x4 localMatrix = transformMatrix * _transform->GetTransformMatrix();
+	float4x4 localMatrix = transformMatrix * _transform.GetTransformMatrix();
 
-	if (_parent && _parent->_transform)
+	if (_parent)
 	{
 		glBegin(GL_LINES);
 		float3 parentPos = transformMatrix.Col3(3);
@@ -162,6 +168,8 @@ void GameObject::Update(float dt)
 		RELEASE(baseComponent);
 	}
 	_componentsToRemove.clear();
+
+	_transform.Update(dt); // TODO: This shouldn't be done here
 
 	for (BaseComponent* baseComponent : _components)
 	{

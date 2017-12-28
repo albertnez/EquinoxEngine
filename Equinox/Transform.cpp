@@ -1,19 +1,18 @@
 ﻿#include <GL/glew.h>
 #include <MathGeoLib/include/Math/float3x3.h>
 
-#include "TransformComponent.h"
+#include "Transform.h"
 #include "GameObject.h"
 
 
-TransformComponent::TransformComponent()
+Transform::Transform(GameObject* gameObject)
+	: _gameObject(gameObject)
 {
+	assert(gameObject && "Attached Game Object can't be null");
 }
 
-TransformComponent::~TransformComponent()
-{
-}
 
-const float4x4& TransformComponent::GetTransformMatrix()
+const float4x4& Transform::GetTransformMatrix()
 {
 	if (_dirty)
 	{
@@ -24,7 +23,7 @@ const float4x4& TransformComponent::GetTransformMatrix()
 	return _transformMatrix;
 }
 
-void TransformComponent::SetTransformMatrix(const float4x4& matrix)
+void Transform::SetTransformMatrix(const float4x4& matrix)
 {
 	markChildrenDirty();
 	_transformMatrix = matrix;
@@ -32,12 +31,12 @@ void TransformComponent::SetTransformMatrix(const float4x4& matrix)
 	_dirty = false;
 }
 
-const float4x4& TransformComponent::GetLocalTransformMatrix()
+const float4x4& Transform::GetLocalTransformMatrix()
 {
 	return _localTransformMatrix;
 }
 
-void TransformComponent::SetLocalTransformMatrix(const float4x4& matrix)
+void Transform::SetLocalTransformMatrix(const float4x4& matrix)
 {
 	markChildrenDirty();
 	_localTransformMatrix = matrix;
@@ -45,18 +44,13 @@ void TransformComponent::SetLocalTransformMatrix(const float4x4& matrix)
 	_dirty = false;
 }
 
-void TransformComponent::Update(float dt)
+void Transform::Update(float dt)
 {
 	float4x4 transformMatrix = GetTransformMatrix().Transposed();
 	glMultMatrixf(reinterpret_cast<GLfloat*>(&transformMatrix));
 }
 
-void TransformComponent::EditorUpdate(float dt)
-{
-	Update(dt);
-}
-
-float3 TransformComponent::GetPosition()
+float3 Transform::GetPosition()
 {
 	if (_dirty)
 	{
@@ -67,7 +61,7 @@ float3 TransformComponent::GetPosition()
 	return _transformMatrix.TranslatePart();
 }
 
-void TransformComponent::SetPosition(const float3& position)
+void Transform::SetPosition(const float3& position)
 {
 	if (!position.Equals(GetPosition()))
 	{
@@ -78,12 +72,12 @@ void TransformComponent::SetPosition(const float3& position)
 	}
 }
 
-float3 TransformComponent::GetLocalPosition() const
+float3 Transform::GetLocalPosition() const
 {
 	return _localPosition;
 }
 
-void TransformComponent::SetLocalPosition(const float3& position)
+void Transform::SetLocalPosition(const float3& position)
 {
 	if (!position.Equals(GetLocalPosition()))
 	{
@@ -95,7 +89,7 @@ void TransformComponent::SetLocalPosition(const float3& position)
 	}
 }
 
-Quat TransformComponent::GetRotation()
+Quat Transform::GetRotation()
 {
 	if (_dirty)
 	{
@@ -106,7 +100,7 @@ Quat TransformComponent::GetRotation()
 	return Quat(_transformMatrix.RotatePart());
 }
 
-void TransformComponent::SetRotation(const Quat& rotation)
+void Transform::SetRotation(const Quat& rotation)
 {
 	if (!rotation.Equals(GetRotation()))
 	{
@@ -117,12 +111,12 @@ void TransformComponent::SetRotation(const Quat& rotation)
 	}
 }
 
-Quat TransformComponent::GetLocalRotation() const
+Quat Transform::GetLocalRotation() const
 {
 	return _localRotation;
 }
 
-void TransformComponent::SetLocalRotation(const Quat& rotation)
+void Transform::SetLocalRotation(const Quat& rotation)
 {
 	if (!rotation.Equals(GetLocalRotation()))
 	{
@@ -134,12 +128,12 @@ void TransformComponent::SetLocalRotation(const Quat& rotation)
 	}
 }
 
-float3 TransformComponent::GetLocalScale() const
+float3 Transform::GetLocalScale() const
 {
 	return _localScale;
 }
 
-void TransformComponent::SetLocalScale(const float3& scale)
+void Transform::SetLocalScale(const float3& scale)
 {
 	if (!scale.Equals(GetLocalScale()))
 	{
@@ -151,37 +145,35 @@ void TransformComponent::SetLocalScale(const float3& scale)
 	}
 }
 
-void TransformComponent::markChildrenDirty()
+void Transform::markChildrenDirty()
 {
 	_dirty = true;
-	if (Parent)
-	{
-		for (GameObject* child : Parent->GetChilds())
-			child->GetTransform()->markChildrenDirty();
-	}
+
+	for (GameObject* child : _gameObject->GetChilds())
+		child->GetTransform().markChildrenDirty();
 }
 
-void TransformComponent::regenerateLocalTransform()
+void Transform::regenerateLocalTransform()
 {
 	_localTransformMatrix = float4x4::FromTRS(_localPosition, _localRotation, _localScale);
 }
 
-void TransformComponent::recalculateTransform()
+void Transform::recalculateTransform()
 {
 	_transformMatrix = _localTransformMatrix;
 
-	GameObject* parent = Parent->GetParent();
-	if (parent && parent->GetTransform())
-		_transformMatrix = _localTransformMatrix * parent->GetTransform()->GetTransformMatrix();
+	GameObject* parent = _gameObject->GetParent();
+	if (parent)
+		_transformMatrix = _localTransformMatrix * parent->GetTransform().GetTransformMatrix();
 }
 
-void TransformComponent::recalculateLocalTransform()
+void Transform::recalculateLocalTransform()
 {
 	_localTransformMatrix = _transformMatrix;
 
-	GameObject* parent = Parent->GetParent();
-	if (parent && parent->GetTransform())
-		_localTransformMatrix = _transformMatrix * parent->GetTransform()->GetTransformMatrix().Inverted();
+	GameObject* parent = _gameObject->GetParent();
+	if (parent)
+		_localTransformMatrix = _transformMatrix * parent->GetTransform().GetTransformMatrix().Inverted();
 
 	_localPosition = _localTransformMatrix.TranslatePart();
 	_localRotation = _localTransformMatrix.RotatePart().ToQuat();

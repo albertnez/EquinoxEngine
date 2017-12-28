@@ -11,7 +11,6 @@
 #include "ModuleAnimation.h"
 #include "CoordinateArrows.h"
 #include "Level.h"
-#include "TransformComponent.h"
 #include "ModuleCameraManager.h"
 
 struct ShaderProgram;

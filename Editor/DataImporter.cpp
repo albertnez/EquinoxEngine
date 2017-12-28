@@ -6,7 +6,7 @@
 #include "Globals.h"
 #include "MeshComponent.h"
 #include "Level.h"
-#include "TransformComponent.h"
+#include "Transform.h"
 #include "ModuleTextures.h"
 #include "ModuleMaterialManager.h"
 #include "ModuleMeshManager.h"
@@ -276,10 +276,9 @@ void DataImporter::LoadNodes(const aiScene* scene, aiNode* originalNode, GameObj
 	aiQuaternion rotation;
 
 	originalNode->mTransformation.Decompose(scale, rotation, position);
-	TransformComponent* transform = new TransformComponent;
-	children->AddComponent(transform);
+	Transform& transform = children->GetTransform();
 	
-	transform->SetLocalTransformMatrix(float4x4::FromTRS(
+	transform.SetLocalTransformMatrix(float4x4::FromTRS(
 		float3(position.x, position.y, position.z),
 		Quat(rotation.x, rotation.y, rotation.z, rotation.w),
 		float3(scale.x, scale.y, scale.z)

@@ -166,7 +166,6 @@
     <ClCompile Include="MeshComponentEditor.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ParticleEmitterEditor.cpp" />
-    <ClCompile Include="TransformEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseComponentEditor.h" />

@@ -143,7 +143,7 @@
     <ClInclude Include="ModuleTimer.h" />
     <ClInclude Include="SimpleTimer.h" />
     <ClInclude Include="ModuleStats.h" />
-    <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraComponent.cpp" />
@@ -182,7 +182,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="ProgramManager.cpp" />
     <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="TransformComponent.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FactoryDictionary.h" />

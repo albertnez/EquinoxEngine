@@ -42,9 +42,6 @@
     <ClCompile Include="MeshComponentEditor.cpp">
       <Filter>ComponentEditors</Filter>
     </ClCompile>
-    <ClCompile Include="TransformEditor.cpp">
-      <Filter>ComponentEditors</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialComponentEditor.cpp">
       <Filter>ComponentEditors</Filter>
     </ClCompile>

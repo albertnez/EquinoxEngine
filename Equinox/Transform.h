@@ -4,17 +4,14 @@
 #include <MathGeoLib/include/Math/Quat.h>
 #include <MathGeoLib/include/Math/float4x4.h>
 
-#include "BaseComponent.h"
+class GameObject;
 
 
-class TransformComponent :
-	public BaseComponent
+class Transform
 {
-	DEFINE_COMPONENT(TransformComponent);
-
 public:
-	TransformComponent();
-	~TransformComponent();
+	Transform(GameObject* gameObject);
+	~Transform() = default;
 
 	const float4x4& GetTransformMatrix();
 	void SetTransformMatrix(const float4x4& matrix);
@@ -22,8 +19,7 @@ public:
 	const float4x4& GetLocalTransformMatrix();
 	void SetLocalTransformMatrix(const float4x4& matrix);
 
-	void Update(float dt) override;
-	void EditorUpdate(float dt) override;
+	void Update(float dt); // TODO: Remove this when shaders are refactored
 
 	float3 GetPosition();
 	void SetPosition(const float3& position);
@@ -43,6 +39,8 @@ private:
 	void regenerateLocalTransform();
 	void recalculateTransform();
 	void recalculateLocalTransform();
+
+	GameObject* _gameObject;
 
 	bool _dirty = false;
 

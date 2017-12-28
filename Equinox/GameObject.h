@@ -4,10 +4,11 @@
 #include <string>
 #include <list>
 #include <MathGeoLib/include/Geometry/AABB.h>
+
 #include "Engine.h"
+#include "Transform.h"
 
 class BaseComponent;
-class TransformComponent;
 
 class GameObject
 {
@@ -29,11 +30,12 @@ public:
 	void DeleteComponentByName(const std::string& name);
 	void DeleteComponent(BaseComponent* component);
 
-	TransformComponent* GetTransform() const;
+	Transform& GetTransform();
+	const Transform& GetTransform() const;
 
 	void DrawBoundingBox();
-	void DrawHierachy() const;
-	void DrawHierachy(const float4x4& transformMatrix) const;
+	void DrawHierachy();
+	void DrawHierachy(const float4x4& transformMatrix);
 	
 	void Update(float dt);
 	bool CleanUp();
@@ -45,7 +47,7 @@ public:
 
 private:
 	GameObject* _parent = nullptr;
-	TransformComponent* _transform = nullptr;
+	Transform _transform;
 	std::vector<GameObject*> _childs;
 	std::list<BaseComponent*> _componentsToRemove;
 	std::list<BaseComponent*> _components;

@@ -40,6 +40,7 @@ private:
 	void drawProperties();
 	void drawLevelHierachy();
 	void drawLevelHierachy(GameObject* node);
+	void drawTransformEditor(Transform& transform);
 
 	GameObject* _selectedGameObject = nullptr;
 	std::unordered_map<std::type_index, BaseComponentEditor*> _componentEditors;
@@ -95,6 +96,7 @@ void LevelEditor::drawProperties()
 	{
 		if (_selectedGameObject)
 		{
+			drawTransformEditor(_selectedGameObject->GetTransform());
 			for (BaseComponent* component : _selectedGameObject->GetComponents())
 			{
 				std::string componentName = GenerateNiceNameForComponent(component->GetComponentName());
@@ -182,5 +184,25 @@ void LevelEditor::drawLevelHierachy(GameObject* node)
 			drawLevelHierachy(child);
 		}
 		ImGui::TreePop();
+	}
+}
+
+void LevelEditor::drawTransformEditor(Transform& transform)
+{
+	float3 position = transform.GetLocalPosition();
+	if (ImGui::InputFloat3("Position", &position[0], -1, ImGuiInputTextFlags_CharsDecimal))
+	{
+		transform.SetLocalPosition(position);
+	}
+	float3 rot = RadToDeg(transform.GetLocalRotation().ToEulerXYZ());
+	if (ImGui::SliderFloat3("Rotation", &rot[0], 0, 360, "%.2f deg"))
+	{
+		rot = DegToRad(rot);
+		transform.SetLocalRotation(Quat::FromEulerXYZ(rot.x, rot.y, rot.z));
+	}
+	float3 scale = transform.GetLocalScale();
+	if (ImGui::InputFloat3("Scale", &scale[0], -1, ImGuiInputTextFlags_CharsDecimal))
+	{
+		transform.SetLocalScale(scale);
 	}
 }

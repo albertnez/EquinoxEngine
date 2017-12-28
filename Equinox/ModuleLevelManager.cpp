@@ -1,7 +1,6 @@
 #include "Level.h"
 #include "ParticleEmitter.h"
 #include "ModuleAnimation.h"
-#include "TransformComponent.h"
 #include "ModuleLevelManager.h"
 
 ModuleLevelManager::ModuleLevelManager()
@@ -22,8 +21,6 @@ bool ModuleLevelManager::Init()
 
 bool ModuleLevelManager::Start()
 {
-	
-
 	return true;
 }
 
