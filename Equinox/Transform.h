@@ -13,26 +13,28 @@ public:
 	Transform(GameObject* gameObject);
 	~Transform() = default;
 
-	const float4x4& GetTransformMatrix();
+	const float4x4& GetTransformMatrix() const;
 	void SetTransformMatrix(const float4x4& matrix);
 
-	const float4x4& GetLocalTransformMatrix();
+	const float4x4& GetLocalTransformMatrix() const;
 	void SetLocalTransformMatrix(const float4x4& matrix);
 
-	void Update(float dt); // TODO: Remove this when shaders are refactored
+	void Update(float dt) const; // TODO: Remove this when shaders are refactored
 
-	float3 GetPosition();
+	float3 GetPosition() const;
 	void SetPosition(const float3& position);
 	float3 GetLocalPosition() const;
 	void SetLocalPosition(const float3& position);
 
-	Quat GetRotation();
+	Quat GetRotation() const;
 	void SetRotation(const Quat& rotation);
 	Quat GetLocalRotation() const;
 	void SetLocalRotation(const Quat& rotation);
 
 	float3 GetLocalScale() const;
 	void SetLocalScale(const float3& scale);
+
+	void RecalculateTransformIfDirty();
 
 private:
 	void markChildrenDirty();

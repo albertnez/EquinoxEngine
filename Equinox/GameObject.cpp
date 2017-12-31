@@ -115,7 +115,7 @@ const Transform& GameObject::GetTransform() const
 	return _transform;
 }
 
-void GameObject::DrawBoundingBox()
+void GameObject::DrawBoundingBox() const
 {
 	glPushMatrix();
 	_transform.Update(0);
@@ -123,7 +123,7 @@ void GameObject::DrawBoundingBox()
 	glPopMatrix();
 }
 
-void GameObject::DrawHierachy()
+void GameObject::DrawHierachy() const
 {
 	GLboolean light = glIsEnabled(GL_LIGHTING);
 	glDisable(GL_LIGHTING);
@@ -139,7 +139,7 @@ void GameObject::DrawHierachy()
 		glEnable(GL_LIGHTING);
 }
 
-void GameObject::DrawHierachy(const float4x4& transformMatrix)
+void GameObject::DrawHierachy(const float4x4& transformMatrix) const
 {
 	float4x4 localMatrix = transformMatrix * _transform.GetTransformMatrix();
 
@@ -169,6 +169,8 @@ void GameObject::Update(float dt)
 	}
 	_componentsToRemove.clear();
 
+	// If the transform is dirty, refresh it with correct values
+	_transform.RecalculateTransformIfDirty(); 
 	_transform.Update(dt); // TODO: This shouldn't be done here
 
 	for (BaseComponent* baseComponent : _components)
@@ -208,12 +210,12 @@ void GameObject::Update(float dt)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glPopMatrix();
+
 	for (GameObject* child : _childs)
 	{
 		child->Update(dt);
 	}
-
-	glPopMatrix();
 }
 
 bool GameObject::CleanUp()

@@ -33,9 +33,9 @@ public:
 	Transform& GetTransform();
 	const Transform& GetTransform() const;
 
-	void DrawBoundingBox();
-	void DrawHierachy();
-	void DrawHierachy(const float4x4& transformMatrix);
+	void DrawBoundingBox() const;
+	void DrawHierachy() const;
+	void DrawHierachy(const float4x4& transformMatrix) const;
 	
 	void Update(float dt);
 	bool CleanUp();

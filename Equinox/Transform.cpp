@@ -12,14 +12,8 @@ Transform::Transform(GameObject* gameObject)
 }
 
 
-const float4x4& Transform::GetTransformMatrix()
+const float4x4& Transform::GetTransformMatrix() const
 {
-	if (_dirty)
-	{
-		recalculateTransform();
-		_dirty = false;
-	}
-
 	return _transformMatrix;
 }
 
@@ -31,7 +25,7 @@ void Transform::SetTransformMatrix(const float4x4& matrix)
 	_dirty = false;
 }
 
-const float4x4& Transform::GetLocalTransformMatrix()
+const float4x4& Transform::GetLocalTransformMatrix() const
 {
 	return _localTransformMatrix;
 }
@@ -44,20 +38,14 @@ void Transform::SetLocalTransformMatrix(const float4x4& matrix)
 	_dirty = false;
 }
 
-void Transform::Update(float dt)
+void Transform::Update(float dt) const
 {
 	float4x4 transformMatrix = GetTransformMatrix().Transposed();
 	glMultMatrixf(reinterpret_cast<GLfloat*>(&transformMatrix));
 }
 
-float3 Transform::GetPosition()
+float3 Transform::GetPosition() const
 {
-	if (_dirty)
-	{
-		_dirty = false;
-		recalculateTransform();
-	}
-
 	return _transformMatrix.TranslatePart();
 }
 
@@ -89,14 +77,8 @@ void Transform::SetLocalPosition(const float3& position)
 	}
 }
 
-Quat Transform::GetRotation()
+Quat Transform::GetRotation() const
 {
-	if (_dirty)
-	{
-		recalculateTransform();
-		_dirty = false;
-	}
-
 	return Quat(_transformMatrix.RotatePart());
 }
 
@@ -140,6 +122,15 @@ void Transform::SetLocalScale(const float3& scale)
 		markChildrenDirty();
 		_localScale = scale;
 		regenerateLocalTransform();
+		_dirty = false;
+		recalculateTransform();
+	}
+}
+
+void Transform::RecalculateTransformIfDirty()
+{
+	if (_dirty)
+	{
 		_dirty = false;
 		recalculateTransform();
 	}
